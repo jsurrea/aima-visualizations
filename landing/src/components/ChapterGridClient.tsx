@@ -12,7 +12,8 @@ const STATUS_STYLES: Record<string, { bg: string; text: string; border: string; 
   planned:     { bg: 'rgba(107,114,128,0.1)', text: '#9ca3af', border: 'rgba(107,114,128,0.2)', label: '◷ Planned'     },
 };
 
-const BASE = import.meta.env.BASE_URL ?? '/aima-visualizations/';
+/** Base URL for the site, used for runtime manifest fetches. Astro sets this via import.meta.env.BASE_URL. */
+const BASE: string = import.meta.env.BASE_URL ?? '/aima-visualizations/';
 
 /** Fetch a single chapter manifest and return the status, or null on failure. */
 async function fetchManifest(chapterPath: string): Promise<ManifestPayload | null> {

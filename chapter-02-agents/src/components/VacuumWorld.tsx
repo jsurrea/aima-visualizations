@@ -7,6 +7,9 @@ import {
   type RoomStatus,
 } from '../algorithms/index';
 
+/** Delay between auto-advance steps during playback (milliseconds). */
+const STEP_INTERVAL_MS = 800;
+
 // All 8 possible initial states
 const INITIAL_STATES: Array<{ label: string; state: VacuumWorldState }> = [
   { label: 'Left | Clean | Clean', state: { agentPosition: 'Left', leftRoom: 'clean', rightRoom: 'clean' } },
@@ -181,7 +184,7 @@ export default function VacuumWorld() {
           }
           return next;
         });
-      }, 800);
+      }, STEP_INTERVAL_MS);
     }
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);

@@ -1,6 +1,9 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { getStandardModelSteps, type StandardModelStep } from '../algorithms/index';
 
+/** Delay between auto-advance steps when playing (milliseconds). */
+const ANIMATION_INTERVAL_MS = 1400;
+
 const DIRECTION_COLOR: Record<StandardModelStep['direction'], string> = {
   'env-to-agent': '#10B981',
   'agent-internal': '#6366F1',
@@ -152,7 +155,7 @@ export default function StandardModelLoop() {
 
   useEffect(() => {
     if (playing && !prefersReduced) {
-      intervalRef.current = setInterval(advance, 1400);
+      intervalRef.current = setInterval(advance, ANIMATION_INTERVAL_MS);
       return () => {
         if (intervalRef.current !== null) clearInterval(intervalRef.current);
       };
