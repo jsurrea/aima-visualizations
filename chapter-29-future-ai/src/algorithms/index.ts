@@ -134,7 +134,8 @@ export function simulateAnytimeAlgorithm(
 ): ReadonlyArray<AnytimeStep> {
   const n = Math.max(1, Math.floor(maxIterations));
   const steps: AnytimeStep[] = [];
-  // Cheap deterministic LCG pseudo-noise
+  // Cheap deterministic hash-based noise using classic sinusoidal hash constants
+  // (9301, 49297, 233280 from "How do I seed a random number generator?" — common JS pattern)
   const noise = (i: number) => {
     const x = Math.sin((i + noiseSeed) * 9301.0 + 49297.0) * 233280.0;
     return (x - Math.floor(x)) * 0.05 - 0.025;

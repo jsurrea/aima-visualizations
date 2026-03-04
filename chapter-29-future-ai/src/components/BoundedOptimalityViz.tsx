@@ -49,6 +49,7 @@ const DEFAULT_PROGRAMS: AgentProgram[] = [
 
 const MAX_BUDGET = 100;
 
+// Local helper — clamps v to [lo, hi] for SVG coordinate calculations.
 function clamp(v: number, lo: number, hi: number) {
   return Math.min(hi, Math.max(lo, v));
 }
