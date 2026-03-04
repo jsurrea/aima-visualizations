@@ -1,0 +1,18 @@
+{
+  "chapter": 1,
+  "title": "Introduction",
+  "shortTitle": "Intro",
+  "description": "The four approaches to AI, history of artificial intelligence, and the standard model of rational agents.",
+  "part": 1,
+  "partName": "Artificial Intelligence",
+  "icon": "🧠",
+  "color": "#6366F1",
+  "basePath": "/chapter-01",
+  "sections": [
+    { "id": "bfs-intro", "title": "The Four Approaches to AI", "status": "planned" },
+    { "id": "timeline", "title": "AI History Timeline", "status": "planned" },
+    { "id": "standard-model", "title": "Standard Model Loop", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

@@ -1,0 +1,20 @@
+name: Deploy Chapter 05 — Constraint Satisfaction Problems
+
+on:
+  push:
+    branches: [main]
+    paths: ['chapter-05-csp/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-05-csp
+      chapter-path: chapter-05
+    secrets: inherit

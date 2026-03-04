@@ -1,0 +1,52 @@
+name: Deploy Chapter (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      chapter-dir:
+        description: 'Chapter directory name (e.g. chapter-03-search)'
+        required: true
+        type: string
+      chapter-path:
+        description: 'Deployment path (e.g. chapter-03)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: ${{ inputs.chapter-dir }}/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ${{ inputs.chapter-dir }}
+        run: npm ci
+
+      - name: Run tests
+        working-directory: ${{ inputs.chapter-dir }}
+        run: npm test -- --run
+
+      - name: Build
+        working-directory: ${{ inputs.chapter-dir }}
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ inputs.chapter-dir }}/dist
+          destination_dir: ${{ inputs.chapter-path }}
+          keep_files: true

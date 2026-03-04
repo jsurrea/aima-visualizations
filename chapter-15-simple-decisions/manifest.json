@@ -1,0 +1,18 @@
+{
+  "chapter": 15,
+  "title": "Making Simple Decisions",
+  "shortTitle": "Decisions",
+  "description": "Utility functions, decision networks, value of information, and human preference anomalies.",
+  "part": 4,
+  "partName": "Uncertain Knowledge and Reasoning",
+  "icon": "⚖️",
+  "color": "#EC4899",
+  "basePath": "/chapter-15",
+  "sections": [
+    { "id": "utility-functions", "title": "Utility Function Explorer", "status": "planned" },
+    { "id": "decision-network", "title": "Decision Network Editor", "status": "planned" },
+    { "id": "voi", "title": "Value of Information", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

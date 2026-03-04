@@ -1,0 +1,18 @@
+{
+  "chapter": 7,
+  "title": "Logical Agents",
+  "shortTitle": "Logic",
+  "description": "Wumpus World, propositional logic, DPLL, and WALKSAT with step-by-step inference.",
+  "part": 3,
+  "partName": "Knowledge, Reasoning, and Planning",
+  "icon": "💡",
+  "color": "#8B5CF6",
+  "basePath": "/chapter-07",
+  "sections": [
+    { "id": "wumpus-world", "title": "Wumpus World", "status": "planned" },
+    { "id": "truth-table", "title": "Truth Table Builder", "status": "planned" },
+    { "id": "dpll", "title": "DPLL Step-by-Step", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

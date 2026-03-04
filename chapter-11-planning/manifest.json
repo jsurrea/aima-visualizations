@@ -1,0 +1,18 @@
+{
+  "chapter": 11,
+  "title": "Automated Planning",
+  "shortTitle": "Planning",
+  "description": "PDDL editor, GRAPHPLAN, HTN decomposition, and job-shop scheduling visualizations.",
+  "part": 3,
+  "partName": "Knowledge, Reasoning, and Planning",
+  "icon": "📋",
+  "color": "#8B5CF6",
+  "basePath": "/chapter-11",
+  "sections": [
+    { "id": "pddl", "title": "PDDL Editor", "status": "planned" },
+    { "id": "graphplan", "title": "GRAPHPLAN Layer Builder", "status": "planned" },
+    { "id": "htn", "title": "HTN Decomposition", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

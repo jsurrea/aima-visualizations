@@ -1,0 +1,18 @@
+{
+  "chapter": 24,
+  "title": "Natural Language Processing",
+  "shortTitle": "NLP",
+  "description": "N-gram models, CYK parsing, text classification, and smoothing techniques.",
+  "part": 6,
+  "partName": "Communicating, Perceiving, and Acting",
+  "icon": "💬",
+  "color": "#F59E0B",
+  "basePath": "/chapter-24",
+  "sections": [
+    { "id": "ngram", "title": "N-gram Language Model", "status": "planned" },
+    { "id": "cyk", "title": "CYK Parser", "status": "planned" },
+    { "id": "text-classification", "title": "Text Classification Pipeline", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

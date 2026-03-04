@@ -1,0 +1,20 @@
+name: Deploy Chapter 13 — Probabilistic Reasoning
+
+on:
+  push:
+    branches: [main]
+    paths: ['chapter-13-probabilistic-reasoning/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-13-probabilistic-reasoning
+      chapter-path: chapter-13
+    secrets: inherit

@@ -1,0 +1,18 @@
+{
+  "chapter": 29,
+  "title": "The Future of AI",
+  "shortTitle": "Future of AI",
+  "description": "AI capabilities roadmap, architecture spectrum, and human-compatible AI visualizations.",
+  "part": 7,
+  "partName": "Conclusions",
+  "icon": "🚀",
+  "color": "#EF4444",
+  "basePath": "/chapter-29",
+  "sections": [
+    { "id": "capabilities-roadmap", "title": "AI Capabilities Roadmap", "status": "planned" },
+    { "id": "architecture-spectrum", "title": "Architecture Spectrum", "status": "planned" },
+    { "id": "human-compatible", "title": "Human-Compatible AI", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

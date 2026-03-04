@@ -1,0 +1,18 @@
+{
+  "chapter": 23,
+  "title": "Reinforcement Learning",
+  "shortTitle": "RL",
+  "description": "TD learning, Q-learning, policy gradient, and actor-critic on interactive grid worlds.",
+  "part": 5,
+  "partName": "Machine Learning",
+  "icon": "🏆",
+  "color": "#10B981",
+  "basePath": "/chapter-23",
+  "sections": [
+    { "id": "td-learning", "title": "TD Learning Grid World", "status": "planned" },
+    { "id": "q-learning", "title": "Q-Learning Table", "status": "planned" },
+    { "id": "policy-gradient", "title": "Policy Gradient", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

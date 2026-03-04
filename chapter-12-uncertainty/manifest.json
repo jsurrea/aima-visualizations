@@ -1,0 +1,18 @@
+{
+  "chapter": 12,
+  "title": "Quantifying Uncertainty",
+  "shortTitle": "Uncertainty",
+  "description": "Probability axioms, joint distributions, Bayes' rule, and naive Bayes with interactive demos.",
+  "part": 4,
+  "partName": "Uncertain Knowledge and Reasoning",
+  "icon": "🎲",
+  "color": "#EC4899",
+  "basePath": "/chapter-12",
+  "sections": [
+    { "id": "probability-axioms", "title": "Probability Axiom Explorer", "status": "planned" },
+    { "id": "joint-distribution", "title": "Joint Distribution Table", "status": "planned" },
+    { "id": "bayes-rule", "title": "Bayes' Rule Demo", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

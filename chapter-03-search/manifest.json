@@ -1,0 +1,18 @@
+{
+  "chapter": 3,
+  "title": "Solving Problems by Searching",
+  "shortTitle": "Search",
+  "description": "Step-by-step animated BFS, DFS, UCS, A*, and heuristic search visualizations.",
+  "part": 2,
+  "partName": "Problem Solving",
+  "icon": "🔍",
+  "color": "#3B82F6",
+  "basePath": "/chapter-03",
+  "sections": [
+    { "id": "uninformed-search", "title": "Uninformed Search Visualizer", "status": "planned" },
+    { "id": "informed-search", "title": "Informed Search Visualizer", "status": "planned" },
+    { "id": "heuristic-comparison", "title": "Heuristic Comparison", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

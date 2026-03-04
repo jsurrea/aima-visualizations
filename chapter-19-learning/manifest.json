@@ -1,0 +1,18 @@
+{
+  "chapter": 19,
+  "title": "Learning from Examples",
+  "shortTitle": "Supervised ML",
+  "description": "Decision trees, bias-variance tradeoff, SVMs, and ensemble methods with interactive training.",
+  "part": 5,
+  "partName": "Machine Learning",
+  "icon": "📊",
+  "color": "#10B981",
+  "basePath": "/chapter-19",
+  "sections": [
+    { "id": "decision-tree", "title": "Decision Tree Learner", "status": "planned" },
+    { "id": "bias-variance", "title": "Bias-Variance Demo", "status": "planned" },
+    { "id": "svm", "title": "Support Vector Machine", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

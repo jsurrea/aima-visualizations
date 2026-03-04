@@ -1,0 +1,20 @@
+name: Deploy Chapter 01 — Introduction
+
+on:
+  push:
+    branches: [main]
+    paths: ['chapter-01-introduction/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-01-introduction
+      chapter-path: chapter-01
+    secrets: inherit

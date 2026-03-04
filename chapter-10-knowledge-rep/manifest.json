@@ -1,0 +1,18 @@
+{
+  "chapter": 10,
+  "title": "Knowledge Representation",
+  "shortTitle": "Knowledge Rep",
+  "description": "Ontology hierarchies, event calculus, description logics, and default reasoning.",
+  "part": 3,
+  "partName": "Knowledge, Reasoning, and Planning",
+  "icon": "🗂️",
+  "color": "#8B5CF6",
+  "basePath": "/chapter-10",
+  "sections": [
+    { "id": "ontology", "title": "Ontology Hierarchy", "status": "planned" },
+    { "id": "event-calculus", "title": "Event Calculus Timeline", "status": "planned" },
+    { "id": "description-logic", "title": "Description Logic Browser", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}
