@@ -257,6 +257,13 @@ export default function LocalSearchVisualizer(): JSX.Element {
         ? clampedIndex === totalSteps - 1
         : false;
 
+  // Helper: color and formatted text for a deltaE value
+  function deltaEDisplay(deltaE: number): { color: string; text: string } {
+    const color = deltaE > 0 ? '#10B981' : deltaE < 0 ? '#EF4444' : '#9CA3AF';
+    const text = `${deltaE > 0 ? '+' : ''}${deltaE.toFixed(2)}`;
+    return { color, text };
+  }
+
   // Derived status label
   function getStatusLabel(): string {
     if (selectedAlgo === 'hill-climbing') {
@@ -267,7 +274,8 @@ export default function LocalSearchVisualizer(): JSX.Element {
     }
     if (selectedAlgo === 'simulated-annealing') {
       if (!saStep) return '';
-      return saStep.accepted ? `Accepted (ΔE = ${saStep.deltaE.toFixed(2)})` : `Rejected (ΔE = ${saStep.deltaE.toFixed(2)})`;
+      const deltaStr = `ΔE = ${saStep.deltaE.toFixed(2)}`;
+      return saStep.accepted ? `Accepted (${deltaStr})` : `Rejected (${deltaStr})`;
     }
     if (!gaStep) return '';
     return gaStep.generation === 0 ? 'Initial population' : `Generation ${gaStep.generation}`;
@@ -542,11 +550,8 @@ export default function LocalSearchVisualizer(): JSX.Element {
             </div>
             <div>
               <div style={statLabelStyle}>ΔE</div>
-              <div style={{
-                ...statValueStyle,
-                color: saStep.deltaE > 0 ? '#10B981' : saStep.deltaE < 0 ? '#EF4444' : '#9CA3AF',
-              }}>
-                {saStep.deltaE > 0 ? '+' : ''}{saStep.deltaE.toFixed(2)}
+              <div style={{ ...statValueStyle, color: deltaEDisplay(saStep.deltaE).color }}>
+                {deltaEDisplay(saStep.deltaE).text}
               </div>
             </div>
             <div>

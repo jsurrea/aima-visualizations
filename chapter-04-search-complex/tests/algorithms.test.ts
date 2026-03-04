@@ -234,8 +234,8 @@ describe('geneticAlgorithm', () => {
     expect(steps[0]!.bestIndividual.fitness).toBe(4);
   });
 
-  it('crossover produces correct child genes (even parent count, true branch)', () => {
-    // popSize=4 → numParents=2. Pair (P0, P1) takes the true branch (i+1=1 < 2=parents.length).
+  it('crossover with paired parents produces expected child genes', () => {
+    // popSize=4 → numParents=2. Pair (P0, P1): crossover at point 2.
     // After sorting desc by fitness: P0=[1,1,1,0] (3), P1=[0,1,1,0] (2), rest lower.
     // cp=2: child = P0[0:2] + P1[2:] = [1,1] + [1,0] = [1,1,1,0]  (no mutation)
     const pop = [[1, 1, 1, 0], [0, 1, 1, 0], [1, 0, 0, 0], [0, 0, 0, 0]];
@@ -279,7 +279,7 @@ describe('geneticAlgorithm', () => {
     expect(steps[1]!.population).toHaveLength(1);
   });
 
-  it('odd parent count uses same parent for unpaired parent (false branch)', () => {
+  it('crossover with odd parent count performs self-crossover for unpaired parent', () => {
     // popSize=5, numParents=3, parents=[P0,P1,P2]
     // pair (0,1): child from P0+P1; pair (2,2): child from P2+P2 (self-crossover)
     const pop = [
