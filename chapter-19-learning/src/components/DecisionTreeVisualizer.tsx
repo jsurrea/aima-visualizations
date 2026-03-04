@@ -366,7 +366,7 @@ export function DecisionTreeVisualizer(): JSX.Element {
       <details style={{ padding: '12px 24px', borderTop: `1px solid ${COLORS.border}` }}>
         <summary style={{ cursor: 'pointer', color: '#9CA3AF', fontSize: '13px',
           userSelect: 'none' }}>
-          ▸ What-If: Toggle examples ({activeExamples.length}/12 active)
+          &#9658; What-If: Toggle examples ({activeExamples.length}/12 active)
         </summary>
         <div style={{ marginTop: '12px', overflowX: 'auto' }}>
           <table style={{ borderCollapse: 'collapse', fontSize: '11px', width: '100%' }}>
