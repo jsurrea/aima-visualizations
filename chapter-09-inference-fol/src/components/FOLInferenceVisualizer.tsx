@@ -532,7 +532,7 @@ function ResolutionPanel({ reducedMotion }: { reducedMotion: boolean }) {
                       {'}'}
                     </span>
                     <span style={{ fontSize: '11px', color: '#6B7280', marginLeft: 'auto' }}>
-                      {cl.source === 'kb' ? 'KB' : cl.source === 'negated-goal' ? '¬goal' : `from ${cl.parents?.join(',')}` }
+                      {getClauseSourceLabel(cl)}
                     </span>
                     {isResolvent && <span style={{ fontSize: '11px', color: '#A78BFA' }}>← new</span>}
                   </div>
@@ -559,7 +559,13 @@ function ResolutionPanel({ reducedMotion }: { reducedMotion: boolean }) {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
+function getClauseSourceLabel(cl: CNFClause): string {
+  if (cl.source === 'kb') return 'KB';
+  if (cl.source === 'negated-goal') return '¬goal';
+  return `from ${cl.parents?.join(',') ?? '?'}`;
+}
+
+
 
 type Tab = 'unification' | 'forward-chaining' | 'resolution';
 
