@@ -1,473 +1,59 @@
-export interface ChapterData {
-  id: number;
-  slug: string;
-  urlPath: string;
-  title: string;
-  shortTitle: string;
-  description: string;
-  part: 1 | 2 | 3 | 4 | 5 | 6 | 7;
-  partName: string;
-  icon: string;
-  color: string;
-  status: 'planned' | 'in-progress' | 'complete';
-  techStack: string[];
-  visualizationCount: number;
-}
+/**
+ * Chapter data for the landing page, derived from each chapter's manifest.json.
+ *
+ * The authoritative data for each chapter lives in:
+ *   /chapter-XX-name/manifest.json
+ *
+ * This file imports those manifests at build time and transforms them into
+ * ChapterData objects consumed by ChapterGridClient.
+ */
 
-export const PART_NAMES: Record<number, string> = {
-  1: 'Artificial Intelligence',
-  2: 'Problem Solving',
-  3: 'Knowledge, Reasoning, and Planning',
-  4: 'Uncertain Knowledge and Reasoning',
-  5: 'Machine Learning',
-  6: 'Communicating, Perceiving, and Acting',
-  7: 'Conclusions',
-};
+import { manifestToChapterData, type ChapterData, type ManifestData } from '../types/chapter';
 
-export const PART_COLORS: Record<number, string> = {
-  1: '#6366F1',
-  2: '#3B82F6',
-  3: '#8B5CF6',
-  4: '#EC4899',
-  5: '#10B981',
-  6: '#F59E0B',
-  7: '#EF4444',
-};
+// Re-export types and helpers so existing imports from this module still work.
+export type { ChapterData };
+export { PART_NAMES, PART_COLORS } from '../types/chapter';
 
-export const CHAPTERS: ChapterData[] = [
-  {
-    id: 1,
-    slug: 'chapter-01-introduction',
-    urlPath: '/chapter-01',
-    title: 'Introduction',
-    shortTitle: 'Intro',
-    description: 'The four approaches to AI, history of artificial intelligence, and the standard model of rational agents.',
-    part: 1,
-    partName: PART_NAMES[1]!,
-    icon: '🧠',
-    color: '#6366F1',
-    status: 'complete',
-    techStack: ['React', 'TypeScript', 'KaTeX'],
-    visualizationCount: 3,
-  },
-  {
-    id: 2,
-    slug: 'chapter-02-agents',
-    urlPath: '/chapter-02',
-    title: 'Intelligent Agents',
-    shortTitle: 'Agents',
-    description: 'PEAS framework, five agent architectures, and environment properties with interactive simulations.',
-    part: 1,
-    partName: PART_NAMES[1]!,
-    icon: '🤖',
-    color: '#6366F1',
-    status: 'complete',
-    techStack: ['React', 'TypeScript', 'KaTeX'],
-    visualizationCount: 3,
-  },
-  {
-    id: 3,
-    slug: 'chapter-03-search',
-    urlPath: '/chapter-03',
-    title: 'Solving Problems by Searching',
-    shortTitle: 'Search',
-    description: 'Step-by-step animated BFS, DFS, UCS, A*, and heuristic search visualizations.',
-    part: 2,
-    partName: PART_NAMES[2]!,
-    icon: '🔍',
-    color: '#3B82F6',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js', 'KaTeX'],
-    visualizationCount: 6,
-  },
-  {
-    id: 4,
-    slug: 'chapter-04-search-complex',
-    urlPath: '/chapter-04',
-    title: 'Search in Complex Environments',
-    shortTitle: 'Local Search',
-    description: 'Hill climbing, simulated annealing, genetic algorithms, and online search in complex spaces.',
-    part: 2,
-    partName: PART_NAMES[2]!,
-    icon: '⛰️',
-    color: '#3B82F6',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js'],
-    visualizationCount: 7,
-  },
-  {
-    id: 5,
-    slug: 'chapter-05-csp',
-    urlPath: '/chapter-05',
-    title: 'Constraint Satisfaction Problems',
-    shortTitle: 'CSPs',
-    description: 'AC-3 arc consistency, backtracking search, and heuristics for solving constraint satisfaction problems.',
-    part: 2,
-    partName: PART_NAMES[2]!,
-    icon: '🧩',
-    color: '#3B82F6',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js'],
-    visualizationCount: 7,
-  },
-  {
-    id: 6,
-    slug: 'chapter-06-adversarial',
-    urlPath: '/chapter-06',
-    title: 'Adversarial Search and Games',
-    shortTitle: 'Game Search',
-    description: 'Minimax, alpha-beta pruning, MCTS, and stochastic game trees with interactive game playing.',
-    part: 2,
-    partName: PART_NAMES[2]!,
-    icon: '♟️',
-    color: '#3B82F6',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js', 'KaTeX'],
-    visualizationCount: 7,
-  },
-  {
-    id: 7,
-    slug: 'chapter-07-logical-agents',
-    urlPath: '/chapter-07',
-    title: 'Logical Agents',
-    shortTitle: 'Logic',
-    description: 'Wumpus World, propositional logic, DPLL, and WALKSAT with step-by-step inference.',
-    part: 3,
-    partName: PART_NAMES[3]!,
-    icon: '💡',
-    color: '#8B5CF6',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'KaTeX'],
-    visualizationCount: 6,
-  },
-  {
-    id: 8,
-    slug: 'chapter-08-first-order-logic',
-    urlPath: '/chapter-08',
-    title: 'First-Order Logic',
-    shortTitle: 'FOL',
-    description: 'FOL syntax trees, interpretation explorer, and quantifier scope visualization.',
-    part: 3,
-    partName: PART_NAMES[3]!,
-    icon: '∀',
-    color: '#8B5CF6',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'KaTeX'],
-    visualizationCount: 4,
-  },
-  {
-    id: 9,
-    slug: 'chapter-09-inference-fol',
-    urlPath: '/chapter-09',
-    title: 'Inference in First-Order Logic',
-    shortTitle: 'FOL Inference',
-    description: 'Unification, forward/backward chaining, and resolution refutation with step-by-step traces.',
-    part: 3,
-    partName: PART_NAMES[3]!,
-    icon: '⊢',
-    color: '#8B5CF6',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'KaTeX'],
-    visualizationCount: 5,
-  },
-  {
-    id: 10,
-    slug: 'chapter-10-knowledge-rep',
-    urlPath: '/chapter-10',
-    title: 'Knowledge Representation',
-    shortTitle: 'Knowledge Rep',
-    description: 'Ontology hierarchies, event calculus, description logics, and default reasoning.',
-    part: 3,
-    partName: PART_NAMES[3]!,
-    icon: '🗂️',
-    color: '#8B5CF6',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js'],
-    visualizationCount: 5,
-  },
-  {
-    id: 11,
-    slug: 'chapter-11-planning',
-    urlPath: '/chapter-11',
-    title: 'Automated Planning',
-    shortTitle: 'Planning',
-    description: 'PDDL editor, GRAPHPLAN, HTN decomposition, and job-shop scheduling visualizations.',
-    part: 3,
-    partName: PART_NAMES[3]!,
-    icon: '📋',
-    color: '#8B5CF6',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js'],
-    visualizationCount: 7,
-  },
-  {
-    id: 12,
-    slug: 'chapter-12-uncertainty',
-    urlPath: '/chapter-12',
-    title: 'Quantifying Uncertainty',
-    shortTitle: 'Uncertainty',
-    description: "Probability axioms, joint distributions, Bayes' rule, and naive Bayes with interactive demos.",
-    part: 4,
-    partName: PART_NAMES[4]!,
-    icon: '🎲',
-    color: '#EC4899',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js', 'KaTeX'],
-    visualizationCount: 5,
-  },
-  {
-    id: 13,
-    slug: 'chapter-13-probabilistic-reasoning',
-    urlPath: '/chapter-13',
-    title: 'Probabilistic Reasoning',
-    shortTitle: 'Bayes Nets',
-    description: 'Bayesian network builder, variable elimination, MCMC, and causal inference visualizations.',
-    part: 4,
-    partName: PART_NAMES[4]!,
-    icon: '🕸️',
-    color: '#EC4899',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js', 'KaTeX'],
-    visualizationCount: 7,
-  },
-  {
-    id: 14,
-    slug: 'chapter-14-temporal-reasoning',
-    urlPath: '/chapter-14',
-    title: 'Probabilistic Reasoning over Time',
-    shortTitle: 'Temporal',
-    description: 'HMMs, Kalman filters, particle filters, and dynamic Bayesian networks over time.',
-    part: 4,
-    partName: PART_NAMES[4]!,
-    icon: '⏳',
-    color: '#EC4899',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js', 'KaTeX'],
-    visualizationCount: 9,
-  },
-  {
-    id: 15,
-    slug: 'chapter-15-simple-decisions',
-    urlPath: '/chapter-15',
-    title: 'Making Simple Decisions',
-    shortTitle: 'Decisions',
-    description: 'Utility functions, decision networks, value of information, and human preference anomalies.',
-    part: 4,
-    partName: PART_NAMES[4]!,
-    icon: '⚖️',
-    color: '#EC4899',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js', 'KaTeX'],
-    visualizationCount: 7,
-  },
-  {
-    id: 16,
-    slug: 'chapter-16-complex-decisions',
-    urlPath: '/chapter-16',
-    title: 'Making Complex Decisions',
-    shortTitle: 'MDPs',
-    description: 'MDP grid worlds, value iteration, policy iteration, bandits, and POMDPs.',
-    part: 4,
-    partName: PART_NAMES[4]!,
-    icon: '🗺️',
-    color: '#EC4899',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js', 'KaTeX'],
-    visualizationCount: 6,
-  },
-  {
-    id: 17,
-    slug: 'chapter-17-multiagent',
-    urlPath: '/chapter-17',
-    title: 'Multiagent Decision Making',
-    shortTitle: 'Game Theory',
-    description: 'Normal-form games, Nash equilibria, mechanism design, and social choice visualizations.',
-    part: 4,
-    partName: PART_NAMES[4]!,
-    icon: '🎮',
-    color: '#EC4899',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js', 'KaTeX'],
-    visualizationCount: 8,
-  },
-  {
-    id: 18,
-    slug: 'chapter-18-prob-programming',
-    urlPath: '/chapter-18',
-    title: 'Probabilistic Programming',
-    shortTitle: 'Prob. Prog.',
-    description: 'Relational probability models, plate notation, and MCMC inference over probabilistic programs.',
-    part: 4,
-    partName: PART_NAMES[4]!,
-    icon: '🎯',
-    color: '#EC4899',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js'],
-    visualizationCount: 4,
-  },
-  {
-    id: 19,
-    slug: 'chapter-19-learning',
-    urlPath: '/chapter-19',
-    title: 'Learning from Examples',
-    shortTitle: 'Supervised ML',
-    description: 'Decision trees, bias-variance tradeoff, SVMs, and ensemble methods with interactive training.',
-    part: 5,
-    partName: PART_NAMES[5]!,
-    icon: '📊',
-    color: '#10B981',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js', 'KaTeX'],
-    visualizationCount: 8,
-  },
-  {
-    id: 20,
-    slug: 'chapter-20-knowledge-learning',
-    urlPath: '/chapter-20',
-    title: 'Knowledge in Learning',
-    shortTitle: 'ILP',
-    description: 'Explanation-based learning, ILP, and version spaces with interactive hypothesis lattices.',
-    part: 5,
-    partName: PART_NAMES[5]!,
-    icon: '📚',
-    color: '#10B981',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'KaTeX'],
-    visualizationCount: 3,
-  },
-  {
-    id: 21,
-    slug: 'chapter-21-prob-models',
-    urlPath: '/chapter-21',
-    title: 'Learning Probabilistic Models',
-    shortTitle: 'Prob. Models',
-    description: 'MLE, Bayesian learning, and EM algorithm for mixture of Gaussians visualizations.',
-    part: 5,
-    partName: PART_NAMES[5]!,
-    icon: '📈',
-    color: '#10B981',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js', 'KaTeX'],
-    visualizationCount: 3,
-  },
-  {
-    id: 22,
-    slug: 'chapter-22-deep-learning',
-    urlPath: '/chapter-22',
-    title: 'Deep Learning',
-    shortTitle: 'Deep Learning',
-    description: 'Neural network playground, backpropagation, CNNs, LSTMs, and GANs step-by-step.',
-    part: 5,
-    partName: PART_NAMES[5]!,
-    icon: '🧬',
-    color: '#10B981',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js', 'KaTeX'],
-    visualizationCount: 9,
-  },
-  {
-    id: 23,
-    slug: 'chapter-23-reinforcement-learning',
-    urlPath: '/chapter-23',
-    title: 'Reinforcement Learning',
-    shortTitle: 'RL',
-    description: 'TD learning, Q-learning, policy gradient, and actor-critic on interactive grid worlds.',
-    part: 5,
-    partName: PART_NAMES[5]!,
-    icon: '🏆',
-    color: '#10B981',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js', 'KaTeX'],
-    visualizationCount: 7,
-  },
-  {
-    id: 24,
-    slug: 'chapter-24-nlp',
-    urlPath: '/chapter-24',
-    title: 'Natural Language Processing',
-    shortTitle: 'NLP',
-    description: 'N-gram models, CYK parsing, text classification, and smoothing techniques.',
-    part: 6,
-    partName: PART_NAMES[6]!,
-    icon: '💬',
-    color: '#F59E0B',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js', 'KaTeX'],
-    visualizationCount: 5,
-  },
-  {
-    id: 25,
-    slug: 'chapter-25-deep-nlp',
-    urlPath: '/chapter-25',
-    title: 'Deep Learning for NLP',
-    shortTitle: 'Deep NLP',
-    description: 'Word embeddings, attention mechanisms, Transformer architecture, and GPT generation.',
-    part: 6,
-    partName: PART_NAMES[6]!,
-    icon: '🔤',
-    color: '#F59E0B',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js', 'KaTeX'],
-    visualizationCount: 5,
-  },
-  {
-    id: 26,
-    slug: 'chapter-26-robotics',
-    urlPath: '/chapter-26',
-    title: 'Robotics',
-    shortTitle: 'Robotics',
-    description: 'Configuration space, RRT path planning, particle filter localization, and SLAM.',
-    part: 6,
-    partName: PART_NAMES[6]!,
-    icon: '🤖',
-    color: '#F59E0B',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js'],
-    visualizationCount: 7,
-  },
-  {
-    id: 27,
-    slug: 'chapter-27-computer-vision',
-    urlPath: '/chapter-27',
-    title: 'Computer Vision',
-    shortTitle: 'Vision',
-    description: 'Convolution, edge detection, optical flow, object detection, and CNN feature visualization.',
-    part: 6,
-    partName: PART_NAMES[6]!,
-    icon: '👁️',
-    color: '#F59E0B',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js'],
-    visualizationCount: 7,
-  },
-  {
-    id: 28,
-    slug: 'chapter-28-ethics-safety',
-    urlPath: '/chapter-28',
-    title: 'Philosophy, Ethics, and Safety of AI',
-    shortTitle: 'AI Ethics',
-    description: 'AI ethics taxonomy, algorithmic fairness metrics, and value alignment timeline.',
-    part: 7,
-    partName: PART_NAMES[7]!,
-    icon: '⚖️',
-    color: '#EF4444',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js'],
-    visualizationCount: 4,
-  },
-  {
-    id: 29,
-    slug: 'chapter-29-future-ai',
-    urlPath: '/chapter-29',
-    title: 'The Future of AI',
-    shortTitle: 'Future of AI',
-    description: 'AI capabilities roadmap, architecture spectrum, and human-compatible AI visualizations.',
-    part: 7,
-    partName: PART_NAMES[7]!,
-    icon: '🚀',
-    color: '#EF4444',
-    status: 'planned',
-    techStack: ['React', 'TypeScript', 'D3.js'],
-    visualizationCount: 3,
-  },
-];
+// ─── Build-time manifest imports ─────────────────────────────────────────────
+// Each import resolves at build time (Vite handles JSON natively).
+// The relative path goes up two levels: landing/src/data/ → repo root.
+
+import ch01 from '../../../chapter-01-introduction/manifest.json';
+import ch02 from '../../../chapter-02-agents/manifest.json';
+import ch03 from '../../../chapter-03-search/manifest.json';
+import ch04 from '../../../chapter-04-search-complex/manifest.json';
+import ch05 from '../../../chapter-05-csp/manifest.json';
+import ch06 from '../../../chapter-06-adversarial/manifest.json';
+import ch07 from '../../../chapter-07-logical-agents/manifest.json';
+import ch08 from '../../../chapter-08-first-order-logic/manifest.json';
+import ch09 from '../../../chapter-09-inference-fol/manifest.json';
+import ch10 from '../../../chapter-10-knowledge-rep/manifest.json';
+import ch11 from '../../../chapter-11-planning/manifest.json';
+import ch12 from '../../../chapter-12-uncertainty/manifest.json';
+import ch13 from '../../../chapter-13-probabilistic-reasoning/manifest.json';
+import ch14 from '../../../chapter-14-temporal-reasoning/manifest.json';
+import ch15 from '../../../chapter-15-simple-decisions/manifest.json';
+import ch16 from '../../../chapter-16-complex-decisions/manifest.json';
+import ch17 from '../../../chapter-17-multiagent/manifest.json';
+import ch18 from '../../../chapter-18-prob-programming/manifest.json';
+import ch19 from '../../../chapter-19-learning/manifest.json';
+import ch20 from '../../../chapter-20-knowledge-learning/manifest.json';
+import ch21 from '../../../chapter-21-prob-models/manifest.json';
+import ch22 from '../../../chapter-22-deep-learning/manifest.json';
+import ch23 from '../../../chapter-23-reinforcement-learning/manifest.json';
+import ch24 from '../../../chapter-24-nlp/manifest.json';
+import ch25 from '../../../chapter-25-deep-nlp/manifest.json';
+import ch26 from '../../../chapter-26-robotics/manifest.json';
+import ch27 from '../../../chapter-27-computer-vision/manifest.json';
+import ch28 from '../../../chapter-28-ethics-safety/manifest.json';
+import ch29 from '../../../chapter-29-future-ai/manifest.json';
+
+// ─── CHAPTERS array ───────────────────────────────────────────────────────────
+
+const rawManifests: ManifestData[] = [
+  ch01, ch02, ch03, ch04, ch05, ch06, ch07, ch08, ch09, ch10,
+  ch11, ch12, ch13, ch14, ch15, ch16, ch17, ch18, ch19, ch20,
+  ch21, ch22, ch23, ch24, ch25, ch26, ch27, ch28, ch29,
+] as ManifestData[];
+
+export const CHAPTERS: ChapterData[] = rawManifests.map(manifestToChapterData);

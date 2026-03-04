@@ -2,7 +2,8 @@
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "paths": {}
+    "paths": {},
+    "resolveJsonModule": true
   },
-  "include": ["src/**/*", "astro.config.mjs"]
+  "include": ["src/**/*", "astro.config.mjs", "../chapter-*/manifest.json"]
 }

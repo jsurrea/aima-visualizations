@@ -9,10 +9,10 @@
   "color": "#3B82F6",
   "basePath": "/chapter-04",
   "sections": [
-    { "id": "hill-climbing", "title": "Hill Climbing Landscape", "status": "planned" },
-    { "id": "simulated-annealing", "title": "Simulated Annealing", "status": "planned" },
-    { "id": "genetic-algorithm", "title": "Genetic Algorithm", "status": "planned" }
+    { "id": "hill-climbing", "title": "Hill Climbing Landscape", "status": "complete" },
+    { "id": "simulated-annealing", "title": "Simulated Annealing", "status": "complete" },
+    { "id": "genetic-algorithm", "title": "Genetic Algorithm", "status": "complete" }
   ],
-  "status": "planned",
+  "status": "complete",
   "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
 }
