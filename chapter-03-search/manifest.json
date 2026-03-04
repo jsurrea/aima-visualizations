@@ -2,16 +2,19 @@
   "chapter": 3,
   "title": "Solving Problems by Searching",
   "shortTitle": "Search",
-  "description": "Step-by-step animated BFS, DFS, UCS, A*, and heuristic search visualizations.",
+  "description": "Comprehensive interactive suite covering all 6 sections of Chapter 3: problem formulation, example problems (8-puzzle), search tree mechanics, uninformed search (BFS/DFS/UCS/IDDFS), informed heuristic search (Greedy/A*), and heuristic function analysis.",
   "part": 2,
   "partName": "Problem Solving",
   "icon": "🔍",
   "color": "#3B82F6",
   "basePath": "/chapter-03",
   "sections": [
-    { "id": "uninformed-search", "title": "Uninformed Search Visualizer", "status": "complete" },
-    { "id": "informed-search", "title": "Informed Search Visualizer", "status": "complete" },
-    { "id": "heuristic-comparison", "title": "Heuristic Comparison", "status": "complete" }
+    { "id": "problem-solving-agents", "title": "Problem-Solving Agents", "status": "complete" },
+    { "id": "example-problems", "title": "Example Problems", "status": "complete" },
+    { "id": "search-algorithms", "title": "Search Algorithms", "status": "complete" },
+    { "id": "uninformed-search", "title": "Uninformed Search", "status": "complete" },
+    { "id": "informed-search", "title": "Informed (Heuristic) Search", "status": "complete" },
+    { "id": "heuristic-functions", "title": "Heuristic Functions", "status": "complete" }
   ],
   "status": "complete",
   "techStack": ["React", "TypeScript", "KaTeX"]

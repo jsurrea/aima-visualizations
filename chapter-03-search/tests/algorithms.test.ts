@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { bfs, dfs, ucs, aStar } from '../src/algorithms/index';
+import { bfs, dfs, ucs, aStar, greedyBestFirst, iddfs } from '../src/algorithms/index';
 import type { Graph } from '../src/algorithms/index';
 
 // ─── Shared test graphs ───────────────────────────────────────────────────────
@@ -419,5 +419,211 @@ describe('aStar', () => {
     expect(firstStep.currentH).toBe(4);
     expect(firstStep.currentG).toBe(0);
     expect(firstStep.currentF).toBe(4);
+  });
+});
+
+// ─── Greedy Best-First Search ─────────────────────────────────────────────────
+
+/** Heuristic for SIMPLE_GRAPH targeting E (same as H_TO_E). */
+const H_GBFS: ReadonlyMap<string, number> = new Map([
+  ['A', 4], ['B', 3], ['C', 1], ['D', 3], ['E', 0],
+]);
+
+describe('greedyBestFirst', () => {
+  it('finds a path on a simple graph', () => {
+    const steps = greedyBestFirst(SIMPLE_GRAPH, 'A', 'E', H_GBFS);
+    expect(steps.length).toBeGreaterThan(0);
+    const last = steps[steps.length - 1]!;
+    expect(last.currentNode).toBe('E');
+    expect(last.path[last.path.length - 1]).toBe('E');
+    expect(last.action).toContain('found');
+  });
+
+  it('returns immediate step when start === goal', () => {
+    const steps = greedyBestFirst(SIMPLE_GRAPH, 'E', 'E', H_GBFS);
+    expect(steps).toHaveLength(1);
+    const step = steps[0]!;
+    expect(step.currentNode).toBe('E');
+    expect(step.currentH).toBe(0);
+    expect(step.path).toEqual(['E']);
+    expect(step.action).toContain('already');
+    expect(step.explored.has('E')).toBe(true);
+    expect(step.frontier).toHaveLength(0);
+  });
+
+  it('returns no-path step for disconnected graph', () => {
+    const steps = greedyBestFirst(DISCONNECTED_GRAPH, 'A', 'C', H_GBFS);
+    const last = steps[steps.length - 1]!;
+    expect(last.currentNode).toBe('');
+    expect(last.action).toContain('No path');
+    expect(last.path).toHaveLength(0);
+  });
+
+  it('returns no-path step for single node graph with different goal', () => {
+    const steps = greedyBestFirst(SINGLE_GRAPH, 'X', 'Y', new Map());
+    const last = steps[steps.length - 1]!;
+    expect(last.action).toContain('No path');
+  });
+
+  it('handles leaf nodes missing from graph (tests ?? [] branch)', () => {
+    const hLeaf = new Map([['A', 3], ['B', 1], ['C', 0]]);
+    const steps = greedyBestFirst(LEAF_GRAPH, 'A', 'C', hLeaf);
+    const last = steps[steps.length - 1]!;
+    expect(last.currentNode).toBe('C');
+    expect(last.action).toContain('found');
+    // D was a leaf with no expansion
+    const dStep = steps.find(s => s.currentNode === 'D');
+    expect(dStep).toBeDefined();
+  });
+
+  it('frontier is sorted by h ascending', () => {
+    const steps = greedyBestFirst(SIMPLE_GRAPH, 'A', 'E', H_GBFS);
+    steps.forEach(s => {
+      for (let i = 1; i < s.frontier.length; i++) {
+        expect(s.frontier[i]!.h).toBeGreaterThanOrEqual(s.frontier[i - 1]!.h);
+      }
+    });
+  });
+
+  it('start node h value is correct', () => {
+    const steps = greedyBestFirst(SIMPLE_GRAPH, 'A', 'E', H_GBFS);
+    const firstStep = steps[0]!;
+    expect(firstStep.currentH).toBe(4); // H_GBFS.get('A') = 4
+    expect(firstStep.currentNode).toBe('A');
+  });
+
+  it('uses h=0 for unknown nodes (default)', () => {
+    const emptyH: ReadonlyMap<string, number> = new Map();
+    const steps = greedyBestFirst(SIMPLE_GRAPH, 'A', 'E', emptyH);
+    // With h=0 everywhere, should still find a path
+    const last = steps[steps.length - 1]!;
+    expect(last.currentNode).toBe('E');
+  });
+
+  it('skips already-explored nodes (duplicate in priority queue)', () => {
+    const steps = greedyBestFirst(SIMPLE_GRAPH, 'A', 'E', H_GBFS);
+    const eCount = steps.filter(s => s.currentNode === 'E').length;
+    expect(eCount).toBe(1);
+  });
+
+  it('each frontier entry has valid node, h, and path fields', () => {
+    const steps = greedyBestFirst(SIMPLE_GRAPH, 'A', 'E', H_GBFS);
+    steps.forEach(s => {
+      s.frontier.forEach(e => {
+        expect(typeof e.node).toBe('string');
+        expect(typeof e.h).toBe('number');
+        expect(Array.isArray(e.path)).toBe(true);
+      });
+    });
+  });
+});
+
+// ─── IDDFS ───────────────────────────────────────────────────────────────────
+
+describe('iddfs', () => {
+  it('finds a path on a simple graph', () => {
+    const steps = iddfs(SIMPLE_GRAPH, 'A', 'E');
+    expect(steps.length).toBeGreaterThan(0);
+    const last = steps[steps.length - 1]!;
+    expect(last.currentNode).toBe('E');
+    expect(last.path[last.path.length - 1]).toBe('E');
+    expect(last.action).toContain('found');
+  });
+
+  it('returns immediate step when start === goal', () => {
+    const steps = iddfs(SIMPLE_GRAPH, 'A', 'A');
+    expect(steps).toHaveLength(1);
+    const step = steps[0]!;
+    expect(step.currentNode).toBe('A');
+    expect(step.path).toEqual(['A']);
+    expect(step.action).toContain('already');
+    expect(step.explored.has('A')).toBe(true);
+    expect(step.depthLimit).toBe(0);
+    expect(step.iteration).toBe(0);
+  });
+
+  it('returns no-path step for disconnected graph', () => {
+    const steps = iddfs(DISCONNECTED_GRAPH, 'A', 'C', 3);
+    const last = steps[steps.length - 1]!;
+    expect(last.currentNode).toBe('');
+    expect(last.action).toContain('No path');
+    expect(last.path).toHaveLength(0);
+  });
+
+  it('returns no-path step for single node graph with different goal', () => {
+    const steps = iddfs(SINGLE_GRAPH, 'X', 'Y', 3);
+    const last = steps[steps.length - 1]!;
+    expect(last.action).toContain('No path');
+  });
+
+  it('iterates through depth limits (steps include multiple iterations)', () => {
+    // LEAF_GRAPH: A→[D(leaf), B→C]. Goal C is at depth 2.
+    // Iter 0: only A expanded (D and B are at depth 1, beyond limit 0)
+    // Iter 1: A, then D and B; C is at depth 2, still beyond limit 1
+    // Iter 2: finds C
+    const steps = iddfs(LEAF_GRAPH, 'A', 'C', 5);
+    const iterations = new Set(steps.map(s => s.iteration));
+    expect(iterations.size).toBeGreaterThan(1);
+    const last = steps[steps.length - 1]!;
+    expect(last.currentNode).toBe('C');
+    expect(last.action).toContain('found');
+  });
+
+  it('respects maxDepth parameter', () => {
+    // SIMPLE_GRAPH: A to E requires depth >= 3. maxDepth=1 should fail.
+    const steps = iddfs(SIMPLE_GRAPH, 'A', 'E', 1);
+    const last = steps[steps.length - 1]!;
+    expect(last.currentNode).toBe('');
+    expect(last.action).toContain('No path');
+    expect(last.depthLimit).toBe(1);
+  });
+
+  it('handles leaf nodes missing from graph (tests ?? [] branch)', () => {
+    // LEAF_GRAPH: A→[D(missing key), B→C]. D has no expansion.
+    const steps = iddfs(LEAF_GRAPH, 'A', 'C');
+    const last = steps[steps.length - 1]!;
+    expect(last.currentNode).toBe('C');
+    expect(last.action).toContain('found');
+    const dStep = steps.find(s => s.currentNode === 'D');
+    expect(dStep).toBeDefined();
+  });
+
+  it('step includes currentDepth, depthLimit, iteration fields', () => {
+    const steps = iddfs(SIMPLE_GRAPH, 'A', 'E');
+    steps.forEach(s => {
+      expect(typeof s.currentDepth).toBe('number');
+      expect(typeof s.depthLimit).toBe('number');
+      expect(typeof s.iteration).toBe('number');
+      expect(s.currentDepth).toBeGreaterThanOrEqual(0);
+      expect(s.depthLimit).toBeGreaterThanOrEqual(0);
+      expect(s.currentDepth).toBeLessThanOrEqual(s.depthLimit + 1); // at most 1 over limit at frontier
+    });
+  });
+
+  it('does not expand beyond depth limit', () => {
+    // With limit=0 only start is expanded
+    const steps = iddfs(LEAF_GRAPH, 'A', 'C', 0);
+    // Only A should be expanded in iteration 0, then fails
+    const expandedNodes = new Set(
+      steps.filter(s => s.currentNode !== '').map(s => s.currentNode),
+    );
+    expect(expandedNodes.has('A')).toBe(true);
+    // C is at depth 2, must not appear
+    expect(expandedNodes.has('C')).toBe(false);
+  });
+
+  it('skips already-explored nodes (continue branch)', () => {
+    // DFS_CONTINUE_GRAPH: A→[B,C,D], B→[C], C dead end, D→[G]
+    const steps = iddfs(DFS_CONTINUE_GRAPH, 'A', 'G');
+    const last = steps[steps.length - 1]!;
+    expect(last.currentNode).toBe('G');
+    expect(last.action).toContain('found');
+  });
+
+  it('explored set contains current node', () => {
+    const steps = iddfs(SIMPLE_GRAPH, 'A', 'E');
+    steps.filter(s => s.currentNode !== '').forEach(s => {
+      expect(s.explored.has(s.currentNode)).toBe(true);
+    });
   });
 });
