@@ -2,8 +2,13 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { gloveScore, maskedLanguageModelStep } from '../algorithms/index';
 import { interpolateColor, renderDisplayMath, renderInlineMath } from '../utils/mathUtils';
 
-/** Penalty applied to token probabilities that appear after the masked position,
- *  simulating the causal (left-to-right) constraint of unidirectional language models. */
+/**
+ * Simulation parameter: probability multiplier for predictions whose supporting
+ * evidence appears AFTER the masked position. A unidirectional (left-to-right)
+ * model cannot attend to right-side context, so those predictions are weakened
+ * by this factor (0.3 was chosen to produce a visually clear contrast with BERT's
+ * bidirectional probabilities while keeping the demo predictions plausible).
+ */
 const UNIDIRECTIONAL_PENALTY = 0.3;
 
 const CORPUS = ["The cat sat", "The cat ate", "The dog ran", "The dog barked"] as const;
@@ -84,11 +89,20 @@ export default function PretrainingVisualizer() {
   // Unidirectional probabilities
   const uniProbs: Array<{ word: string; uniProb: number; prob: number }> = [];
   if (mlmResult !== null && maskedIndex !== null) {
-    const rawUni = mlmResult.topPredictions.map((p, idx) => ({
-      word: p.word,
-      prob: p.probability,
-      uniProb: p.probability * (idx <= maskedIndex ? 1.0 : UNIDIRECTIONAL_PENALTY),
-    }));
+    // A unidirectional (left-to-right) model can only use left context.
+    // Penalize predictions whose word appears in the sentence AFTER the masked position,
+    // since a causal model couldn't rely on that right-side evidence.
+    const rawUni = mlmResult.topPredictions.map((p) => {
+      const posInSentence = MLM_SENTENCE.findIndex(
+        (w, i) => i !== maskedIndex && w.toLowerCase() === p.word.toLowerCase(),
+      );
+      const hasLeftContext = posInSentence !== -1 && posInSentence < maskedIndex;
+      return {
+        word: p.word,
+        prob: p.probability,
+        uniProb: p.probability * (hasLeftContext ? 1.0 : UNIDIRECTIONAL_PENALTY),
+      };
+    });
     const uniSum = rawUni.reduce((s, p) => s + p.uniProb, 0);
     for (const item of rawUni) {
       uniProbs.push({ ...item, uniProb: uniSum > 0 ? item.uniProb / uniSum : 0 });
