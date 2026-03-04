@@ -173,7 +173,7 @@ export function forwardSearch(
   const frontier: Node[] = [{ state: initialState, plan: [] }];
   const exploredKeys = new Set<string>();
 
-  const stateKey = (s: Set<Fluent>) =>
+  const stateKey = (s: ReadonlySet<Fluent>) =>
     [...s].sort().join(',');
 
   let stepIndex = 0;
@@ -879,7 +879,7 @@ export function criticalPathMethod(
       lf: lfVal,
       slack: slackVal,
       onCriticalPath: slackVal === 0,
-      resource: a.resource,
+      ...(a.resource !== undefined ? { resource: a.resource } : {}),
     };
   });
 }
