@@ -1,0 +1,18 @@
+{
+  "chapter": 5,
+  "title": "Constraint Satisfaction Problems",
+  "shortTitle": "CSPs",
+  "description": "AC-3 arc consistency, backtracking search, and heuristics for constraint satisfaction problems.",
+  "part": 2,
+  "partName": "Problem Solving",
+  "icon": "🧩",
+  "color": "#3B82F6",
+  "basePath": "/chapter-05",
+  "sections": [
+    { "id": "csp-builder", "title": "CSP Builder", "status": "planned" },
+    { "id": "ac3", "title": "AC-3 Algorithm", "status": "planned" },
+    { "id": "backtracking", "title": "Backtracking Search", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

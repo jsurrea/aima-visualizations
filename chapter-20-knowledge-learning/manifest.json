@@ -1,0 +1,18 @@
+{
+  "chapter": 20,
+  "title": "Knowledge in Learning",
+  "shortTitle": "ILP",
+  "description": "Explanation-based learning, ILP, and version spaces with interactive hypothesis lattices.",
+  "part": 5,
+  "partName": "Machine Learning",
+  "icon": "📚",
+  "color": "#10B981",
+  "basePath": "/chapter-20",
+  "sections": [
+    { "id": "ebl", "title": "Explanation-Based Learning", "status": "planned" },
+    { "id": "ilp", "title": "ILP Step-by-Step", "status": "planned" },
+    { "id": "version-space", "title": "Version Space Explorer", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

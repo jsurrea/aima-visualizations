@@ -1,2 +1,22 @@
-landing/dist/
-landing/node_modules/
+# Build artifacts
+**/dist/
+**/.astro/
+
+# Dependencies
+**/node_modules/
+
+# Environment
+**/.env
+**/.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Coverage
+**/coverage/
+

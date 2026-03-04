@@ -1,0 +1,18 @@
+{
+  "chapter": 28,
+  "title": "Philosophy, Ethics, and Safety of AI",
+  "shortTitle": "AI Ethics",
+  "description": "AI ethics taxonomy, algorithmic fairness metrics, and value alignment timeline.",
+  "part": 7,
+  "partName": "Conclusions",
+  "icon": "⚖️",
+  "color": "#EF4444",
+  "basePath": "/chapter-28",
+  "sections": [
+    { "id": "ethics-taxonomy", "title": "AI Ethics Taxonomy", "status": "planned" },
+    { "id": "fairness", "title": "Algorithmic Fairness Demo", "status": "planned" },
+    { "id": "safety-spectrum", "title": "AI Safety Spectrum", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

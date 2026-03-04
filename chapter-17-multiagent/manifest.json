@@ -1,0 +1,18 @@
+{
+  "chapter": 17,
+  "title": "Multiagent Decision Making",
+  "shortTitle": "Game Theory",
+  "description": "Normal-form games, Nash equilibria, mechanism design, and social choice visualizations.",
+  "part": 4,
+  "partName": "Uncertain Knowledge and Reasoning",
+  "icon": "🎮",
+  "color": "#EC4899",
+  "basePath": "/chapter-17",
+  "sections": [
+    { "id": "normal-form", "title": "Normal-Form Game Editor", "status": "planned" },
+    { "id": "nash-equilibrium", "title": "Nash Equilibrium Finder", "status": "planned" },
+    { "id": "auction", "title": "Mechanism Design", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

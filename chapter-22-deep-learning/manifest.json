@@ -1,0 +1,18 @@
+{
+  "chapter": 22,
+  "title": "Deep Learning",
+  "shortTitle": "Deep Learning",
+  "description": "Neural network playground, backpropagation, CNNs, LSTMs, and GANs step-by-step.",
+  "part": 5,
+  "partName": "Machine Learning",
+  "icon": "🧬",
+  "color": "#10B981",
+  "basePath": "/chapter-22",
+  "sections": [
+    { "id": "nn-playground", "title": "Neural Network Playground", "status": "planned" },
+    { "id": "backprop", "title": "Backpropagation Visualizer", "status": "planned" },
+    { "id": "cnn", "title": "CNN Feature Maps", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

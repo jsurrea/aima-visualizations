@@ -1,0 +1,18 @@
+{
+  "chapter": 27,
+  "title": "Computer Vision",
+  "shortTitle": "Vision",
+  "description": "Convolution, edge detection, optical flow, object detection, and CNN feature visualization.",
+  "part": 6,
+  "partName": "Communicating, Perceiving, and Acting",
+  "icon": "👁️",
+  "color": "#F59E0B",
+  "basePath": "/chapter-27",
+  "sections": [
+    { "id": "convolution", "title": "Convolution Animation", "status": "planned" },
+    { "id": "edge-detection", "title": "Edge Detection Pipeline", "status": "planned" },
+    { "id": "optical-flow", "title": "Optical Flow", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

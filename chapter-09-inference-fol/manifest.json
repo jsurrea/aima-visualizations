@@ -1,0 +1,18 @@
+{
+  "chapter": 9,
+  "title": "Inference in First-Order Logic",
+  "shortTitle": "FOL Inference",
+  "description": "Unification, forward/backward chaining, and resolution refutation with step-by-step traces.",
+  "part": 3,
+  "partName": "Knowledge, Reasoning, and Planning",
+  "icon": "⊢",
+  "color": "#8B5CF6",
+  "basePath": "/chapter-09",
+  "sections": [
+    { "id": "unification", "title": "Unification Step-by-Step", "status": "planned" },
+    { "id": "forward-chaining", "title": "Forward Chaining", "status": "planned" },
+    { "id": "resolution", "title": "Resolution Refutation", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

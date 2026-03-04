@@ -1,0 +1,18 @@
+{
+  "chapter": 13,
+  "title": "Probabilistic Reasoning",
+  "shortTitle": "Bayes Nets",
+  "description": "Bayesian network builder, variable elimination, MCMC, and causal inference visualizations.",
+  "part": 4,
+  "partName": "Uncertain Knowledge and Reasoning",
+  "icon": "🕸️",
+  "color": "#EC4899",
+  "basePath": "/chapter-13",
+  "sections": [
+    { "id": "bayes-net", "title": "Bayesian Network Builder", "status": "planned" },
+    { "id": "variable-elimination", "title": "Variable Elimination", "status": "planned" },
+    { "id": "mcmc", "title": "MCMC Sampling", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

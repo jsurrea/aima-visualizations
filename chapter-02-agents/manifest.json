@@ -1,0 +1,18 @@
+{
+  "chapter": 2,
+  "title": "Intelligent Agents",
+  "shortTitle": "Agents",
+  "description": "PEAS framework, five agent architectures, and environment properties with interactive simulations.",
+  "part": 1,
+  "partName": "Artificial Intelligence",
+  "icon": "🤖",
+  "color": "#6366F1",
+  "basePath": "/chapter-02",
+  "sections": [
+    { "id": "peas", "title": "PEAS Framework Builder", "status": "planned" },
+    { "id": "agent-types", "title": "Agent Type Explorer", "status": "planned" },
+    { "id": "vacuum-world", "title": "Vacuum Cleaner World", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

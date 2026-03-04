@@ -1,0 +1,18 @@
+{
+  "chapter": 8,
+  "title": "First-Order Logic",
+  "shortTitle": "FOL",
+  "description": "FOL syntax trees, interpretation explorer, and quantifier scope visualization.",
+  "part": 3,
+  "partName": "Knowledge, Reasoning, and Planning",
+  "icon": "∀",
+  "color": "#8B5CF6",
+  "basePath": "/chapter-08",
+  "sections": [
+    { "id": "syntax-tree", "title": "FOL Syntax Tree Builder", "status": "planned" },
+    { "id": "interpretation", "title": "Interpretation Explorer", "status": "planned" },
+    { "id": "quantifiers", "title": "Quantifier Scope", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}
