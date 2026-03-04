@@ -205,13 +205,14 @@ describe('unify', () => {
     expect(last.result).toBe('failure');
   });
 
-  it('f(x, g(x)) unify f(g(y), y) → failure or partial (circular)', () => {
+  it('f(x, g(x)) unify f(g(y), y) → failure (occurs check on circular term)', () => {
+    // After binding x=g(y) from first arg pair, the second pair becomes g(g(y)) vs y.
+    // Attempting to bind y=g(g(y)) triggers the occurs check → failure.
     const t1 = fn('f', [v('x'), fn('g', [v('x')])]);
     const t2 = fn('f', [fn('g', [v('y')]), v('y')]);
     const steps = unify(t1, t2);
     const last = steps[steps.length - 1]!;
-    // This is the classical MGU challenge — result depends on occurs check
-    expect(['success', 'failure']).toContain(last.result);
+    expect(last.result).toBe('failure');
   });
 
   it('returns at least one step', () => {

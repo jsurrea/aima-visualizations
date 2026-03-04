@@ -326,10 +326,9 @@ export function forwardChain(
     return steps;
   }
 
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    let newFactAdded = false;
-
+  let newFactAdded = true;
+  while (newFactAdded) {
+    newFactAdded = false;
     for (const clause of clauses) {
       const bindingSets =
         clause.body.length === 0 ? [{}] : tryMatchBody(clause.body, facts);
@@ -365,18 +364,16 @@ export function forwardChain(
         }
       }
     }
-
-    if (!newFactAdded) {
-      steps.push({
-        action: 'Fixed point reached — no new facts derivable',
-        newFact: null,
-        facts: [...facts],
-        firedClause: null,
-        bindings: null,
-      });
-      return steps;
-    }
   }
+
+  steps.push({
+    action: 'Fixed point reached — no new facts derivable',
+    newFact: null,
+    facts: [...facts],
+    firedClause: null,
+    bindings: null,
+  });
+  return steps;
 }
 
 // ─── Propositional Resolution ────────────────────────────────────────────────

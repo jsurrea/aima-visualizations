@@ -201,9 +201,12 @@ function UnificationPanel({ reducedMotion }: { reducedMotion: boolean }) {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isInteractive = target.tagName === 'BUTTON' || target.tagName === 'INPUT' ||
+        target.tagName === 'SELECT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
       if (e.key === 'ArrowRight') setStepIndex((i) => Math.min(i + 1, steps.length - 1));
       if (e.key === 'ArrowLeft') setStepIndex((i) => Math.max(i - 1, 0));
-      if (e.key === ' ') { e.preventDefault(); setIsPlaying((p) => !p); }
+      if (e.key === ' ' && !isInteractive) { e.preventDefault(); setIsPlaying((p) => !p); }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
