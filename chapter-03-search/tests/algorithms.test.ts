@@ -5,13 +5,15 @@ import type { Graph } from '../src/algorithms/index';
 // ─── Shared test graphs ───────────────────────────────────────────────────────
 
 /**
- * Simple graph:
- *   A -1- B -2- C
- *         |     |
- *         3     1
- *         |     |
- *         D -3- E
- * All edges are undirected (bidirectional).
+ * Simple undirected graph (AIMA-style example):
+ *
+ *   A --1-- B --2-- C
+ *   |       |       |
+ *   4       3       1
+ *   |       |       |
+ *   +-------D --3-- E
+ *
+ * Edge list: A-B:1, A-C:4, B-C:2, B-D:3, C-E:1, D-E:3
  */
 const SIMPLE_GRAPH: Graph = new Map([
   ['A', [{ node: 'B', cost: 1 }, { node: 'C', cost: 4 }]],
