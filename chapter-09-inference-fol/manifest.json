@@ -9,10 +9,10 @@
   "color": "#8B5CF6",
   "basePath": "/chapter-09",
   "sections": [
-    { "id": "unification", "title": "Unification Step-by-Step", "status": "planned" },
-    { "id": "forward-chaining", "title": "Forward Chaining", "status": "planned" },
-    { "id": "resolution", "title": "Resolution Refutation", "status": "planned" }
+    { "id": "unification", "title": "Unification Step-by-Step", "status": "complete" },
+    { "id": "forward-chaining", "title": "Forward Chaining", "status": "complete" },
+    { "id": "resolution", "title": "Resolution Refutation", "status": "complete" }
   ],
-  "status": "planned",
+  "status": "complete",
   "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
 }

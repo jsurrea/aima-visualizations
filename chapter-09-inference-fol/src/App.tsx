@@ -1,5 +1,5 @@
 import manifest from '../manifest.json';
-import Placeholder from './components/Placeholder';
+import FOLInferenceVisualizer from './components/FOLInferenceVisualizer';
 
 export default function App() {
   return (
@@ -35,22 +35,9 @@ export default function App() {
         </p>
       </section>
 
-      {/* Sections list */}
+      {/* Visualizations */}
       <section style={{ padding: '0 24px 48px', maxWidth: '900px', margin: '0 auto' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '16px', color: '#E5E7EB' }}>
-          Planned Visualizations
-        </h2>
-        <div style={{ display: 'grid', gap: '12px' }}>
-          {manifest.sections.map((section) => (
-            <Placeholder
-              key={section.id}
-              id={section.id}
-              title={section.title}
-              status={section.status}
-              chapterColor={manifest.color}
-            />
-          ))}
-        </div>
+        <FOLInferenceVisualizer />
       </section>
     </div>
   );
