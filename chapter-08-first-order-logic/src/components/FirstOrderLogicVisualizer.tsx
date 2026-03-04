@@ -55,7 +55,7 @@ const UNI_EXAMPLE_2: [FOLTerm, FOLTerm] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Colour helpers
+// Color helpers
 // ---------------------------------------------------------------------------
 const KIND_COLORS: Record<string, string> = {
   forall: '#3B82F6',

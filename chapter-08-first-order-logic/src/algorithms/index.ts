@@ -430,9 +430,7 @@ function unifyPairs(
       return null;
     }
     const argPairs: ReadonlyArray<readonly [FOLTerm, FOLTerm]> = sx.args.map((a, i): readonly [FOLTerm, FOLTerm] => {
-      const bArg = sy.args[i];
-      if (bArg === undefined) throw new Error('arg index out of bounds');
-      return [a, bArg] as const;
+      return [a, sy.args[i]!] as const;
     });
     const newRest = [...argPairs, ...rest];
     steps.push({
