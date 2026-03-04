@@ -2,6 +2,9 @@ import manifest from '../manifest.json';
 import PEASFramework from './components/PEASFramework';
 import AgentTypeExplorer from './components/AgentTypeExplorer';
 import VacuumWorld from './components/VacuumWorld';
+import EnvironmentExplorer from './components/EnvironmentExplorer';
+import RationalityExplorer from './components/RationalityExplorer';
+import ModelBasedVacuumWorld from './components/ModelBasedVacuumWorld';
 
 const DIVIDER = (
   <hr
@@ -140,8 +143,20 @@ export default function App() {
 
       {DIVIDER}
 
+      <SectionWrapper id="rationality" title="Rationality & Performance Measures">
+        <RationalityExplorer />
+      </SectionWrapper>
+
+      {DIVIDER}
+
       <SectionWrapper id="peas" title="PEAS Framework Builder">
         <PEASFramework />
+      </SectionWrapper>
+
+      {DIVIDER}
+
+      <SectionWrapper id="environment-properties" title="Environment Properties">
+        <EnvironmentExplorer />
       </SectionWrapper>
 
       {DIVIDER}
@@ -152,8 +167,14 @@ export default function App() {
 
       {DIVIDER}
 
-      <SectionWrapper id="vacuum-world" title="Vacuum Cleaner World">
+      <SectionWrapper id="vacuum-world" title="Vacuum Cleaner World — Simple Reflex">
         <VacuumWorld />
+      </SectionWrapper>
+
+      {DIVIDER}
+
+      <SectionWrapper id="model-based-vacuum" title="Vacuum Cleaner World — Model-Based">
+        <ModelBasedVacuumWorld />
       </SectionWrapper>
     </div>
   );
