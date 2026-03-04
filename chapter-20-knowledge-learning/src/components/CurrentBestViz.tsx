@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { renderInlineMath } from '../utils/mathUtils';
+import { renderInlineMath, btnStyle } from '../utils/mathUtils';
 import {
   currentBestLearning,
   type Example,
@@ -62,9 +62,18 @@ export default function CurrentBestViz() {
   const [initialH, setInitialH] = useState<HypothesisSpec>(INITIAL_H);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const prefersReduced =
+  const [prefersReduced, setPrefersReduced] = useState(
     typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const handler = (e: MediaQueryListEvent) => setPrefersReduced(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   const steps: ReadonlyArray<CBHStep> = currentBestLearning(
     PRESET_EXAMPLES,
@@ -399,17 +408,4 @@ function StateRow({ label, value, color }: { label: string; value: string; color
   );
 }
 
-function btnStyle(active: boolean, disabled: boolean): React.CSSProperties {
-  return {
-    padding: '7px 14px',
-    borderRadius: '7px',
-    border: `1px solid ${active ? '#10B981' : 'rgba(255,255,255,0.12)'}`,
-    background: active ? '#10B98120' : 'transparent',
-    color: disabled ? '#374151' : active ? '#10B981' : '#D1D5DB',
-    fontSize: '13px',
-    cursor: disabled ? 'not-allowed' : 'pointer',
-    fontWeight: active ? 600 : 400,
-    transition: 'all 0.15s',
-    opacity: disabled ? 0.4 : 1,
-  };
-}
+

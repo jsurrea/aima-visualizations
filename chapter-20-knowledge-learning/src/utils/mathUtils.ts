@@ -69,3 +69,31 @@ export function easeInOut(t: number): number {
 export function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+/**
+ * Returns a consistent CSSProperties object for the chapter's standard button style.
+ *
+ * @param active   Whether the button is in an active/pressed state.
+ * @param disabled Whether the button is disabled.
+ * @param color    Primary accent color (default: chapter color #10B981).
+ * @returns React CSSProperties object.
+ * @complexity O(1)
+ */
+export function btnStyle(
+  active: boolean,
+  disabled: boolean,
+  color = '#10B981',
+): React.CSSProperties {
+  return {
+    padding: '7px 14px',
+    borderRadius: '7px',
+    border: `1px solid ${active ? color : 'rgba(255,255,255,0.12)'}`,
+    background: active ? `${color}20` : 'transparent',
+    color: disabled ? '#374151' : active ? color : '#D1D5DB',
+    fontSize: '13px',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    fontWeight: active ? 600 : 400,
+    transition: 'all 0.15s',
+    opacity: disabled ? 0.4 : 1,
+  };
+}

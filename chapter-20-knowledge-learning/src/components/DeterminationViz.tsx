@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { renderInlineMath } from '../utils/mathUtils';
+import { renderInlineMath, btnStyle } from '../utils/mathUtils';
 import {
   minimalConsistentDet,
   isConsistentDetermination,
@@ -500,17 +500,4 @@ export default function DeterminationViz() {
   );
 }
 
-function btnStyle(active: boolean, disabled: boolean): React.CSSProperties {
-  return {
-    padding: '7px 14px',
-    borderRadius: '7px',
-    border: `1px solid ${active ? '#10B981' : 'rgba(255,255,255,0.12)'}`,
-    background: active ? '#10B98120' : 'transparent',
-    color: disabled ? '#374151' : active ? '#10B981' : '#D1D5DB',
-    fontSize: '13px',
-    cursor: disabled ? 'not-allowed' : 'pointer',
-    fontWeight: active ? 600 : 400,
-    transition: 'all 0.15s',
-    opacity: disabled ? 0.4 : 1,
-  };
-}
+

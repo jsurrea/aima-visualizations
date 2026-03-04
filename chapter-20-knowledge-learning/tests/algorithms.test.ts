@@ -34,8 +34,6 @@ const ALL_VALUES = {
   shape: ['circle', 'square'],
 } as const;
 
-const ATTRS = Object.keys(ALL_VALUES) as Array<keyof typeof ALL_VALUES>;
-
 const BOTTOM: HypothesisSpec = { size: 'small', color: 'red', shape: 'circle' }; // very specific
 const TOP: HypothesisSpec = { size: null, color: null, shape: null }; // most general
 
@@ -810,7 +808,4 @@ describe('clauseCovers – Father(z,y) and Parent(x,z) branches', () => {
     expect(clauseCovers(['Father(z,y)'], 'anyone', 'George', data)).toBe(false);
   });
 });
-
-// Verify _ATTRS_ is used (to avoid unused import warnings)
-void ATTRS;
 
