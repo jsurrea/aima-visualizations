@@ -44,8 +44,8 @@ const baseUrl = '/aima-visualizations';
         </div>
         <span class="text-2xl" aria-hidden="true">{chapter.icon}</span>
       </div>
-      <span class={`px-2.5 py-1 rounded-full text-xs font-medium border ${statusColors[chapter.status] ?? statusColors['planned']}`}>
-        {statusLabels[chapter.status] ?? statusLabels['planned']}
+      <span class={`px-2.5 py-1 rounded-full text-xs font-medium border ${statusColors[chapter.status]}`}>
+        {statusLabels[chapter.status]}
       </span>
     </div>
 

@@ -1,0 +1,15 @@
+name: Deploy Chapter 28 — Philosophy, Ethics, and Safety of AI
+
+on:
+  push:
+    branches: [main]
+    paths: ['chapter-28-ethics-safety/**']
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-28-ethics-safety
+      chapter-path: chapter-28
+    secrets: inherit

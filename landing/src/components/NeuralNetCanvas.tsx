@@ -20,7 +20,14 @@ export default function NeuralNetCanvas() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Create 20 nodes
+    // Resize handler — must run before node initialization so positions use real dimensions
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+    resize();
+
+    // Create 20 nodes after resize so dimensions are correct
     const nodes: Node[] = Array.from({ length: 20 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
@@ -71,13 +78,6 @@ export default function NeuralNetCanvas() {
 
       animId = requestAnimationFrame(draw);
     };
-
-    // Resize handler
-    const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    };
-    resize();
 
     draw();
     window.addEventListener('resize', resize);

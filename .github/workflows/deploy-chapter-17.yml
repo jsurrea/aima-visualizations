@@ -1,0 +1,15 @@
+name: Deploy Chapter 17 — Multiagent Decision Making
+
+on:
+  push:
+    branches: [main]
+    paths: ['chapter-17-multiagent/**']
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-17-multiagent
+      chapter-path: chapter-17
+    secrets: inherit

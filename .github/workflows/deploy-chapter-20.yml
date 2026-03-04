@@ -1,0 +1,15 @@
+name: Deploy Chapter 20 — Knowledge in Learning
+
+on:
+  push:
+    branches: [main]
+    paths: ['chapter-20-knowledge-learning/**']
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-20-knowledge-learning
+      chapter-path: chapter-20
+    secrets: inherit
