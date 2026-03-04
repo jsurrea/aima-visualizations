@@ -17,6 +17,10 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -42,6 +46,10 @@ jobs:
       - name: Build
         working-directory: ${{ inputs.chapter-dir }}
         run: npm run build
+
+      - name: Copy manifest to dist
+        working-directory: ${{ inputs.chapter-dir }}
+        run: cp manifest.json dist/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
