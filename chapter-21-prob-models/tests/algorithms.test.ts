@@ -41,7 +41,7 @@ describe('bayesianCandyLearning', () => {
   it('posteriors for all-lime observations converge to h5', () => {
     const obs: CandyObs[] = Array(10).fill('lime') as CandyObs[];
     const steps = bayesianCandyLearning(obs);
-    const last = steps[steps.length - 1];
+    const last = steps[steps.length - 1]!;
     // h5 = 100% lime should dominate (>0.85 after 10 lime observations)
     expect(last.posteriors[4]).toBeGreaterThan(0.85);
   });
@@ -50,8 +50,8 @@ describe('bayesianCandyLearning', () => {
     const obs: CandyObs[] = ['lime', 'lime', 'lime', 'lime'];
     const steps = bayesianCandyLearning(obs);
     for (let i = 1; i < steps.length; i++) {
-      expect(steps[i].predictedLimeProb).toBeGreaterThanOrEqual(
-        steps[i - 1].predictedLimeProb,
+      expect(steps[i]!.predictedLimeProb).toBeGreaterThanOrEqual(
+        steps[i - 1]!.predictedLimeProb,
       );
     }
   });
@@ -59,7 +59,7 @@ describe('bayesianCandyLearning', () => {
   it('all-cherry observations converge to h1', () => {
     const obs: CandyObs[] = Array(10).fill('cherry') as CandyObs[];
     const steps = bayesianCandyLearning(obs);
-    const last = steps[steps.length - 1];
+    const last = steps[steps.length - 1]!;
     expect(last.posteriors[0]).toBeGreaterThan(0.85);
     expect(last.predictedLimeProb).toBeLessThan(0.1);
   });
@@ -68,29 +68,29 @@ describe('bayesianCandyLearning', () => {
     const obs: CandyObs[] = ['cherry'];
     const uniformPrior = [0.2, 0.2, 0.2, 0.2, 0.2];
     const steps = bayesianCandyLearning(obs, uniformPrior);
-    expect(steps[0].posteriors).toHaveLength(5);
+    expect(steps[0]!.posteriors).toHaveLength(5);
     // With uniform prior and cherry, h1 and h2 get boosted
-    expect(steps[0].posteriors[0]).toBeGreaterThan(0.2);
+    expect(steps[0]!.posteriors[0]).toBeGreaterThan(0.2);
   });
 
   it('step contains obsIndex and observation fields', () => {
     const steps = bayesianCandyLearning(['lime', 'cherry']);
-    expect(steps[0].obsIndex).toBe(1);
-    expect(steps[0].observation).toBe('lime');
-    expect(steps[1].obsIndex).toBe(2);
-    expect(steps[1].observation).toBe('cherry');
+    expect(steps[0]!.obsIndex).toBe(1);
+    expect(steps[0]!.observation).toBe('lime');
+    expect(steps[1]!.obsIndex).toBe(2);
+    expect(steps[1]!.observation).toBe('cherry');
   });
 
   it('action string is non-empty', () => {
     const steps = bayesianCandyLearning(['cherry']);
-    expect(steps[0].action.length).toBeGreaterThan(0);
+    expect(steps[0]!.action.length).toBeGreaterThan(0);
   });
 
   it('handles extreme prior with h5=1 and lime observations', () => {
     const obs: CandyObs[] = ['lime'];
     const steps = bayesianCandyLearning(obs, [0, 0, 0, 0, 1]);
     // Posterior should be all in h5
-    expect(steps[0].posteriors[4]).toBeCloseTo(1, 5);
+    expect(steps[0]!.posteriors[4]).toBeCloseTo(1, 5);
   });
 
   it('handles zero-sum prior gracefully (keeps prior unchanged)', () => {
@@ -98,7 +98,7 @@ describe('bayesianCandyLearning', () => {
     const obs: CandyObs[] = ['lime'];
     const steps = bayesianCandyLearning(obs, [1, 0, 0, 0, 0]);
     // h1 has 0% lime, so P(lime|h1)=0, unnorm total = 0 → keep prior
-    expect(steps[0].posteriors).toHaveLength(5);
+    expect(steps[0]!.posteriors).toHaveLength(5);
   });
 });
 
@@ -116,9 +116,9 @@ describe('mleDiscreteSteps', () => {
 
   it('theta = c/(c+l) at each step', () => {
     const steps = mleDiscreteSteps(['cherry', 'lime', 'cherry']);
-    expect(steps[0].theta).toBeCloseTo(1.0);
-    expect(steps[1].theta).toBeCloseTo(0.5);
-    expect(steps[2].theta).toBeCloseTo(2 / 3);
+    expect(steps[0]!.theta).toBeCloseTo(1.0);
+    expect(steps[1]!.theta).toBeCloseTo(0.5);
+    expect(steps[2]!.theta).toBeCloseTo(2 / 3);
   });
 
   it('log-likelihood is non-positive for valid theta', () => {
@@ -132,7 +132,7 @@ describe('mleDiscreteSteps', () => {
 
   it('handles all-cherry observations (theta = 1)', () => {
     const steps = mleDiscreteSteps(['cherry', 'cherry', 'cherry']);
-    const last = steps[steps.length - 1];
+    const last = steps[steps.length - 1]!;
     expect(last.theta).toBe(1);
     expect(last.cherryCount).toBe(3);
     expect(last.limeCount).toBe(0);
@@ -142,7 +142,7 @@ describe('mleDiscreteSteps', () => {
 
   it('handles all-lime observations (theta = 0)', () => {
     const steps = mleDiscreteSteps(['lime', 'lime']);
-    const last = steps[steps.length - 1];
+    const last = steps[steps.length - 1]!;
     expect(last.theta).toBe(0);
     expect(last.limeCount).toBe(2);
     expect(last.cherryCount).toBe(0);
@@ -152,7 +152,7 @@ describe('mleDiscreteSteps', () => {
 
   it('action string is non-empty', () => {
     const steps = mleDiscreteSteps(['cherry']);
-    expect(steps[0].action.length).toBeGreaterThan(0);
+    expect(steps[0]!.action.length).toBeGreaterThan(0);
   });
 });
 
@@ -170,43 +170,43 @@ describe('gaussianMLESteps', () => {
   it('mu converges to true mean', () => {
     const data = [2, 4, 6, 8, 10];
     const steps = gaussianMLESteps(data);
-    expect(steps[steps.length - 1].muMLE).toBeCloseTo(6, 5);
+    expect(steps[steps.length - 1]!.muMLE).toBeCloseTo(6, 5);
   });
 
   it('sigma converges to true std-dev', () => {
     // Standard normal data (mean 0, std 1 exactly known)
     const data = [-1, 0, 1];
     const steps = gaussianMLESteps(data);
-    const last = steps[steps.length - 1];
+    const last = steps[steps.length - 1]!;
     expect(last.muMLE).toBeCloseTo(0, 5);
     expect(last.sigmaMLE).toBeGreaterThan(0);
   });
 
   it('log-likelihood is finite and non-positive when sigma>0', () => {
     const steps = gaussianMLESteps([1, 2, 3, 4, 5]);
-    const last = steps[steps.length - 1];
+    const last = steps[steps.length - 1]!;
     expect(isFinite(last.logLikelihood)).toBe(true);
     expect(last.logLikelihood).toBeLessThanOrEqual(0);
   });
 
   it('handles single data point (sigma=0, ll=-Infinity)', () => {
     const steps = gaussianMLESteps([5]);
-    expect(steps[0].muMLE).toBe(5);
-    expect(steps[0].sigmaMLE).toBe(0);
-    expect(steps[0].logLikelihood).toBe(-Infinity);
+    expect(steps[0]!.muMLE).toBe(5);
+    expect(steps[0]!.sigmaMLE).toBe(0);
+    expect(steps[0]!.logLikelihood).toBe(-Infinity);
   });
 
   it('action string contains N=', () => {
     const steps = gaussianMLESteps([1, 2]);
-    expect(steps[0].action).toContain('N=1');
-    expect(steps[1].action).toContain('N=2');
+    expect(steps[0]!.action).toContain('N=1');
+    expect(steps[1]!.action).toContain('N=2');
   });
 
   it('data field grows by one each step', () => {
     const steps = gaussianMLESteps([10, 20, 30]);
-    expect(steps[0].data).toHaveLength(1);
-    expect(steps[1].data).toHaveLength(2);
-    expect(steps[2].data).toHaveLength(3);
+    expect(steps[0]!.data).toHaveLength(1);
+    expect(steps[1]!.data).toHaveLength(2);
+    expect(steps[2]!.data).toHaveLength(3);
   });
 });
 
@@ -262,28 +262,28 @@ describe('betaLearningSteps', () => {
 
   it('increments a for cherry, b for lime', () => {
     const steps = betaLearningSteps(['cherry', 'lime', 'cherry']);
-    expect(steps[0].a).toBe(2); // init=1, +1 cherry
-    expect(steps[0].b).toBe(1);
-    expect(steps[1].a).toBe(2);
-    expect(steps[1].b).toBe(2); // +1 lime
-    expect(steps[2].a).toBe(3); // +1 cherry
+    expect(steps[0]!.a).toBe(2); // init=1, +1 cherry
+    expect(steps[0]!.b).toBe(1);
+    expect(steps[1]!.a).toBe(2);
+    expect(steps[1]!.b).toBe(2); // +1 lime
+    expect(steps[2]!.a).toBe(3); // +1 cherry
   });
 
   it('posteriorMean = a/(a+b)', () => {
     const steps = betaLearningSteps(['cherry', 'cherry']);
-    expect(steps[steps.length - 1].posteriorMean).toBeCloseTo(3 / 4, 5);
+    expect(steps[steps.length - 1]!.posteriorMean).toBeCloseTo(3 / 4, 5);
   });
 
   it('uses custom init hyperparameters', () => {
     const steps = betaLearningSteps(['cherry'], 3, 5);
-    expect(steps[0].a).toBe(4);
-    expect(steps[0].b).toBe(5);
-    expect(steps[0].posteriorMean).toBeCloseTo(4 / 9, 5);
+    expect(steps[0]!.a).toBe(4);
+    expect(steps[0]!.b).toBe(5);
+    expect(steps[0]!.posteriorMean).toBeCloseTo(4 / 9, 5);
   });
 
   it('action string is non-empty', () => {
     const steps = betaLearningSteps(['lime']);
-    expect(steps[0].action.length).toBeGreaterThan(0);
+    expect(steps[0]!.action.length).toBeGreaterThan(0);
   });
 
   it('posterior mean converges toward true probability', () => {
@@ -293,7 +293,7 @@ describe('betaLearningSteps', () => {
       ...Array(20).fill('lime'),
     ] as CandyObs[];
     const steps = betaLearningSteps(obs);
-    const last = steps[steps.length - 1];
+    const last = steps[steps.length - 1]!;
     // Mean should be close to 81/102 ≈ 0.794
     expect(last.posteriorMean).toBeCloseTo(81 / 102, 3);
   });
@@ -362,15 +362,15 @@ describe('emMixtureOfGaussians', () => {
 
   it('first step is init phase', () => {
     const steps = emMixtureOfGaussians([1, 2, 3, 4, 5], 2, 5);
-    expect(steps[0].phase).toBe('init');
+    expect(steps[0]!.phase).toBe('init');
   });
 
   it('steps alternate E then M', () => {
     const steps = emMixtureOfGaussians([1, 2, 3, 4, 5], 2, 3);
     // After init: E,M,E,M,... pattern
     for (let i = 1; i + 1 < steps.length; i += 2) {
-      expect(steps[i].phase).toBe('E');
-      expect(steps[i + 1].phase).toBe('M');
+      expect(steps[i]!.phase).toBe('E');
+      expect(steps[i + 1]!.phase).toBe('M');
     }
   });
 
@@ -381,8 +381,8 @@ describe('emMixtureOfGaussians', () => {
     const steps = emMixtureOfGaussians(data, 2, 20);
     const mSteps = steps.filter(s => s.phase === 'M');
     for (let i = 1; i < mSteps.length; i++) {
-      expect(mSteps[i].logLikelihood).toBeGreaterThanOrEqual(
-        mSteps[i - 1].logLikelihood - 1e-4, // allow small numerical error
+      expect(mSteps[i]!.logLikelihood).toBeGreaterThanOrEqual(
+        mSteps[i - 1]!.logLikelihood - 1e-4, // allow small numerical error
       );
     }
   });
@@ -415,8 +415,8 @@ describe('emMixtureOfGaussians', () => {
       { weight: 0.5, mean: 5, stdDev: 1 },
     ];
     const steps = emMixtureOfGaussians([0, 1, 5, 6], 2, 1, initComps);
-    expect(steps[0].components[0].mean).toBeCloseTo(0);
-    expect(steps[0].components[1].mean).toBeCloseTo(5);
+    expect(steps[0]!.components[0]!.mean).toBeCloseTo(0);
+    expect(steps[0]!.components[1]!.mean).toBeCloseTo(5);
   });
 
   it('falls back to default init when initComponents length mismatches', () => {
@@ -425,7 +425,7 @@ describe('emMixtureOfGaussians', () => {
     ];
     // k=2 but only 1 init component → should use default
     const steps = emMixtureOfGaussians([0, 1, 5, 6], 2, 1, initComps);
-    expect(steps[0].components).toHaveLength(2);
+    expect(steps[0]!.components).toHaveLength(2);
   });
 
   it('converges quickly on well-separated clusters', () => {
@@ -434,7 +434,7 @@ describe('emMixtureOfGaussians', () => {
     const data = [...cluster1, ...cluster2];
     const steps = emMixtureOfGaussians(data, 2, 50);
     const mSteps = steps.filter(s => s.phase === 'M');
-    const lastMeans = mSteps[mSteps.length - 1].components.map(c => c.mean);
+    const lastMeans = mSteps[mSteps.length - 1]!.components.map(c => c.mean);
     lastMeans.sort((a, b) => a - b);
     // Should recover the two cluster centers approximately
     expect(lastMeans[0]).toBeLessThan(5);
@@ -456,14 +456,14 @@ describe('emMixtureOfGaussians', () => {
 
   it('responsibilities are null in init phase', () => {
     const steps = emMixtureOfGaussians([1, 2, 3], 2, 2);
-    expect(steps[0].responsibilities).toBeNull();
+    expect(steps[0]!.responsibilities).toBeNull();
   });
 
   it('iteration number increments correctly', () => {
     const steps = emMixtureOfGaussians([1, 2, 3, 4, 5], 2, 3);
-    expect(steps[0].iteration).toBe(0); // init
-    expect(steps[1].iteration).toBe(1); // E-step 1
-    expect(steps[2].iteration).toBe(1); // M-step 1
+    expect(steps[0]!.iteration).toBe(0); // init
+    expect(steps[1]!.iteration).toBe(1); // E-step 1
+    expect(steps[2]!.iteration).toBe(1); // M-step 1
   });
 
   it('action strings contain E-step/M-step keywords', () => {
@@ -478,10 +478,10 @@ describe('emMixtureOfGaussians', () => {
     const data = [1, 2, 3, 4, 5];
     const steps = emMixtureOfGaussians(data, 1, 5);
     const mSteps = steps.filter(s => s.phase === 'M');
-    const lastStep = mSteps[mSteps.length - 1];
+    const lastStep = mSteps[mSteps.length - 1]!;
     // Single component should have weight=1 and mean close to sample mean (3)
-    expect(lastStep.components[0].weight).toBeCloseTo(1, 5);
-    expect(lastStep.components[0].mean).toBeCloseTo(3, 3);
+    expect(lastStep.components[0]!.weight).toBeCloseTo(1, 5);
+    expect(lastStep.components[0]!.mean).toBeCloseTo(3, 3);
   });
 
   it('handles k > number of data points', () => {
@@ -494,8 +494,8 @@ describe('emMixtureOfGaussians', () => {
     // All data = 5 → maxX - minX = 0, range fallback = 1, globalStd = 0, uses || 1
     const steps = emMixtureOfGaussians([5, 5, 5, 5, 5], 2, 3);
     expect(steps.length).toBeGreaterThan(0);
-    expect(steps[0].phase).toBe('init');
-    expect(steps[0].components).toHaveLength(2);
+    expect(steps[0]!.phase).toBe('init');
+    expect(steps[0]!.components).toHaveLength(2);
   });
 
   it('covers E-step total=0 fallback with degenerate init stdDev=0', () => {
@@ -526,7 +526,7 @@ describe('emMixtureOfGaussians', () => {
     const mSteps = steps.filter(s => s.phase === 'M');
     expect(mSteps.length).toBeGreaterThan(0);
     // Component near 5 should have tiny stdDev (from fallback)
-    const comp = mSteps[0].components.find(c => Math.abs(c.mean - 5) < 1);
+    const comp = mSteps[0]!.components.find(c => Math.abs(c.mean - 5) < 1);
     expect(comp?.stdDev).toBeCloseTo(1e-6, 10);
   });
 

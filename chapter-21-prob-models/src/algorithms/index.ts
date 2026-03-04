@@ -57,19 +57,19 @@ export function bayesianCandyLearning(
   let posteriors = [...prior];
 
   for (let n = 0; n < observations.length; n++) {
-    const obs = observations[n];
+    const obs = observations[n]!; // safe: n < observations.length
     // P(obs | hi): cherry prob if obs=cherry, lime prob if obs=lime
     const likelihoods = CANDY_CHERRY_PROBS.map(p =>
       obs === 'cherry' ? p : 1 - p,
     );
     // Unnormalized: P(d | hi) * P(hi)
-    const unnorm = posteriors.map((p, i) => p * likelihoods[i]);
+    const unnorm = posteriors.map((p, i) => p * likelihoods[i]!);
     const total = unnorm.reduce((s, v) => s + v, 0);
     posteriors = total > 0 ? unnorm.map(v => v / total) : [...posteriors];
 
     // Predicted P(next = lime | d) = sum_i P(lime | hi) * P(hi | d)
     const predictedLimeProb = posteriors.reduce(
-      (sum, p, i) => sum + (1 - CANDY_CHERRY_PROBS[i]) * p,
+      (sum, p, i) => sum + (1 - CANDY_CHERRY_PROBS[i]!) * p,
       0,
     );
 
@@ -79,7 +79,7 @@ export function bayesianCandyLearning(
       observation: obs,
       posteriors: [...posteriors],
       predictedLimeProb,
-      action: `Obs ${n + 1}: ${obs} → MAP = h${mapIdx + 1} (P=${posteriors[mapIdx].toFixed(4)})`,
+      action: `Obs ${n + 1}: ${obs} → MAP = h${mapIdx + 1} (P=${posteriors[mapIdx]!.toFixed(4)})`,
     });
   }
   return steps;
@@ -436,18 +436,18 @@ export function emMixtureOfGaussians(
 
     for (let i = 0; i < k; i++) {
       // n_i = effective count for component i
-      const ni = resp.reduce((s, row) => s + row[i], 0);
+      const ni = resp.reduce((s, row) => s + row[i]!, 0);
 
       if (ni < 1e-10) {
         // Degenerate component — keep old parameters
-        newComponents.push({ ...components[i] });
+        newComponents.push({ ...components[i]! });
         continue;
       }
 
-      const newMean = resp.reduce((s, row, j) => s + row[i] * data[j], 0) / ni;
+      const newMean =
+        resp.reduce((s, row, j) => s + row[i]! * data[j]!, 0) / ni;
       const newVariance =
-        resp.reduce((s, row, j) => s + row[i] * (data[j] - newMean) ** 2, 0) /
-        ni;
+        resp.reduce((s, row, j) => s + row[i]! * (data[j]! - newMean) ** 2, 0) / ni;
       const newStdDev = Math.sqrt(newVariance) || 1e-6;
       const newWeight = ni / n;
 
@@ -515,7 +515,7 @@ export function trainNaiveBayes(
     return { priorTrue: 0.5, likelihoodsTrue: [], likelihoodsFalse: [] };
   }
 
-  const nFeatures = examples[0].features.length;
+  const nFeatures = examples[0]!.features.length;
   const posExamples = examples.filter(e => e.label);
   const negExamples = examples.filter(e => !e.label);
 
