@@ -3,6 +3,8 @@ import { computeAttention, beamSearch } from '../algorithms/index';
 import type { BeamSearchStep } from '../algorithms/index';
 import { interpolateColor, renderDisplayMath } from '../utils/mathUtils';
 
+const MAX_BEAM_SEARCH_STEPS = 6;
+
 const SOURCE_WORDS = ["The", "front", "door", "is", "red"] as const;
 const TARGET_WORDS = ["La", "puerta", "de", "entrada", "es", "roja"] as const;
 const sourceVecs: number[][] = [
@@ -56,7 +58,7 @@ export default function AttentionVisualizer() {
     ), []);
 
   const beamSearchSteps: ReadonlyArray<BeamSearchStep> = useMemo(() =>
-    beamSearch(getNextScores, '<START>', '<END>', [...VOCAB], beamSize, 6),
+    beamSearch(getNextScores, '<START>', '<END>', [...VOCAB], beamSize, MAX_BEAM_SEARCH_STEPS),
     [beamSize]);
 
   const maxBeamStep = beamSearchSteps.length - 1;

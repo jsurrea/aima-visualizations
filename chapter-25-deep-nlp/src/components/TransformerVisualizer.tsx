@@ -334,6 +334,7 @@ export default function TransformerVisualizer() {
         <div style={{ fontWeight: 600, marginBottom: '6px', color: '#D1D5DB' }}>State</div>
         <div>Step: {currentStep + 1} / {totalSteps}</div>
         <div>Phase: {phaseLabel}</div>
+        {/* tokenInPhase is always 0..n-1 given phase logic above; clamp is a safety guard */}
         <div>Token: {SENTENCE[Math.min(tokenInPhase, n - 1)]!}</div>
         <div>Scale: {useScale ? '1/sqrt(d_k)' : 'none'}</div>
         {selectedCell !== null && (

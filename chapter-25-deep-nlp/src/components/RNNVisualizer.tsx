@@ -95,6 +95,7 @@ export default function RNNVisualizer() {
                 h{row}
               </text>
               {s.hiddenState.map((val, col) => {
+                // Normalize val from tanh range [-1, 1] to [0, 1] for color interpolation
                 const color = interpolateColor('#1e3a5f', '#F59E0B', Math.max(0, Math.min(1, (val + 1) / 2)));
                 return (
                   <rect key={col} x={60 + col * 40} y={40 + row * 28} width={38} height={26} fill={color} rx="2" />

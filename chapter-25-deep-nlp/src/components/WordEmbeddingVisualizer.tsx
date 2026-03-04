@@ -42,6 +42,28 @@ function toSVG(x: number, y: number): [number, number] {
   return [svgX, svgY];
 }
 
+/** Computes D = C + (B - A) + noise and finds the nearest word in 2D embedding space. */
+function computeAnalogyTarget(
+  aCoords: [number, number],
+  bCoords: [number, number],
+  cCoords: [number, number],
+  noiseOffset: [number, number],
+  excludeWords: [string, string, string],
+): { dX: number; dY: number; nearest: string } {
+  const dX = cCoords[0] + (bCoords[0] - aCoords[0]) + noiseOffset[0];
+  const dY = cCoords[1] + (bCoords[1] - aCoords[1]) + noiseOffset[1];
+  let nearest = '';
+  let minDist = Infinity;
+  for (const [word, coords] of Object.entries(WORD_EMBEDDINGS)) {
+    if (excludeWords.includes(word as never)) continue;
+    const dx = coords[0] - dX;
+    const dy = coords[1] - dY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < minDist) { minDist = dist; nearest = word; }
+  }
+  return { dX, dY, nearest };
+}
+
 export default function WordEmbeddingVisualizer() {
   const [analogyIndex, setAnalogyIndex] = useState(0);
   const [noiseLevel, setNoiseLevel] = useState(0);
@@ -73,18 +95,7 @@ export default function WordEmbeddingVisualizer() {
     ]);
   }, [noiseLevel]);
 
-  const dX = cCoords[0] + (bCoords[0] - aCoords[0]) + noiseOffset[0];
-  const dY = cCoords[1] + (bCoords[1] - aCoords[1]) + noiseOffset[1];
-
-  let nearest = '';
-  let minDist = Infinity;
-  for (const [word, coords] of Object.entries(WORD_EMBEDDINGS)) {
-    if (word === wordA || word === wordB || word === wordC) continue;
-    const dx = coords[0] - dX;
-    const dy = coords[1] - dY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist < minDist) { minDist = dist; nearest = word; }
-  }
+  const { dX, dY, nearest } = computeAnalogyTarget(aCoords, bCoords, cCoords, noiseOffset, [wordA, wordB, wordC]);
 
   const step = useCallback((now: number) => {
     if (now - lastTimeRef.current >= speed) {

@@ -2,6 +2,10 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { gloveScore, maskedLanguageModelStep } from '../algorithms/index';
 import { interpolateColor, renderDisplayMath, renderInlineMath } from '../utils/mathUtils';
 
+/** Penalty applied to token probabilities that appear after the masked position,
+ *  simulating the causal (left-to-right) constraint of unidirectional language models. */
+const UNIDIRECTIONAL_PENALTY = 0.3;
+
 const CORPUS = ["The cat sat", "The cat ate", "The dog ran", "The dog barked"] as const;
 const VOCAB_WORDS = ['the', 'cat', 'sat', 'ate', 'dog', 'ran', 'barked'] as const;
 const GLOVE_EMBEDDINGS: Record<string, number[]> = {
@@ -83,7 +87,7 @@ export default function PretrainingVisualizer() {
     const rawUni = mlmResult.topPredictions.map((p, idx) => ({
       word: p.word,
       prob: p.probability,
-      uniProb: p.probability * (idx <= maskedIndex ? 1.0 : 0.3),
+      uniProb: p.probability * (idx <= maskedIndex ? 1.0 : UNIDIRECTIONAL_PENALTY),
     }));
     const uniSum = rawUni.reduce((s, p) => s + p.uniProb, 0);
     for (const item of rawUni) {
