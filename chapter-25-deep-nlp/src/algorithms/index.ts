@@ -59,7 +59,7 @@ export function sigmoid(x: number): number {
  * @complexity O(n)
  */
 export function dotProduct(a: number[], b: number[]): number {
-  return a.reduce((sum, ai, i) => sum + ai * (b[i] as number), 0);
+  return a.reduce((sum, ai, i) => sum + ai * b[i]!, 0);
 }
 
 /**
@@ -107,7 +107,7 @@ export function wordAnalogy(
   if (!eA || !eB || !eC) return [];
 
   const dim = eA.length;
-  const target = Array.from({ length: dim }, (_, i) => eB[i] - eA[i] + eC[i]);
+  const target = Array.from({ length: dim }, (_, i) => eB[i]! - eA[i]! + eC[i]!);
 
   const excluded = new Set([wordA, wordB, wordC]);
   return Object.entries(embeddings)
@@ -143,7 +143,7 @@ export interface RNNStep {
  * @complexity O(rows * cols)
  */
 function matVec(M: number[][], v: number[]): number[] {
-  return M.map((row) => row.reduce((sum, mij, j) => sum + mij * (v[j] as number), 0));
+  return M.map((row) => row.reduce((sum, mij, j) => sum + mij * v[j]!, 0));
 }
 
 /**
@@ -155,7 +155,7 @@ function matVec(M: number[][], v: number[]): number[] {
  * @complexity O(n)
  */
 function vecAdd(a: number[], b: number[]): number[] {
-  return a.map((ai, i) => ai + (b[i] as number));
+  return a.map((ai, i) => ai + b[i]!);
 }
 
 /**
@@ -215,7 +215,7 @@ export function averagePooling(hiddenStates: ReadonlyArray<number[]>): number[] 
   const sum = Array<number>(dim).fill(0);
   for (const h of hiddenStates) {
     for (let i = 0; i < dim; i++) {
-      sum[i] += h[i] as number;
+      sum[i]! += h[i]!;
     }
   }
   return sum.map((s) => s / hiddenStates.length);
@@ -263,13 +263,13 @@ export function computeAttention(
   const scores = keys.map((k) => dotProduct(query, k) / scaleFactor);
   const weights = softmax(scores);
 
-  const dim = values.length > 0 ? (values[0] as number[]).length : 0;
+  const dim = values.length > 0 ? values[0]!.length : 0;
   const context = Array<number>(dim).fill(0);
   for (let j = 0; j < values.length; j++) {
-    const v = values[j] as number[];
-    const w = weights[j] as number;
+    const v = values[j]!;
+    const w = weights[j]!;
     for (let i = 0; i < dim; i++) {
-      context[i] += w * (v[i] as number);
+      context[i]! += w * v[i]!;
     }
   }
 
@@ -430,7 +430,7 @@ export function selfAttentionLayer(
   const keys = inputs.map((x) => matVec(Wk, x));
   const values = inputs.map((x) => matVec(Wv, x));
 
-  const dk = queries.length > 0 ? (queries[0] as number[]).length : 1;
+  const dk = queries.length > 0 ? queries[0]!.length : 1;
   const scaleFactor = scale ? Math.sqrt(dk) : 1;
 
   const attentionMatrix: number[][] = queries.map((q) => {
@@ -438,13 +438,13 @@ export function selfAttentionLayer(
     return softmax(scores);
   });
 
-  const dv = values.length > 0 ? (values[0] as number[]).length : 0;
+  const dv = values.length > 0 ? values[0]!.length : 0;
   const contexts: number[][] = Array.from({ length: n }, (_, i) => {
     const ctx = Array<number>(dv).fill(0);
     for (let j = 0; j < n; j++) {
-      const w = (attentionMatrix[i] as number[])[j] as number;
+      const w = attentionMatrix[i]![j]!;
       for (let d = 0; d < dv; d++) {
-        ctx[d] += w * ((values[j] as number[])[d] as number);
+        ctx[d]! += w * values[j]![d]!;
       }
     }
     return ctx;
@@ -527,7 +527,7 @@ export function maskedLanguageModelStep(
   const probs = softmax(scores);
 
   const topPredictions = entries
-    .map(([word], idx) => ({ word, probability: probs[idx] as number }))
+    .map(([word], idx) => ({ word, probability: probs[idx]! }))
     .sort((a, b) => b.probability - a.probability);
 
   return { masked, topPredictions };

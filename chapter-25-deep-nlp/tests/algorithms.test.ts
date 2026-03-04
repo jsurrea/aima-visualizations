@@ -22,7 +22,8 @@ import {
 /** Check all values in arr are close to expected (within tolerance). */
 function expectClose(arr: number[], expected: number[], tol = 1e-6): void {
   expect(arr.length).toBe(expected.length);
-  arr.forEach((v, i) => expect(v).toBeCloseTo(expected[i] ?? 0, 6));
+  arr.forEach((v, i) => expect(v).toBeCloseTo(expected[i]!, 6));
+  void tol;
 }
 
 // ---------------------------------------------------------------------------
@@ -544,7 +545,7 @@ describe('positionalEncoding', () => {
     const pe0 = positionalEncoding(0, 4);
     const pe1 = positionalEncoding(1, 4);
     // At least one dimension should differ
-    const allSame = pe0.every((v, i) => Math.abs(v - (pe1[i] ?? 0)) < 1e-9);
+    const allSame = pe0.every((v, i) => Math.abs(v - pe1[i]!) < 1e-9);
     expect(allSame).toBe(false);
   });
 
