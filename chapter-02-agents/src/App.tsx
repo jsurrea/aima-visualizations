@@ -1,14 +1,84 @@
 import manifest from '../manifest.json';
-import Placeholder from './components/Placeholder';
+import PEASFramework from './components/PEASFramework';
+import AgentTypeExplorer from './components/AgentTypeExplorer';
+import VacuumWorld from './components/VacuumWorld';
+
+const DIVIDER = (
+  <hr
+    style={{
+      border: 'none',
+      borderTop: '1px solid rgba(255,255,255,0.08)',
+      margin: '0',
+    }}
+  />
+);
+
+function SectionWrapper({
+  id,
+  title,
+  children,
+}: {
+  id: string;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section
+      id={id}
+      aria-label={title}
+      style={{ padding: '48px 24px', maxWidth: '900px', margin: '0 auto' }}
+    >
+      <h2
+        style={{
+          fontSize: 'clamp(18px, 3vw, 24px)',
+          fontWeight: 700,
+          color: '#FFFFFF',
+          marginBottom: '8px',
+        }}
+      >
+        {title}
+      </h2>
+      <div
+        style={{
+          width: '40px',
+          height: '3px',
+          borderRadius: '2px',
+          background: manifest.color,
+          marginBottom: '28px',
+        }}
+        aria-hidden="true"
+      />
+      {children}
+    </section>
+  );
+}
 
 export default function App() {
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--surface-base)', color: 'white', fontFamily: 'system-ui, sans-serif' }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: '#0A0A0F',
+        color: 'white',
+        fontFamily: "'Inter', system-ui, sans-serif",
+      }}
+    >
       {/* Header */}
-      <header style={{ background: 'var(--surface-1)', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '16px 24px' }}>
+      <header
+        style={{
+          background: '#111118',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
+          padding: '16px 24px',
+        }}
+      >
         <a
           href="/aima-visualizations/"
-          style={{ color: 'var(--chapter-color)', textDecoration: 'none', fontSize: '14px', fontWeight: 500 }}
+          style={{
+            color: manifest.color,
+            textDecoration: 'none',
+            fontSize: '14px',
+            fontWeight: 500,
+          }}
           aria-label="Back to all chapters"
         >
           ← Back to All Chapters
@@ -16,42 +86,75 @@ export default function App() {
       </header>
 
       {/* Chapter hero */}
-      <section style={{ padding: '48px 24px 32px', maxWidth: '900px', margin: '0 auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: '48px', height: '48px', borderRadius: '12px',
-            background: `${manifest.color}20`, color: manifest.color, fontWeight: 700, fontSize: '18px',
-          }}>
+      <section
+        style={{ padding: '48px 24px 32px', maxWidth: '900px', margin: '0 auto' }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            marginBottom: '16px',
+          }}
+        >
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '48px',
+              height: '48px',
+              borderRadius: '12px',
+              background: `${manifest.color}20`,
+              color: manifest.color,
+              fontWeight: 700,
+              fontSize: '18px',
+            }}
+          >
             {String(manifest.chapter).padStart(2, '0')}
           </span>
-          <span style={{ fontSize: '32px' }} aria-hidden="true">{manifest.icon}</span>
+          <span style={{ fontSize: '32px' }} aria-hidden="true">
+            {manifest.icon}
+          </span>
         </div>
-        <h1 style={{ fontSize: 'clamp(24px, 5vw, 40px)', fontWeight: 700, marginBottom: '12px' }}>
+        <h1
+          style={{
+            fontSize: 'clamp(24px, 5vw, 40px)',
+            fontWeight: 700,
+            marginBottom: '12px',
+          }}
+        >
           {manifest.title}
         </h1>
-        <p style={{ color: '#9CA3AF', fontSize: '18px', lineHeight: 1.6, maxWidth: '600px' }}>
+        <p
+          style={{
+            color: '#9CA3AF',
+            fontSize: '18px',
+            lineHeight: 1.6,
+            maxWidth: '600px',
+          }}
+        >
           {manifest.description}
         </p>
       </section>
 
-      {/* Sections list */}
-      <section style={{ padding: '0 24px 48px', maxWidth: '900px', margin: '0 auto' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '16px', color: '#E5E7EB' }}>
-          Planned Visualizations
-        </h2>
-        <div style={{ display: 'grid', gap: '12px' }}>
-          {manifest.sections.map((section) => (
-            <Placeholder
-              key={section.id}
-              id={section.id}
-              title={section.title}
-              status={section.status}
-              chapterColor={manifest.color}
-            />
-          ))}
-        </div>
-      </section>
+      {DIVIDER}
+
+      <SectionWrapper id="peas" title="PEAS Framework Builder">
+        <PEASFramework />
+      </SectionWrapper>
+
+      {DIVIDER}
+
+      <SectionWrapper id="agent-types" title="Agent Type Explorer">
+        <AgentTypeExplorer />
+      </SectionWrapper>
+
+      {DIVIDER}
+
+      <SectionWrapper id="vacuum-world" title="Vacuum Cleaner World">
+        <VacuumWorld />
+      </SectionWrapper>
     </div>
   );
 }

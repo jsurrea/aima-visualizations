@@ -9,10 +9,10 @@
   "color": "#6366F1",
   "basePath": "/chapter-02",
   "sections": [
-    { "id": "peas", "title": "PEAS Framework Builder", "status": "planned" },
-    { "id": "agent-types", "title": "Agent Type Explorer", "status": "planned" },
-    { "id": "vacuum-world", "title": "Vacuum Cleaner World", "status": "planned" }
+    { "id": "peas", "title": "PEAS Framework Builder", "status": "complete" },
+    { "id": "agent-types", "title": "Agent Type Explorer", "status": "complete" },
+    { "id": "vacuum-world", "title": "Vacuum Cleaner World", "status": "complete" }
   ],
-  "status": "planned",
+  "status": "complete",
   "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
 }
