@@ -252,9 +252,11 @@ function freezeNode(node: MutableMCTSNode): MCTSNode {
   return node.parent !== undefined ? { ...base, parent: node.parent } : base;
 }
 
+/**
+ * UCB1 score for a node. Only called from selectLeaf when visits > 0
+ * (guaranteed by the unvisited-children check in selectLeaf).
+ */
 function ucb1Score(node: MutableMCTSNode, parentVisits: number): number {
-  /* c8 ignore next */
-  if (node.visits === 0) return Infinity;
   return (
     node.wins / node.visits +
     Math.SQRT2 * Math.sqrt(Math.log(parentVisits) / node.visits)

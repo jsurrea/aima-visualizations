@@ -231,7 +231,7 @@ describe('alphaBeta', () => {
     expect(rootStep?.pruned).toBe(false);
   });
 
-  it('fmt branch: prune action includes "+∞" when alpha is +Infinity', () => {
+  it('prune action string includes "+∞" when alpha reaches +Infinity', () => {
     // Passing alpha=+Inf and beta=+Inf to a MAX root means prune fires on first child
     // (beta=+Inf ≤ alpha=+Inf after first child sets alpha=+Inf via value=+Inf)
     // Use alpha=+Inf so pruning fires immediately: beta(+Inf) <= alpha(+Inf)
@@ -248,7 +248,7 @@ describe('alphaBeta', () => {
     expect(rootStep?.action).toContain('+∞');
   });
 
-  it('fmt branch: prune action includes "-∞" when beta is -Infinity', () => {
+  it('prune action string includes "-∞" when beta reaches -Infinity', () => {
     // Passing beta=-Inf to a MAX root: after first child, beta=-Inf <= alpha → prune
     const tree: GameNode = {
       id: 'root',
