@@ -2,17 +2,23 @@
   "chapter": 19,
   "title": "Learning from Examples",
   "shortTitle": "Supervised ML",
-  "description": "Decision trees, bias-variance tradeoff, SVMs, and ensemble methods with interactive training.",
+  "description": "Decision trees, bias-variance tradeoff, linear regression, k-nearest neighbors, and ensemble methods with interactive training visualizations.",
   "part": 5,
   "partName": "Machine Learning",
   "icon": "📊",
   "color": "#10B981",
   "basePath": "/chapter-19",
   "sections": [
-    { "id": "decision-tree", "title": "Decision Tree Learner", "status": "planned" },
-    { "id": "bias-variance", "title": "Bias-Variance Demo", "status": "planned" },
-    { "id": "svm", "title": "Support Vector Machine", "status": "planned" }
+    { "id": "forms-of-learning",   "title": "Forms of Learning",                   "status": "complete" },
+    { "id": "supervised-learning", "title": "Supervised Learning & Bias-Variance", "status": "complete" },
+    { "id": "decision-tree",       "title": "Decision Tree Learner",               "status": "complete" },
+    { "id": "model-selection",     "title": "Model Selection & Overfitting",       "status": "complete" },
+    { "id": "theory-of-learning",  "title": "Theory of Learning",                  "status": "complete" },
+    { "id": "linear-regression",   "title": "Linear Regression & Classification",  "status": "complete" },
+    { "id": "knn",                 "title": "k-Nearest Neighbors",                 "status": "complete" },
+    { "id": "ensemble",            "title": "Ensemble Learning (AdaBoost)",        "status": "complete" },
+    { "id": "ml-systems",          "title": "Developing ML Systems",               "status": "complete" }
   ],
-  "status": "planned",
-  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
 }
