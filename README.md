@@ -6,7 +6,7 @@
 
 ## 🌐 Live Site
 
-[**aima-visualized.github.io**](https://aima-visualized.github.io) *(replace with your GH Pages URL)*
+[jsurrea.github.io/aima-visualizations](https://jsurrea.github.io/aima-visualizations/)
 
 ---
 
@@ -24,7 +24,7 @@ This repository is a **complete visual reference** for all 29 chapters of *Artif
 ## 🏗️ Architecture
 
 ```
-aima-visualized/
+aima-visualizations/
 ├── landing/                  # Astro landing page (GitHub Pages root)
 │   ├── src/
 │   ├── public/
@@ -577,8 +577,8 @@ Chapter XX - Name/
 
 ```bash
 # Clone and set up landing page
-git clone https://github.com/<your-org>/aima-visualized.git
-cd aima-visualized/landing && npm install && npm run dev
+git clone https://github.com/jsurrea/aima-visualizations.git
+cd aima-visualizations/landing && npm install && npm run dev
 
 # Work on a specific chapter
 cd "Chapter 03 - Solving Problems by Searching"
