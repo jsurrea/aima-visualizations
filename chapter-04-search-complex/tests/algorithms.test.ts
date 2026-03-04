@@ -802,7 +802,7 @@ const lrtaGraph = new Map([
   ['s4', [{ neighbor: 's3', cost: 1 }, { neighbor: 's5', cost: 1 }]],
   ['s5', [{ neighbor: 's4', cost: 1 }, { neighbor: 's6', cost: 1 }]],
   ['s6', [{ neighbor: 's5', cost: 1 }, { neighbor: 's7', cost: 1 }]],
-  ['s7', [] satisfies Array<{ neighbor: string; cost: number }>],
+  ['s7', []],
 ]);
 const lrtaH0 = new Map([
   ['s1', 8], ['s2', 9], ['s3', 2], ['s4', 2], ['s5', 4], ['s6', 3], ['s7', 0],
@@ -884,7 +884,7 @@ describe('lrtaStar', () => {
   it('dead-end non-goal state: stops without crashing', () => {
     const deadGraph = new Map([
       ['start', [{ neighbor: 'dead', cost: 1 }]],
-      ['dead', [] satisfies Array<{ neighbor: string; cost: number }>],
+      ['dead', []],
     ]);
     const deadH = new Map([['start', 5], ['dead', 3]]);
     const steps = lrtaStar(deadGraph, deadH, 'start', 'goal', 10);
@@ -954,9 +954,9 @@ describe('lrtaStar (null-fallback branches)', () => {
     // and h.get(goal)??0 (line 791) all fire.
     const g = new Map([
       ['A', [{ neighbor: 'B', cost: 1 }, { neighbor: 'C', cost: 2 }, { neighbor: 'D', cost: 3 }]],
-      ['B', [] satisfies Array<{ neighbor: string; cost: number }>],
-      ['C', [] satisfies Array<{ neighbor: string; cost: number }>],
-      ['D', [] satisfies Array<{ neighbor: string; cost: number }>],
+      ['B', []],
+      ['C', []],
+      ['D', []],
     ]);
     const h = new Map<string, number>(); // empty — no heuristic values at all
     const steps = lrtaStar(g, h, 'A', 'B', 5);

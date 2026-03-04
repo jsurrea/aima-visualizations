@@ -279,9 +279,11 @@ export function localBeamSearch(
   const n = values.length;
   const steps: LocalBeamSearchStep[] = [];
 
+  // initialPositions are validated to be in [0, n-1] by the caller convention; the
+  // non-null assertion is safe because x comes from clamped indices within values.
   let beams: Array<{ x: number; value: number }> = initialPositions.map(x => ({
     x,
-    value: values[x]!,
+    value: values[Math.max(0, Math.min(n - 1, x))]!,
   }));
 
   for (let iter = 0; iter <= maxIterations; iter++) {
