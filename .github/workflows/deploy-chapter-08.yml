@@ -6,6 +6,11 @@ on:
     paths: ['chapter-08-first-order-logic/**']
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   deploy:
     uses: ./.github/workflows/deploy-chapter-template.yml
