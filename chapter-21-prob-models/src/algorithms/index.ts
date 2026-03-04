@@ -501,7 +501,7 @@ export interface NaiveBayesModel {
 
 /**
  * Trains a Naive Bayes classifier from labeled Boolean data using MLE.
- * Uses Laplace smoothing (count initialised to 1) to avoid zero probabilities.
+ * Uses Laplace smoothing (count initialized to 1) to avoid zero probabilities.
  * Implements Section 21.2.2.
  *
  * @param examples - Labeled training examples (Boolean features).
