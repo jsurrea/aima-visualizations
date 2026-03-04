@@ -1,0 +1,235 @@
+name: Deploy All (Full Site)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  # ─── Landing ──────────────────────────────────────────────────────────────
+  deploy-landing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: landing/package-lock.json
+      - run: npm ci
+        working-directory: landing
+      - run: npm run build
+        working-directory: landing
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: landing/dist
+          keep_files: true
+
+  # ─── Chapters ─────────────────────────────────────────────────────────────
+  deploy-ch01:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-01-introduction
+      chapter-path: chapter-01
+    secrets: inherit
+
+  deploy-ch02:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-02-agents
+      chapter-path: chapter-02
+    secrets: inherit
+
+  deploy-ch03:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-03-search
+      chapter-path: chapter-03
+    secrets: inherit
+
+  deploy-ch04:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-04-search-complex
+      chapter-path: chapter-04
+    secrets: inherit
+
+  deploy-ch05:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-05-csp
+      chapter-path: chapter-05
+    secrets: inherit
+
+  deploy-ch06:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-06-adversarial
+      chapter-path: chapter-06
+    secrets: inherit
+
+  deploy-ch07:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-07-logical-agents
+      chapter-path: chapter-07
+    secrets: inherit
+
+  deploy-ch08:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-08-first-order-logic
+      chapter-path: chapter-08
+    secrets: inherit
+
+  deploy-ch09:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-09-inference-fol
+      chapter-path: chapter-09
+    secrets: inherit
+
+  deploy-ch10:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-10-knowledge-rep
+      chapter-path: chapter-10
+    secrets: inherit
+
+  deploy-ch11:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-11-planning
+      chapter-path: chapter-11
+    secrets: inherit
+
+  deploy-ch12:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-12-uncertainty
+      chapter-path: chapter-12
+    secrets: inherit
+
+  deploy-ch13:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-13-probabilistic-reasoning
+      chapter-path: chapter-13
+    secrets: inherit
+
+  deploy-ch14:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-14-temporal-reasoning
+      chapter-path: chapter-14
+    secrets: inherit
+
+  deploy-ch15:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-15-simple-decisions
+      chapter-path: chapter-15
+    secrets: inherit
+
+  deploy-ch16:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-16-complex-decisions
+      chapter-path: chapter-16
+    secrets: inherit
+
+  deploy-ch17:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-17-multiagent
+      chapter-path: chapter-17
+    secrets: inherit
+
+  deploy-ch18:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-18-prob-programming
+      chapter-path: chapter-18
+    secrets: inherit
+
+  deploy-ch19:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-19-learning
+      chapter-path: chapter-19
+    secrets: inherit
+
+  deploy-ch20:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-20-knowledge-learning
+      chapter-path: chapter-20
+    secrets: inherit
+
+  deploy-ch21:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-21-prob-models
+      chapter-path: chapter-21
+    secrets: inherit
+
+  deploy-ch22:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-22-deep-learning
+      chapter-path: chapter-22
+    secrets: inherit
+
+  deploy-ch23:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-23-reinforcement-learning
+      chapter-path: chapter-23
+    secrets: inherit
+
+  deploy-ch24:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-24-nlp
+      chapter-path: chapter-24
+    secrets: inherit
+
+  deploy-ch25:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-25-deep-nlp
+      chapter-path: chapter-25
+    secrets: inherit
+
+  deploy-ch26:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-26-robotics
+      chapter-path: chapter-26
+    secrets: inherit
+
+  deploy-ch27:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-27-computer-vision
+      chapter-path: chapter-27
+    secrets: inherit
+
+  deploy-ch28:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-28-ethics-safety
+      chapter-path: chapter-28
+    secrets: inherit
+
+  deploy-ch29:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: chapter-29-future-ai
+      chapter-path: chapter-29
+    secrets: inherit

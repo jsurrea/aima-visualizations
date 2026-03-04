@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { CHAPTERS, type ChapterData } from '../data/chapters';
+import { CHAPTERS } from '../data/chapters';
+import type { ChapterData } from '../types/chapter';
 
 interface ManifestPayload {
   status?: 'planned' | 'in-progress' | 'complete';
