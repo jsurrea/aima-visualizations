@@ -30,7 +30,7 @@ const removeFlatAxle: PlanningAction = {
   addList: ['At(Flat,Ground)'],
   deleteList: ['At(Flat,Axle)'],
 };
-const removeSpaireTrunk: PlanningAction = {
+const removeSpareTrunk: PlanningAction = {
   name: 'Remove(Spare,Trunk)',
   preconditions: ['At(Spare,Trunk)'],
   negPreconditions: [],
@@ -69,7 +69,7 @@ const spareTireProblem: PlanningProblem = {
   initialState: spareTireInitial,
   goalFluents: ['At(Spare,Axle)'],
   goalNegFluents: [],
-  actions: [removeFlatAxle, removeSpaireTrunk, putOnAxle, leaveOvernight],
+  actions: [removeFlatAxle, removeSpareTrunk, putOnAxle, leaveOvernight],
 };
 
 /** Minimal one-action problem: just add a fact */
