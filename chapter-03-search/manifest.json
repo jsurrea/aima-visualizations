@@ -9,10 +9,10 @@
   "color": "#3B82F6",
   "basePath": "/chapter-03",
   "sections": [
-    { "id": "uninformed-search", "title": "Uninformed Search Visualizer", "status": "planned" },
-    { "id": "informed-search", "title": "Informed Search Visualizer", "status": "planned" },
-    { "id": "heuristic-comparison", "title": "Heuristic Comparison", "status": "planned" }
+    { "id": "uninformed-search", "title": "Uninformed Search Visualizer", "status": "complete" },
+    { "id": "informed-search", "title": "Informed Search Visualizer", "status": "complete" },
+    { "id": "heuristic-comparison", "title": "Heuristic Comparison", "status": "complete" }
   ],
-  "status": "planned",
-  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
 }
