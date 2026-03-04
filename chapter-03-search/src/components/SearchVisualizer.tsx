@@ -1,8 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import 'katex/dist/katex.min.css';
 import {
-  bfs, dfs, ucs, aStar,
-  type BFSStep, type DFSStep, type UCSStep, type AStarStep,
+  bfs, dfs, ucs, aStar, greedyBestFirst, iddfs,
+  type BFSStep, type DFSStep, type UCSStep, type AStarStep, type GBFSStep, type IDDFSStep,
   type Graph,
 } from '../algorithms/index';
 
@@ -96,8 +95,8 @@ const NODE_IDS = Object.keys(NODES).sort();
 
 // ─── Algorithm types ──────────────────────────────────────────────────────────
 
-type AlgorithmType = 'bfs' | 'dfs' | 'ucs' | 'astar';
-type AnyStep = BFSStep | DFSStep | UCSStep | AStarStep;
+type AlgorithmType = 'bfs' | 'dfs' | 'ucs' | 'astar' | 'gbfs' | 'iddfs';
+type AnyStep = BFSStep | DFSStep | UCSStep | AStarStep | GBFSStep | IDDFSStep;
 
 function computeSteps(
   algo: AlgorithmType,
@@ -109,6 +108,8 @@ function computeSteps(
     case 'dfs':   return dfs(ROMANIA_GRAPH, start, goal);
     case 'ucs':   return ucs(ROMANIA_GRAPH, start, goal);
     case 'astar': return aStar(ROMANIA_GRAPH, start, goal, SLD_TO_BUCHAREST);
+    case 'gbfs':  return greedyBestFirst(ROMANIA_GRAPH, start, goal, SLD_TO_BUCHAREST);
+    case 'iddfs': return iddfs(ROMANIA_GRAPH, start, goal);
   }
 }
 
@@ -116,8 +117,14 @@ function getFrontierNodeIds(step: AnyStep, algo: AlgorithmType): ReadonlyArray<s
   if (algo === 'bfs' || algo === 'dfs') {
     return (step as BFSStep).frontier;
   }
+  if (algo === 'iddfs') {
+    return (step as IDDFSStep).frontier;
+  }
   if (algo === 'ucs') {
     return (step as UCSStep).frontier.map(e => e.node);
+  }
+  if (algo === 'gbfs') {
+    return (step as GBFSStep).frontier.map(e => e.node);
   }
   return (step as AStarStep).frontier.map(e => e.node);
 }
@@ -146,8 +153,14 @@ const STATUS_COLORS: Readonly<Record<NodeStatus, { fill: string; stroke: string;
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
-export function SearchVisualizer(): JSX.Element {
-  const [algorithm, setAlgorithm] = useState<AlgorithmType>('bfs');
+interface SearchVisualizerProps {
+  /** Restrict which algorithms appear in the selector. Defaults to all six. */
+  availableAlgorithms?: ReadonlyArray<AlgorithmType>;
+}
+
+export function SearchVisualizer({ availableAlgorithms }: SearchVisualizerProps = {}): JSX.Element {
+  const availableAlgos: ReadonlyArray<AlgorithmType> = availableAlgorithms ?? ['bfs', 'dfs', 'ucs', 'astar', 'gbfs', 'iddfs'];
+  const [algorithm, setAlgorithm] = useState<AlgorithmType>(availableAlgos[0] ?? 'bfs');
   const [startNode, setStartNode] = useState('Arad');
   const [goalNode, setGoalNode] = useState('Bucharest');
   const [stepIndex, setStepIndex] = useState(0);
@@ -223,7 +236,17 @@ export function SearchVisualizer(): JSX.Element {
       if (s.frontier.length === 0) return <span style={{ color: '#6B7280' }}>empty</span>;
       return (
         <span>
-          {s.frontier.slice(0, 8).join(', ')}
+          {(s.frontier as ReadonlyArray<string>).slice(0, 8).join(', ')}
+          {s.frontier.length > 8 ? ` +${s.frontier.length - 8} more` : ''}
+        </span>
+      );
+    }
+    if (algorithm === 'iddfs') {
+      const s = currentStep as IDDFSStep;
+      if (s.frontier.length === 0) return <span style={{ color: '#6B7280' }}>empty</span>;
+      return (
+        <span>
+          {(s.frontier as ReadonlyArray<string>).slice(0, 8).join(', ')}
           {s.frontier.length > 8 ? ` +${s.frontier.length - 8} more` : ''}
         </span>
       );
@@ -234,6 +257,16 @@ export function SearchVisualizer(): JSX.Element {
       return (
         <span>
           {s.frontier.slice(0, 5).map(e => `${e.node}(${e.cost})`).join(', ')}
+          {s.frontier.length > 5 ? ` +${s.frontier.length - 5} more` : ''}
+        </span>
+      );
+    }
+    if (algorithm === 'gbfs') {
+      const s = currentStep as GBFSStep;
+      if (s.frontier.length === 0) return <span style={{ color: '#6B7280' }}>empty</span>;
+      return (
+        <span>
+          {s.frontier.slice(0, 5).map(e => `${e.node}(h=${e.h})`).join(', ')}
           {s.frontier.length > 5 ? ` +${s.frontier.length - 5} more` : ''}
         </span>
       );
@@ -249,7 +282,7 @@ export function SearchVisualizer(): JSX.Element {
     );
   }
 
-  // Extra info for UCS/A*
+  // Extra info for UCS/A*/GBFS/IDDFS
   function renderExtraInfo(): JSX.Element | null {
     if (!currentStep || !currentStep.currentNode) return null;
     if (algorithm === 'ucs') {
@@ -263,6 +296,20 @@ export function SearchVisualizer(): JSX.Element {
           g=<strong style={{ color: '#60A5FA' }}>{s.currentG}</strong>{' '}
           h=<strong style={{ color: '#34D399' }}>{s.currentH}</strong>{' '}
           f=<strong style={{ color: '#F59E0B' }}>{s.currentF}</strong>
+        </div>
+      );
+    }
+    if (algorithm === 'gbfs') {
+      const s = currentStep as GBFSStep;
+      return <div style={{ color: '#D1D5DB', fontSize: '13px' }}>h=<strong style={{ color: '#34D399' }}>{s.currentH}</strong> (heuristic only)</div>;
+    }
+    if (algorithm === 'iddfs') {
+      const s = currentStep as IDDFSStep;
+      return (
+        <div style={{ color: '#D1D5DB', fontSize: '13px' }}>
+          depth=<strong style={{ color: '#FCD34D' }}>{s.currentDepth}</strong>{' '}
+          limit=<strong style={{ color: '#F59E0B' }}>{s.depthLimit}</strong>{' '}
+          iter=<strong style={{ color: '#A5B4FC' }}>{s.iteration}</strong>
         </div>
       );
     }
@@ -286,6 +333,8 @@ export function SearchVisualizer(): JSX.Element {
     dfs: 'DFS',
     ucs: 'UCS',
     astar: 'A*',
+    gbfs: 'Greedy',
+    iddfs: 'IDDFS',
   };
 
   return (
@@ -297,7 +346,7 @@ export function SearchVisualizer(): JSX.Element {
         borderBottom: '1px solid rgba(255,255,255,0.08)',
       }}>
         <div role="group" aria-label="Select algorithm" style={{ display: 'flex', gap: '6px' }}>
-          {(['bfs', 'dfs', 'ucs', 'astar'] as const).map(algo => (
+          {availableAlgos.map(algo => (
             <button
               key={algo}
               onClick={() => setAlgorithm(algo)}
@@ -487,7 +536,7 @@ export function SearchVisualizer(): JSX.Element {
             </div>
           )}
 
-          {algorithm === 'astar' && (
+          {(algorithm === 'astar' || algorithm === 'gbfs') && (
             <div style={{ fontSize: '11px', color: '#6B7280', lineHeight: 1.5, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '8px' }}>
               Heuristic: SLD to Bucharest
             </div>
