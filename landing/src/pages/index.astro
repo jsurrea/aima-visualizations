@@ -1,0 +1,21 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import StatsBar from '../components/StatsBar.astro';
+import PartsNav from '../components/PartsNav.astro';
+import ChapterGrid from '../components/ChapterGrid.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import TechStackStrip from '../components/TechStackStrip.astro';
+import Footer from '../components/Footer.astro';
+---
+<Layout title="AIMA Visualizations — AI: A Modern Approach, 4th Edition">
+  <Hero />
+  <StatsBar />
+  <section id="chapters">
+    <PartsNav />
+    <ChapterGrid />
+  </section>
+  <HowItWorks />
+  <TechStackStrip />
+  <Footer />
+</Layout>

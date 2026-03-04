@@ -1,0 +1,81 @@
+---
+import { PART_NAMES, PART_COLORS } from '../data/chapters';
+---
+<div class="max-w-7xl mx-auto px-6 pt-16 pb-4">
+  <h2 class="text-3xl font-bold text-white mb-8 text-center">Explore by Part</h2>
+  <div class="flex flex-wrap gap-3 justify-center" role="group" aria-label="Filter chapters by part">
+    <button
+      class="parts-filter-btn px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#0A0A0F] bg-indigo-600 text-white"
+      data-part="all"
+      aria-pressed="true"
+    >
+      All Parts
+    </button>
+    {Object.entries(PART_NAMES).map(([part, name]) => (
+      <button
+        class="parts-filter-btn px-5 py-2.5 rounded-full font-medium text-sm border border-white/10 text-gray-300 hover:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#0A0A0F]"
+        data-part={part}
+        style={`--part-color: ${PART_COLORS[Number(part)]}`}
+        aria-pressed="false"
+        title={`Part ${part}: ${name}`}
+      >
+        Part {part} — {name}
+      </button>
+    ))}
+  </div>
+
+  <!-- Search input -->
+  <div class="mt-6 max-w-md mx-auto">
+    <label for="chapter-search" class="sr-only">Search chapters</label>
+    <input
+      type="text"
+      id="chapter-search"
+      placeholder="Search chapters..."
+      class="w-full px-4 py-3 rounded-xl bg-[#1A1A24] border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
+      aria-label="Search chapters"
+    />
+  </div>
+</div>
+
+<script>
+  const filterBtns = document.querySelectorAll<HTMLButtonElement>('.parts-filter-btn');
+  const searchInput = document.getElementById('chapter-search') as HTMLInputElement | null;
+
+  let activePart = 'all';
+  let searchQuery = '';
+
+  function updateFilter() {
+    const cards = document.querySelectorAll<HTMLElement>('[data-chapter-part]');
+    cards.forEach(card => {
+      const part = card.dataset['chapterPart'] ?? '';
+      const title = (card.dataset['chapterTitle'] ?? '').toLowerCase();
+      const desc = (card.dataset['chapterDesc'] ?? '').toLowerCase();
+      const matchesPart = activePart === 'all' || part === activePart;
+      const matchesSearch = !searchQuery || title.includes(searchQuery) || desc.includes(searchQuery);
+      card.style.display = matchesPart && matchesSearch ? '' : 'none';
+    });
+  }
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      activePart = btn.dataset['part'] ?? 'all';
+      filterBtns.forEach(b => {
+        const isActive = b.dataset['part'] === activePart;
+        b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        if (isActive) {
+          b.classList.add('bg-indigo-600', 'text-white');
+          b.classList.remove('border-white/10', 'text-gray-300');
+        } else {
+          b.classList.remove('bg-indigo-600', 'text-white');
+          b.classList.add('border-white/10', 'text-gray-300');
+        }
+      });
+      updateFilter();
+    });
+  });
+
+  searchInput?.addEventListener('input', () => {
+    searchQuery = searchInput.value.toLowerCase();
+    updateFilter();
+  });
+</script>

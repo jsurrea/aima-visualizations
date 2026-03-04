@@ -1,0 +1,32 @@
+<section class="py-16 bg-[#0A0A0F] border-t border-white/5 overflow-hidden">
+  <div class="max-w-5xl mx-auto px-6">
+    <h2 class="text-2xl font-bold text-white text-center mb-4">Built With</h2>
+    <p class="text-gray-400 text-center mb-10 max-w-2xl mx-auto">
+      Each chapter is an independent microfrontend — deployed separately to its own URL path, with no shared runtime between chapters. The landing page (Astro) aggregates metadata without importing chapter code.
+    </p>
+
+    <div class="flex flex-wrap justify-center gap-4">
+      {[
+        { name: 'TypeScript', desc: 'Strict-mode throughout', color: '#3178C6' },
+        { name: 'React', desc: 'UI components', color: '#61DAFB' },
+        { name: 'D3.js', desc: 'Data visualizations', color: '#F9A03C' },
+        { name: 'KaTeX', desc: 'Math rendering', color: '#329894' },
+        { name: 'Vite', desc: 'Chapter build tool', color: '#646CFF' },
+        { name: 'Astro', desc: 'Landing page', color: '#FF5D01' },
+        { name: 'Vitest', desc: 'Unit testing', color: '#6E9F18' },
+        { name: 'GitHub Pages', desc: 'Deployment', color: '#24292E' },
+      ].map(tech => (
+        <div
+          class="flex items-center gap-3 px-5 py-3 rounded-xl bg-[#111118] border border-white/5 hover:border-white/10 transition-colors"
+          role="listitem"
+        >
+          <div class="w-2.5 h-2.5 rounded-full flex-shrink-0" style={`background: ${tech.color}`} aria-hidden="true"></div>
+          <div>
+            <div class="text-white text-sm font-semibold">{tech.name}</div>
+            <div class="text-gray-500 text-xs">{tech.desc}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
