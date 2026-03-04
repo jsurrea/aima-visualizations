@@ -4,7 +4,6 @@ import { interpolateColor, renderDisplayMath, renderInlineMath } from '../utils/
 
 const CORPUS = ["The cat sat", "The cat ate", "The dog ran", "The dog barked"] as const;
 const VOCAB_WORDS = ['the', 'cat', 'sat', 'ate', 'dog', 'ran', 'barked'] as const;
-type VocabWord = (typeof VOCAB_WORDS)[number];
 const GLOVE_EMBEDDINGS: Record<string, number[]> = {
   the: [1.0, 0.5, 0.2], cat: [0.8, 1.0, 0.3], sat: [0.2, 0.7, 0.9],
   ate: [0.3, 0.8, 0.8], dog: [0.7, 0.9, 0.4], ran: [0.1, 0.6, 1.0],
@@ -32,11 +31,11 @@ export default function PretrainingVisualizer() {
     for (const sentence of CORPUS) {
       const words = sentence.toLowerCase().split(' ');
       for (let i = 0; i < words.length; i++) {
-        const wi = VOCAB_WORDS.indexOf(words[i]! as VocabWord);
+        const wi = (VOCAB_WORDS as ReadonlyArray<string>).indexOf(words[i]!);
         if (wi === -1) continue;
         for (let d = 1; d <= 2; d++) {
           if (i + d < words.length) {
-            const wj = VOCAB_WORDS.indexOf(words[i + d]! as VocabWord);
+            const wj = (VOCAB_WORDS as ReadonlyArray<string>).indexOf(words[i + d]!);
             if (wj !== -1) {
               matrix[wi]![wj]! += 1;
               matrix[wj]![wi]! += 1;

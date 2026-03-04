@@ -49,8 +49,11 @@ export default function StateOfArtOverview() {
 
   const resetTyping = useCallback(() => {
     stopTyping();
+    currentIndicesRef.current = [0, 0, 0];
     setTypingIndices([0, 0, 0]);
   }, [stopTyping]);
+
+  const currentIndicesRef = useRef<[number, number, number]>([0, 0, 0]);
 
   const startTyping = useCallback(() => {
     if (prefersReduced) {
@@ -63,26 +66,27 @@ export default function StateOfArtOverview() {
     }
     setIsTyping(true);
     lastTimesRef.current = [0, 0, 0];
+    currentIndicesRef.current = [0, 0, 0];
 
     GPT2_EXAMPLES.forEach((ex, i) => {
       const maxLen = ex.completion.length;
       const animate = (now: number) => {
         const last = lastTimesRef.current[i] ?? 0;
+        const cur = currentIndicesRef.current[i] ?? 0;
+        if (cur >= maxLen) return;
         if (now - last >= 50) {
           lastTimesRef.current[i] = now;
+          const next = cur + 1;
+          currentIndicesRef.current[i] = next;
           setTypingIndices(prev => {
-            const next = [...prev] as [number, number, number];
-            next[i] = Math.min((next[i] ?? 0) + 1, maxLen);
-            return next;
+            const arr = [...prev] as [number, number, number];
+            arr[i] = next;
+            return arr;
           });
         }
-        setTypingIndices(prev => {
-          if ((prev[i] ?? 0) >= maxLen) {
-            return prev;
-          }
+        if ((currentIndicesRef.current[i] ?? 0) < maxLen) {
           rafIdsRef.current[i] = requestAnimationFrame(animate);
-          return prev;
-        });
+        }
       };
       rafIdsRef.current[i] = requestAnimationFrame(animate);
     });
