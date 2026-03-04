@@ -3,9 +3,15 @@ import {
   getAIApproaches,
   getAIHistoryEvents,
   getStandardModelSteps,
+  getAIFoundations,
+  getAICapabilities,
+  getAIRisksAndBenefits,
   type AIApproach,
   type HistoryEvent,
   type StandardModelStep,
+  type AIFoundation,
+  type AICapability,
+  type AIRisk,
 } from '../src/algorithms/index';
 
 /**
@@ -158,5 +164,160 @@ describe('getStandardModelSteps()', () => {
 
   it('returns a new array on each call (pure)', () => {
     expect(getStandardModelSteps()).not.toBe(getStandardModelSteps());
+  });
+});
+
+describe('getAIFoundations()', () => {
+  it('returns exactly 8 foundations', () => {
+    expect(getAIFoundations()).toHaveLength(8);
+  });
+
+  it('each foundation has all required fields non-empty', () => {
+    for (const f of getAIFoundations()) {
+      expect(f.id).toBeTruthy();
+      expect(f.name).toBeTruthy();
+      expect(f.emoji).toBeTruthy();
+      expect(f.coreQuestion).toBeTruthy();
+      expect(f.keyContributions.length).toBeGreaterThan(0);
+      expect(f.keyFigures.length).toBeGreaterThan(0);
+      expect(f.connectionToAI).toBeTruthy();
+      expect(f.color).toBeTruthy();
+    }
+  });
+
+  it('ids are unique', () => {
+    const ids = getAIFoundations().map((f) => f.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it('colors are non-empty strings', () => {
+    for (const f of getAIFoundations()) {
+      expect(typeof f.color).toBe('string');
+      expect(f.color.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('keyContributions has at least 3 items per foundation', () => {
+    for (const f of getAIFoundations()) {
+      expect(f.keyContributions.length).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it('returns a new array on each call (pure / no shared reference)', () => {
+    expect(getAIFoundations()).not.toBe(getAIFoundations());
+  });
+
+  it('type annotation: AIFoundation fields match expected shape', () => {
+    const foundation: AIFoundation = getAIFoundations()[0]!;
+    expect(typeof foundation.id).toBe('string');
+    expect(typeof foundation.name).toBe('string');
+    expect(Array.isArray(foundation.keyContributions)).toBe(true);
+    expect(Array.isArray(foundation.keyFigures)).toBe(true);
+  });
+});
+
+describe('getAICapabilities()', () => {
+  it('returns a non-empty array', () => {
+    expect(getAICapabilities().length).toBeGreaterThan(0);
+  });
+
+  it('humanComparison values are only valid literals', () => {
+    const valid: Array<AICapability['humanComparison']> = [
+      'exceeds',
+      'matches',
+      'approaching',
+      'below',
+    ];
+    for (const c of getAICapabilities()) {
+      expect(valid).toContain(c.humanComparison);
+    }
+  });
+
+  it('ids are unique', () => {
+    const ids = getAICapabilities().map((c) => c.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it('years are positive integers', () => {
+    for (const c of getAICapabilities()) {
+      expect(c.year).toBeGreaterThan(0);
+      expect(Number.isInteger(c.year)).toBe(true);
+    }
+  });
+
+  it('each capability has all required fields non-empty', () => {
+    for (const c of getAICapabilities()) {
+      expect(c.id).toBeTruthy();
+      expect(c.domain).toBeTruthy();
+      expect(c.emoji).toBeTruthy();
+      expect(c.title).toBeTruthy();
+      expect(c.description).toBeTruthy();
+      expect(c.milestone).toBeTruthy();
+    }
+  });
+
+  it('contains at least one "exceeds" comparison', () => {
+    const hasExceeds = getAICapabilities().some((c) => c.humanComparison === 'exceeds');
+    expect(hasExceeds).toBe(true);
+  });
+
+  it('returns a new array on each call (pure / no shared reference)', () => {
+    expect(getAICapabilities()).not.toBe(getAICapabilities());
+  });
+});
+
+describe('getAIRisksAndBenefits()', () => {
+  it('returns a non-empty array', () => {
+    expect(getAIRisksAndBenefits().length).toBeGreaterThan(0);
+  });
+
+  it('contains both risk and benefit types', () => {
+    const types = new Set(getAIRisksAndBenefits().map((r) => r.type));
+    expect(types.has('risk')).toBe(true);
+    expect(types.has('benefit')).toBe(true);
+  });
+
+  it('severity is valid for risk items', () => {
+    const validSeverity: Array<AIRisk['severity']> = ['high', 'medium', 'low'];
+    for (const r of getAIRisksAndBenefits()) {
+      if (r.type === 'risk') {
+        expect(validSeverity).toContain(r.severity);
+      }
+    }
+  });
+
+  it('timeframe values are only valid literals', () => {
+    const validTimeframes: Array<AIRisk['timeframe']> = ['near-term', 'long-term', 'present'];
+    for (const r of getAIRisksAndBenefits()) {
+      expect(validTimeframes).toContain(r.timeframe);
+    }
+  });
+
+  it('ids are unique', () => {
+    const ids = getAIRisksAndBenefits().map((r) => r.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it('each item has all required fields non-empty', () => {
+    for (const r of getAIRisksAndBenefits()) {
+      expect(r.id).toBeTruthy();
+      expect(r.title).toBeTruthy();
+      expect(r.description).toBeTruthy();
+      expect(r.emoji).toBeTruthy();
+    }
+  });
+
+  it('includes the value alignment problem', () => {
+    const hasAlignment = getAIRisksAndBenefits().some((r) => r.id === 'risk-value-alignment');
+    expect(hasAlignment).toBe(true);
+  });
+
+  it('value alignment problem is long-term', () => {
+    const alignment = getAIRisksAndBenefits().find((r) => r.id === 'risk-value-alignment');
+    expect(alignment?.timeframe).toBe('long-term');
+  });
+
+  it('returns a new array on each call (pure / no shared reference)', () => {
+    expect(getAIRisksAndBenefits()).not.toBe(getAIRisksAndBenefits());
   });
 });
