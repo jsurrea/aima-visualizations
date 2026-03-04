@@ -46,22 +46,22 @@ describe('softmax', () => {
     const result = softmax([1, 2, 3]);
     const sum = result.reduce((a, b) => a + b, 0);
     expect(sum).toBeCloseTo(1, 6);
-    expect(result[2]).toBeGreaterThan(result[1]);
-    expect(result[1]).toBeGreaterThan(result[0]);
+    expect(result[2]).toBeGreaterThan(result[1]!);
+    expect(result[1]).toBeGreaterThan(result[0]!);
   });
 
   it('numerically stable with large values', () => {
     const result = softmax([1000, 1001]);
     const sum = result.reduce((a, b) => a + b, 0);
     expect(sum).toBeCloseTo(1, 6);
-    expect(result[1]).toBeGreaterThan(result[0]);
+    expect(result[1]).toBeGreaterThan(result[0]!);
   });
 
   it('handles negative values', () => {
     const result = softmax([-1, -2, -3]);
     const sum = result.reduce((a, b) => a + b, 0);
     expect(sum).toBeCloseTo(1, 6);
-    expect(result[0]).toBeGreaterThan(result[1]);
+    expect(result[0]).toBeGreaterThan(result[1]!);
   });
 
   it('does not mutate input', () => {
@@ -190,15 +190,15 @@ describe('wordAnalogy', () => {
   it('results are sorted descending by score', () => {
     const result = wordAnalogy(embeddings, 'king', 'queen', 'man');
     for (let i = 1; i < result.length; i++) {
-      expect(result[i - 1].score).toBeGreaterThanOrEqual(result[i].score);
+      expect(result[i - 1]!.score).toBeGreaterThanOrEqual(result[i]!.score);
     }
   });
 
   it('returns a result object with word and score fields', () => {
     const result = wordAnalogy(embeddings, 'king', 'queen', 'man');
     expect(result.length).toBeGreaterThan(0);
-    expect(typeof result[0].word).toBe('string');
-    expect(typeof result[0].score).toBe('number');
+    expect(typeof result[0]!.word).toBe('string');
+    expect(typeof result[0]!.score).toBe('number');
   });
 });
 
@@ -232,7 +232,7 @@ describe('rnnForwardPass', () => {
 
   it('step has correct shape fields', () => {
     const steps = rnnForwardPass([[1, 0]], [0, 0], Wxh, Whh, Why);
-    const step = steps[0];
+    const step = steps[0]!;
     expect(step.input).toHaveLength(2);
     expect(step.hiddenState).toHaveLength(2);
     expect(step.output).toHaveLength(2);
@@ -241,7 +241,7 @@ describe('rnnForwardPass', () => {
 
   it('hidden state uses tanh (values in (-1, 1))', () => {
     const steps = rnnForwardPass([[1, 1]], [0, 0], Wxh, Whh, Why);
-    const h = steps[0].hiddenState;
+    const h = steps[0]!.hiddenState;
     h.forEach((v) => {
       expect(v).toBeGreaterThan(-1);
       expect(v).toBeLessThan(1);
@@ -250,7 +250,7 @@ describe('rnnForwardPass', () => {
 
   it('output sums to 1 (softmax)', () => {
     const steps = rnnForwardPass([[1, 0]], [0, 0], Wxh, Whh, Why);
-    const sum = steps[0].output.reduce((a, b) => a + b, 0);
+    const sum = steps[0]!.output.reduce((a, b) => a + b, 0);
     expect(sum).toBeCloseTo(1, 6);
   });
 
@@ -258,9 +258,9 @@ describe('rnnForwardPass', () => {
     const steps = rnnForwardPass([[1, 0], [0, 1], [1, 1]], [0, 0], Wxh, Whh, Why);
     expect(steps).toHaveLength(3);
     // Each step's action mentions the step number
-    expect(steps[0].action).toContain('1');
-    expect(steps[1].action).toContain('2');
-    expect(steps[2].action).toContain('3');
+    expect(steps[0]!.action).toContain('1');
+    expect(steps[1]!.action).toContain('2');
+    expect(steps[2]!.action).toContain('3');
   });
 
   it('does not mutate the input array', () => {
@@ -332,8 +332,8 @@ describe('computeAttention', () => {
     const resultUnscaled = computeAttention(query, keys, keys, false);
     // scaled = unscaled / sqrt(2)
     const sqrtD = Math.sqrt(2);
-    expect(resultScaled.scores[0]).toBeCloseTo(resultUnscaled.scores[0] / sqrtD, 6);
-    expect(resultScaled.scores[1]).toBeCloseTo(resultUnscaled.scores[1] / sqrtD, 6);
+    expect(resultScaled.scores[0]).toBeCloseTo(resultUnscaled.scores[0]! / sqrtD, 6);
+    expect(resultScaled.scores[1]).toBeCloseTo(resultUnscaled.scores[1]! / sqrtD, 6);
   });
 
   it('weights sum to 1', () => {
@@ -382,7 +382,7 @@ describe('beamSearch', () => {
     const partialScorer = (_tokens: string[]): Record<string, number> => ({ a: -1 });
     const steps = beamSearch(partialScorer, '<s>', '</s>', ['a', 'b', '</s>'], 1, 2);
     // 'a' should win since the others score -Infinity
-    expect(steps[0].beams[0].tokens).toContain('<s>');
+    expect(steps[0]!.beams[0]!.tokens).toContain('<s>');
     expect(steps.length).toBeGreaterThan(0);
   });
 
@@ -400,7 +400,7 @@ describe('beamSearch', () => {
 
   it('step object has required fields', () => {
     const steps = beamSearch(scorer, '<s>', '</s>', vocab, 1, 3);
-    const s = steps[0];
+    const s = steps[0]!;
     expect(typeof s.step).toBe('number');
     expect(Array.isArray(s.beams)).toBe(true);
     expect(Array.isArray(s.candidates)).toBe(true);
@@ -431,7 +431,7 @@ describe('beamSearch', () => {
   it('beams in step record match the active beams at start of that step', () => {
     const steps = beamSearch(scorer, '<s>', '</s>', vocab, 1, 2);
     // Step 1 should start with the initial beam [{tokens: ['<s>'], score: 0}]
-    expect(steps[0].beams[0].tokens).toContain('<s>');
+    expect(steps[0]!.beams[0]!.tokens).toContain('<s>');
   });
 });
 
@@ -484,7 +484,7 @@ describe('selfAttentionLayer', () => {
     // Symmetric inputs with identity projections → attention[i][j] = attention[j][i]
     const symmetric = [[1, 1], [1, 1]];
     const result = selfAttentionLayer(symmetric, I2, I2, I2, true);
-    expect(result.attentionMatrix[0][1]).toBeCloseTo(result.attentionMatrix[1][0], 6);
+    expect(result.attentionMatrix[0]![1]).toBeCloseTo(result.attentionMatrix[1]![0]!, 6);
   });
 
   it('scale=false and scale=true produce different attention matrices for non-trivial inputs', () => {
@@ -492,7 +492,7 @@ describe('selfAttentionLayer', () => {
     const rScaled = selfAttentionLayer(asymInputs, I2, I2, I2, true);
     const rUnscaled = selfAttentionLayer(asymInputs, I2, I2, I2, false);
     // Scores differ when dk > 1; just confirm they are different numerically
-    const sameScore = rScaled.attentionMatrix[0][0] === rUnscaled.attentionMatrix[0][0];
+    const sameScore = rScaled.attentionMatrix[0]![0] === rUnscaled.attentionMatrix[0]![0];
     // They CAN match in degenerate cases (equal scores → equal softmax).
     // We just test shapes are correct regardless.
     expect(rScaled.attentionMatrix[0]).toHaveLength(2);
@@ -505,8 +505,8 @@ describe('selfAttentionLayer', () => {
     const Wq = [[2, 0], [0, 2]];
     const result = selfAttentionLayer(inputs, Wq, I2, I2, false);
     // Queries should be 2× the inputs
-    expectClose(result.queries[0], [2, 0]);
-    expectClose(result.queries[1], [0, 2]);
+    expectClose(result.queries[0]!, [2, 0]);
+    expectClose(result.queries[1]!, [0, 2]);
   });
 });
 
@@ -598,7 +598,7 @@ describe('maskedLanguageModelStep', () => {
   it('top predictions are sorted by probability descending', () => {
     const { topPredictions } = maskedLanguageModelStep(sentence, 1, predictions);
     for (let i = 1; i < topPredictions.length; i++) {
-      expect(topPredictions[i - 1].probability).toBeGreaterThanOrEqual(topPredictions[i].probability);
+      expect(topPredictions[i - 1]!.probability).toBeGreaterThanOrEqual(topPredictions[i]!.probability);
     }
   });
 
@@ -610,7 +610,7 @@ describe('maskedLanguageModelStep', () => {
 
   it('highest-score word has highest probability', () => {
     const { topPredictions } = maskedLanguageModelStep(sentence, 1, predictions);
-    expect(topPredictions[0].word).toBe('cat');
+    expect(topPredictions[0]!.word).toBe('cat');
   });
 
   it('works at index 0', () => {

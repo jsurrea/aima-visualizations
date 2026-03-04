@@ -184,7 +184,7 @@ export function rnnForwardPass(
   let h = initialHidden;
 
   for (let t = 0; t < inputs.length; t++) {
-    const x = inputs[t];
+    const x = inputs[t]!;
     const preActivation = vecAdd(matVec(Wxh, x), matVec(Whh, h));
     const newH = preActivation.map(Math.tanh);
     const output = softmax(matVec(Why, newH));
@@ -211,7 +211,7 @@ export function rnnForwardPass(
  */
 export function averagePooling(hiddenStates: ReadonlyArray<number[]>): number[] {
   if (hiddenStates.length === 0) return [];
-  const dim = hiddenStates[0].length;
+  const dim = hiddenStates[0]!.length;
   const sum = Array<number>(dim).fill(0);
   for (const h of hiddenStates) {
     for (let i = 0; i < dim; i++) {
