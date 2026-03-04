@@ -8,6 +8,12 @@
  * @module algorithms
  */
 
+/**
+ * Maximum number of resolution steps before halting.
+ * Prevents runaway loops on large or unsatisfiable clause sets.
+ */
+const MAX_RESOLUTION_STEPS = 50;
+
 // ─── Unification ────────────────────────────────────────────────────────────
 
 /** A term in First-Order Logic. */
@@ -477,15 +483,14 @@ export function propositionalResolution(
   const seenSignatures = new Set<string>(allClauses.map(clauseSignature));
 
   let clauseCounter = allClauses.length;
-  const MAX_STEPS = 50;
 
   let newClauseFound = true;
-  while (newClauseFound && steps.length < MAX_STEPS) {
+  while (newClauseFound && steps.length < MAX_RESOLUTION_STEPS) {
     newClauseFound = false;
     const snapshot = [...allClauses];
 
-    for (let i = 0; i < snapshot.length && steps.length < MAX_STEPS; i++) {
-      for (let j = i + 1; j < snapshot.length && steps.length < MAX_STEPS; j++) {
+    for (let i = 0; i < snapshot.length && steps.length < MAX_RESOLUTION_STEPS; i++) {
+      for (let j = i + 1; j < snapshot.length && steps.length < MAX_RESOLUTION_STEPS; j++) {
         const c1 = snapshot[i]!;
         const c2 = snapshot[j]!;
         const nextId = `c${++clauseCounter}`;

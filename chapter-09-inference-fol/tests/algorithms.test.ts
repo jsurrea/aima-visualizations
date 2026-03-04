@@ -14,7 +14,7 @@ import {
   type HornClause,
   type CNFClause,
   type Literal,
-} from '../src/algorithms/index.js';
+} from '../src/algorithms/index';
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 const v = (name: string): FOLTerm => ({ kind: 'var', name });
