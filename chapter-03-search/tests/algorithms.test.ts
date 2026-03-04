@@ -590,13 +590,14 @@ describe('iddfs', () => {
 
   it('step includes currentDepth, depthLimit, iteration fields', () => {
     const steps = iddfs(SIMPLE_GRAPH, 'A', 'E');
-    steps.forEach(s => {
+    steps.filter(s => s.currentNode !== '').forEach(s => {
       expect(typeof s.currentDepth).toBe('number');
       expect(typeof s.depthLimit).toBe('number');
       expect(typeof s.iteration).toBe('number');
       expect(s.currentDepth).toBeGreaterThanOrEqual(0);
       expect(s.depthLimit).toBeGreaterThanOrEqual(0);
-      expect(s.currentDepth).toBeLessThanOrEqual(s.depthLimit + 1); // at most 1 over limit at frontier
+      // Expanded nodes must never exceed the depth limit
+      expect(s.currentDepth).toBeLessThanOrEqual(s.depthLimit);
     });
   });
 

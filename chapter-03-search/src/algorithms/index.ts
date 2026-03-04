@@ -596,6 +596,8 @@ export function iddfs(
     const stack: Array<{ node: string; path: string[]; depth: number }> = [
       { node: start, path: [start], depth: 0 },
     ];
+    // Explored set is intentionally reset each iteration so nodes can be
+    // re-explored at deeper limits (this is correct IDDFS behaviour).
     const explored = new Set<string>();
 
     while (stack.length > 0) {

@@ -65,6 +65,8 @@ function computeBFSTreeSteps(
 
   // Track depth in the tree
   const depthMap = new Map<string, number>([[start, 0]]);
+  // Track existing tree edges by composite key for O(1) dedup
+  const treeEdgeSet = new Set<string>();
 
   let maxSteps = 40;
   while (queue.length > 0 && maxSteps-- > 0) {
@@ -88,8 +90,9 @@ function computeBFSTreeSteps(
     if (graphSearch) explored.add(currentNode);
 
     const depth = depthMap.get(currentNode) ?? 0;
-    // Only add to tree if not already there (for tree search without dedup)
-    if (!treeNodes.some(n => n.id === currentNode && n.parentId === parentId)) {
+    const edgeKey = `${parentId ?? ''}→${currentNode}`;
+    if (!treeEdgeSet.has(edgeKey)) {
+      treeEdgeSet.add(edgeKey);
       treeNodes.push({ id: currentNode, parentId, depth, path });
     }
 
@@ -366,7 +369,7 @@ export function SearchTreeViz(): JSX.Element {
           )}
 
           <div style={{ fontSize: '11px', color: '#4B5563', lineHeight: 1.5, borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px' }}>
-            <span dangerouslySetInnerHTML={{ __html: renderInlineMath('f = g(n)') }} /> = path cost so far (BFS uses hops)
+            <span dangerouslySetInnerHTML={{ __html: renderInlineMath('g(n)') }} /> = path cost so far (BFS counts hops)
           </div>
         </div>
       </div>

@@ -114,8 +114,11 @@ function computeSteps(
 }
 
 function getFrontierNodeIds(step: AnyStep, algo: AlgorithmType): ReadonlyArray<string> {
-  if (algo === 'bfs' || algo === 'dfs' || algo === 'iddfs') {
-    return (step as BFSStep).frontier as ReadonlyArray<string>;
+  if (algo === 'bfs' || algo === 'dfs') {
+    return (step as BFSStep).frontier;
+  }
+  if (algo === 'iddfs') {
+    return (step as IDDFSStep).frontier;
   }
   if (algo === 'ucs') {
     return (step as UCSStep).frontier.map(e => e.node);

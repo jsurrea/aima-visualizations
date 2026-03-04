@@ -210,7 +210,7 @@ export function HeuristicLab(): JSX.Element {
           </div>
           {hMode === 'inadmissible' && (
             <div style={{ marginTop: '6px', fontSize: '10px', color: '#EF4444' }}>
-              ⚠️ Red borders = inadmissible cells where h(n) &gt; h*(n)
+              ⚠️ Red borders = inadmissible cells where h(n) {'>'} h*(n)
             </div>
           )}
         </div>
