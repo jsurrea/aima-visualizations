@@ -18,7 +18,7 @@ const NODES: Readonly<Record<string, NodeData>> = {
   'Arad':           { x: 60,  y: 215, label: 'Arad' },
   'Zerind':         { x: 80,  y: 140, label: 'Zerind' },
   'Oradea':         { x: 125, y: 70,  label: 'Oradea' },
-  'Timisoara':      { x: 90,  y: 325, label: 'Timisoa.' },
+  'Timisoara':      { x: 90,  y: 325, label: 'Timisoara' },
   'Lugoj':          { x: 200, y: 360, label: 'Lugoj' },
   'Mehadia':        { x: 220, y: 420, label: 'Mehadia' },
   'Dobreta':        { x: 215, y: 470, label: 'Dobreta' },
@@ -285,7 +285,7 @@ export function SearchVisualizer(): JSX.Element {
     bfs: 'BFS',
     dfs: 'DFS',
     ucs: 'UCS',
-    astar: 'A★',
+    astar: 'A*',
   };
 
   return (

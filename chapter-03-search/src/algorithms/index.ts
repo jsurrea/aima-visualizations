@@ -224,7 +224,7 @@ export interface UCSStep {
  * @param start - Start node key.
  * @param goal  - Goal node key.
  * @returns All expansion steps for playback.
-   * @complexity O(b^(1+floor(Cstar/epsilon))) where C* = optimal cost, epsilon = min edge cost.
+   * @complexity O(b^(1+floor(C_star/epsilon))) where C_star = optimal cost, epsilon = min edge cost.
  */
 export function ucs(
   graph: Graph,
