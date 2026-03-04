@@ -9,10 +9,10 @@
   "color": "#6366F1",
   "basePath": "/chapter-01",
   "sections": [
-    { "id": "bfs-intro", "title": "The Four Approaches to AI", "status": "planned" },
-    { "id": "timeline", "title": "AI History Timeline", "status": "planned" },
-    { "id": "standard-model", "title": "Standard Model Loop", "status": "planned" }
+    { "id": "bfs-intro", "title": "The Four Approaches to AI", "status": "complete" },
+    { "id": "timeline", "title": "AI History Timeline", "status": "complete" },
+    { "id": "standard-model", "title": "Standard Model Loop", "status": "complete" }
   ],
-  "status": "planned",
+  "status": "complete",
   "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
 }
