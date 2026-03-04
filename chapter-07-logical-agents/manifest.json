@@ -9,10 +9,10 @@
   "color": "#8B5CF6",
   "basePath": "/chapter-07",
   "sections": [
-    { "id": "wumpus-world", "title": "Wumpus World", "status": "planned" },
-    { "id": "truth-table", "title": "Truth Table Builder", "status": "planned" },
-    { "id": "dpll", "title": "DPLL Step-by-Step", "status": "planned" }
+    { "id": "wumpus-world", "title": "Wumpus World", "status": "complete" },
+    { "id": "truth-table", "title": "Truth Table Builder", "status": "complete" },
+    { "id": "dpll", "title": "DPLL Step-by-Step", "status": "complete" }
   ],
-  "status": "planned",
-  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
 }

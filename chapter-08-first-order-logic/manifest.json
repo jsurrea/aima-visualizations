@@ -9,10 +9,10 @@
   "color": "#8B5CF6",
   "basePath": "/chapter-08",
   "sections": [
-    { "id": "syntax-tree", "title": "FOL Syntax Tree Builder", "status": "planned" },
-    { "id": "interpretation", "title": "Interpretation Explorer", "status": "planned" },
-    { "id": "quantifiers", "title": "Quantifier Scope", "status": "planned" }
+    { "id": "syntax-tree", "title": "FOL Syntax Tree Builder", "status": "complete" },
+    { "id": "interpretation", "title": "Interpretation Explorer", "status": "complete" },
+    { "id": "quantifiers", "title": "Quantifier Scope", "status": "complete" }
   ],
-  "status": "planned",
-  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
 }
