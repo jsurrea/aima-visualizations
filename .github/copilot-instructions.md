@@ -83,7 +83,7 @@ The full textbook PDF is available at `Book.pdf` in the repository root. **Befor
 | **A** | Mathematical Background | **1074 – 1080** — Complexity & O() notation · Vectors, Matrices & Linear Algebra · Probability Distributions |
 | **B** | Notes on Languages and Algorithms | **1081 – 1083** — BNF · Pseudocode conventions |
 
-> **How to read the PDF efficiently:** Use a PDF reader that supports page-number jump (e.g. `Cmd+G` / `Ctrl+G`). Jump directly to the start page listed above for the chapter you are implementing. Read the full chapter — including all pseudocode boxes, figures, and sidebars — before writing any code.
+> **How to read the PDF efficiently:** Use a PDF reader that supports page-number jump. Jump directly to the start page listed above for the chapter you are implementing. Read the full chapter — including all pseudocode boxes, figures, and sidebars — before writing any code.
 
 ---
 
