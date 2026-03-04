@@ -24,6 +24,7 @@
     "@vitest/coverage-v8": "^2.1.9",
     "jsdom": "^26.0.0",
     "@testing-library/react": "^16.2.0",
-    "@testing-library/user-event": "^14.5.2"
+    "@testing-library/user-event": "^14.5.2",
+    "@originjs/vite-plugin-federation": "^1.4.1"
   }
 }
