@@ -155,11 +155,11 @@ const STATUS_COLORS: Readonly<Record<NodeStatus, { fill: string; stroke: string;
 
 interface SearchVisualizerProps {
   /** Restrict which algorithms appear in the selector. Defaults to all six. */
-  defaultAlgorithms?: ReadonlyArray<AlgorithmType>;
+  availableAlgorithms?: ReadonlyArray<AlgorithmType>;
 }
 
-export function SearchVisualizer({ defaultAlgorithms }: SearchVisualizerProps = {}): JSX.Element {
-  const availableAlgos: ReadonlyArray<AlgorithmType> = defaultAlgorithms ?? ['bfs', 'dfs', 'ucs', 'astar', 'gbfs', 'iddfs'];
+export function SearchVisualizer({ availableAlgorithms }: SearchVisualizerProps = {}): JSX.Element {
+  const availableAlgos: ReadonlyArray<AlgorithmType> = availableAlgorithms ?? ['bfs', 'dfs', 'ucs', 'astar', 'gbfs', 'iddfs'];
   const [algorithm, setAlgorithm] = useState<AlgorithmType>(availableAlgos[0] ?? 'bfs');
   const [startNode, setStartNode] = useState('Arad');
   const [goalNode, setGoalNode] = useState('Bucharest');

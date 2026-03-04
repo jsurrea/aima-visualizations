@@ -291,7 +291,7 @@ export default function App(): JSX.Element {
               </p>
             </div>
           </div>
-          <SearchVisualizer defaultAlgorithms={['bfs', 'dfs', 'ucs', 'iddfs']} />
+          <SearchVisualizer availableAlgorithms={['bfs', 'dfs', 'ucs', 'iddfs']} />
         </div>
       </section>
 
@@ -336,7 +336,7 @@ export default function App(): JSX.Element {
               </p>
             </div>
           </div>
-          <SearchVisualizer defaultAlgorithms={['gbfs', 'astar']} />
+          <SearchVisualizer availableAlgorithms={['gbfs', 'astar']} />
         </div>
       </section>
 

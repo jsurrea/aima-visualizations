@@ -613,7 +613,7 @@ describe('iddfs', () => {
     expect(expandedNodes.has('C')).toBe(false);
   });
 
-  it('skips already-explored nodes (continue branch)', () => {
+  it('skips already-explored nodes within same iteration', () => {
     // DFS_CONTINUE_GRAPH: A→[B,C,D], B→[C], C dead end, D→[G]
     const steps = iddfs(DFS_CONTINUE_GRAPH, 'A', 'G');
     const last = steps[steps.length - 1]!;
