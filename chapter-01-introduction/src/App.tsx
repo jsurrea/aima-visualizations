@@ -1,7 +1,10 @@
 import manifest from '../manifest.json';
 import AIApproaches from './components/AIApproaches';
+import AIFoundations from './components/AIFoundations';
 import AITimeline from './components/AITimeline';
 import StandardModelLoop from './components/StandardModelLoop';
+import AICapabilities from './components/AICapabilities';
+import RisksAndBenefits from './components/RisksAndBenefits';
 
 const DIVIDER = (
   <hr
@@ -137,6 +140,12 @@ export default function App() {
 
       {DIVIDER}
 
+      <SectionWrapper id="foundations" title="The Foundations of AI">
+        <AIFoundations />
+      </SectionWrapper>
+
+      {DIVIDER}
+
       <SectionWrapper id="timeline" title="AI History Timeline">
         <AITimeline />
       </SectionWrapper>
@@ -145,6 +154,18 @@ export default function App() {
 
       <SectionWrapper id="standard-model" title="Standard Agent-Environment Loop">
         <StandardModelLoop />
+      </SectionWrapper>
+
+      {DIVIDER}
+
+      <SectionWrapper id="capabilities" title="The State of the Art">
+        <AICapabilities />
+      </SectionWrapper>
+
+      {DIVIDER}
+
+      <SectionWrapper id="risks-benefits" title="Risks and Benefits of AI">
+        <RisksAndBenefits />
       </SectionWrapper>
     </div>
   );
