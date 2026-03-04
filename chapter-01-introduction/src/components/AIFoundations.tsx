@@ -110,13 +110,6 @@ export default function AIFoundations() {
     setSelectedId((prev) => (prev === id ? null : id));
   }, []);
 
-  const handleWhatIfKey = useCallback(
-    (_e: KeyboardEvent<HTMLSelectElement>) => {
-      // allow default keyboard behaviour for the native select element
-    },
-    [],
-  );
-
   const selectedFoundation = foundations.find((f) => f.id === whatIfId);
 
   return (
@@ -165,7 +158,6 @@ export default function AIFoundations() {
           id="whatif-select"
           value={whatIfId}
           onChange={(e) => setWhatIfId(e.target.value)}
-          onKeyDown={handleWhatIfKey}
           aria-label="Select a discipline to explore its impact on AI"
           style={{
             background: '#1A1A24',

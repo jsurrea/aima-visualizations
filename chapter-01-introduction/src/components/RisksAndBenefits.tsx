@@ -147,11 +147,6 @@ export default function RisksAndBenefits() {
     });
   }, []);
 
-  const handleSliderKey = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
-    // allow default arrow key behaviour for slider
-    void e;
-  }, []);
-
   const allowedTimeframes = CAPABILITY_RISK_FILTER[capabilityLevel];
   const benefits = items.filter((i) => i.type === 'benefit');
   const risks = items.filter(
@@ -197,7 +192,6 @@ export default function RisksAndBenefits() {
           max={2}
           value={levelIndex}
           onChange={(e) => setCapabilityLevel(CAPABILITY_LEVELS[Number(e.target.value)] ?? 'medium')}
-          onKeyDown={handleSliderKey}
           aria-label={`AI capability level: ${capabilityLevel}`}
           aria-valuemin={0}
           aria-valuemax={2}
