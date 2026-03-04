@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { renderInlineMath } from '../utils/mathUtils';
 
 const TIMELINE_EVENTS = [
   { year: 2013, name: 'Word2Vec', desc: 'Dense word vectors via skip-gram/CBOW', color: '#6366F1' },

@@ -20,10 +20,9 @@ import {
 // ---------------------------------------------------------------------------
 
 /** Check all values in arr are close to expected (within tolerance). */
-function expectClose(arr: number[], expected: number[], tol = 1e-6): void {
+function expectClose(arr: number[], expected: number[], tol = 6): void {
   expect(arr.length).toBe(expected.length);
-  arr.forEach((v, i) => expect(v).toBeCloseTo(expected[i]!, 6));
-  void tol;
+  arr.forEach((v, i) => expect(v).toBeCloseTo(expected[i]!, tol));
 }
 
 // ---------------------------------------------------------------------------
@@ -492,13 +491,10 @@ describe('selfAttentionLayer', () => {
     const rScaled = selfAttentionLayer(asymInputs, I2, I2, I2, true);
     const rUnscaled = selfAttentionLayer(asymInputs, I2, I2, I2, false);
     // Scores differ when dk > 1; just confirm they are different numerically
-    const sameScore = rScaled.attentionMatrix[0]![0] === rUnscaled.attentionMatrix[0]![0];
     // They CAN match in degenerate cases (equal scores → equal softmax).
     // We just test shapes are correct regardless.
     expect(rScaled.attentionMatrix[0]).toHaveLength(2);
     expect(rUnscaled.attentionMatrix[0]).toHaveLength(2);
-    // Suppress unused-variable lint:
-    void sameScore;
   });
 
   it('works with non-identity projection matrices', () => {
