@@ -9,8 +9,9 @@ permissions:
   id-token: write
 
 jobs:
-  # ─── Landing ──────────────────────────────────────────────────────────────
-  deploy-landing:
+  # ─── Build jobs (all run in parallel) ─────────────────────────────────────
+
+  build-landing:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,213 +24,873 @@ jobs:
         working-directory: landing
       - run: npm run build
         working-directory: landing
-      - uses: peaceiris/actions-gh-pages@v4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: landing-dist
+          path: landing/dist
+
+  build-ch01:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-01-introduction/package-lock.json
+      - run: npm ci
+        working-directory: chapter-01-introduction
+      - run: npm test -- --run
+        working-directory: chapter-01-introduction
+      - run: npm run build
+        working-directory: chapter-01-introduction
+      - run: cp manifest.json dist/
+        working-directory: chapter-01-introduction
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-01-dist
+          path: chapter-01-introduction/dist
+
+  build-ch02:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-02-agents/package-lock.json
+      - run: npm ci
+        working-directory: chapter-02-agents
+      - run: npm test -- --run
+        working-directory: chapter-02-agents
+      - run: npm run build
+        working-directory: chapter-02-agents
+      - run: cp manifest.json dist/
+        working-directory: chapter-02-agents
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-02-dist
+          path: chapter-02-agents/dist
+
+  build-ch03:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-03-search/package-lock.json
+      - run: npm ci
+        working-directory: chapter-03-search
+      - run: npm test -- --run
+        working-directory: chapter-03-search
+      - run: npm run build
+        working-directory: chapter-03-search
+      - run: cp manifest.json dist/
+        working-directory: chapter-03-search
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-03-dist
+          path: chapter-03-search/dist
+
+  build-ch04:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-04-search-complex/package-lock.json
+      - run: npm ci
+        working-directory: chapter-04-search-complex
+      - run: npm test -- --run
+        working-directory: chapter-04-search-complex
+      - run: npm run build
+        working-directory: chapter-04-search-complex
+      - run: cp manifest.json dist/
+        working-directory: chapter-04-search-complex
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-04-dist
+          path: chapter-04-search-complex/dist
+
+  build-ch05:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-05-csp/package-lock.json
+      - run: npm ci
+        working-directory: chapter-05-csp
+      - run: npm test -- --run
+        working-directory: chapter-05-csp
+      - run: npm run build
+        working-directory: chapter-05-csp
+      - run: cp manifest.json dist/
+        working-directory: chapter-05-csp
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-05-dist
+          path: chapter-05-csp/dist
+
+  build-ch06:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-06-adversarial/package-lock.json
+      - run: npm ci
+        working-directory: chapter-06-adversarial
+      - run: npm test -- --run
+        working-directory: chapter-06-adversarial
+      - run: npm run build
+        working-directory: chapter-06-adversarial
+      - run: cp manifest.json dist/
+        working-directory: chapter-06-adversarial
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-06-dist
+          path: chapter-06-adversarial/dist
+
+  build-ch07:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-07-logical-agents/package-lock.json
+      - run: npm ci
+        working-directory: chapter-07-logical-agents
+      - run: npm test -- --run
+        working-directory: chapter-07-logical-agents
+      - run: npm run build
+        working-directory: chapter-07-logical-agents
+      - run: cp manifest.json dist/
+        working-directory: chapter-07-logical-agents
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-07-dist
+          path: chapter-07-logical-agents/dist
+
+  build-ch08:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-08-first-order-logic/package-lock.json
+      - run: npm ci
+        working-directory: chapter-08-first-order-logic
+      - run: npm test -- --run
+        working-directory: chapter-08-first-order-logic
+      - run: npm run build
+        working-directory: chapter-08-first-order-logic
+      - run: cp manifest.json dist/
+        working-directory: chapter-08-first-order-logic
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-08-dist
+          path: chapter-08-first-order-logic/dist
+
+  build-ch09:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-09-inference-fol/package-lock.json
+      - run: npm ci
+        working-directory: chapter-09-inference-fol
+      - run: npm test -- --run
+        working-directory: chapter-09-inference-fol
+      - run: npm run build
+        working-directory: chapter-09-inference-fol
+      - run: cp manifest.json dist/
+        working-directory: chapter-09-inference-fol
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-09-dist
+          path: chapter-09-inference-fol/dist
+
+  build-ch10:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-10-knowledge-rep/package-lock.json
+      - run: npm ci
+        working-directory: chapter-10-knowledge-rep
+      - run: npm test -- --run
+        working-directory: chapter-10-knowledge-rep
+      - run: npm run build
+        working-directory: chapter-10-knowledge-rep
+      - run: cp manifest.json dist/
+        working-directory: chapter-10-knowledge-rep
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-10-dist
+          path: chapter-10-knowledge-rep/dist
+
+  build-ch11:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-11-planning/package-lock.json
+      - run: npm ci
+        working-directory: chapter-11-planning
+      - run: npm test -- --run
+        working-directory: chapter-11-planning
+      - run: npm run build
+        working-directory: chapter-11-planning
+      - run: cp manifest.json dist/
+        working-directory: chapter-11-planning
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-11-dist
+          path: chapter-11-planning/dist
+
+  build-ch12:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-12-uncertainty/package-lock.json
+      - run: npm ci
+        working-directory: chapter-12-uncertainty
+      - run: npm test -- --run
+        working-directory: chapter-12-uncertainty
+      - run: npm run build
+        working-directory: chapter-12-uncertainty
+      - run: cp manifest.json dist/
+        working-directory: chapter-12-uncertainty
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-12-dist
+          path: chapter-12-uncertainty/dist
+
+  build-ch13:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-13-probabilistic-reasoning/package-lock.json
+      - run: npm ci
+        working-directory: chapter-13-probabilistic-reasoning
+      - run: npm test -- --run
+        working-directory: chapter-13-probabilistic-reasoning
+      - run: npm run build
+        working-directory: chapter-13-probabilistic-reasoning
+      - run: cp manifest.json dist/
+        working-directory: chapter-13-probabilistic-reasoning
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-13-dist
+          path: chapter-13-probabilistic-reasoning/dist
+
+  build-ch14:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-14-temporal-reasoning/package-lock.json
+      - run: npm ci
+        working-directory: chapter-14-temporal-reasoning
+      - run: npm test -- --run
+        working-directory: chapter-14-temporal-reasoning
+      - run: npm run build
+        working-directory: chapter-14-temporal-reasoning
+      - run: cp manifest.json dist/
+        working-directory: chapter-14-temporal-reasoning
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-14-dist
+          path: chapter-14-temporal-reasoning/dist
+
+  build-ch15:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-15-simple-decisions/package-lock.json
+      - run: npm ci
+        working-directory: chapter-15-simple-decisions
+      - run: npm test -- --run
+        working-directory: chapter-15-simple-decisions
+      - run: npm run build
+        working-directory: chapter-15-simple-decisions
+      - run: cp manifest.json dist/
+        working-directory: chapter-15-simple-decisions
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-15-dist
+          path: chapter-15-simple-decisions/dist
+
+  build-ch16:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-16-complex-decisions/package-lock.json
+      - run: npm ci
+        working-directory: chapter-16-complex-decisions
+      - run: npm test -- --run
+        working-directory: chapter-16-complex-decisions
+      - run: npm run build
+        working-directory: chapter-16-complex-decisions
+      - run: cp manifest.json dist/
+        working-directory: chapter-16-complex-decisions
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-16-dist
+          path: chapter-16-complex-decisions/dist
+
+  build-ch17:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-17-multiagent/package-lock.json
+      - run: npm ci
+        working-directory: chapter-17-multiagent
+      - run: npm test -- --run
+        working-directory: chapter-17-multiagent
+      - run: npm run build
+        working-directory: chapter-17-multiagent
+      - run: cp manifest.json dist/
+        working-directory: chapter-17-multiagent
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-17-dist
+          path: chapter-17-multiagent/dist
+
+  build-ch18:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-18-prob-programming/package-lock.json
+      - run: npm ci
+        working-directory: chapter-18-prob-programming
+      - run: npm test -- --run
+        working-directory: chapter-18-prob-programming
+      - run: npm run build
+        working-directory: chapter-18-prob-programming
+      - run: cp manifest.json dist/
+        working-directory: chapter-18-prob-programming
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-18-dist
+          path: chapter-18-prob-programming/dist
+
+  build-ch19:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-19-learning/package-lock.json
+      - run: npm ci
+        working-directory: chapter-19-learning
+      - run: npm test -- --run
+        working-directory: chapter-19-learning
+      - run: npm run build
+        working-directory: chapter-19-learning
+      - run: cp manifest.json dist/
+        working-directory: chapter-19-learning
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-19-dist
+          path: chapter-19-learning/dist
+
+  build-ch20:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-20-knowledge-learning/package-lock.json
+      - run: npm ci
+        working-directory: chapter-20-knowledge-learning
+      - run: npm test -- --run
+        working-directory: chapter-20-knowledge-learning
+      - run: npm run build
+        working-directory: chapter-20-knowledge-learning
+      - run: cp manifest.json dist/
+        working-directory: chapter-20-knowledge-learning
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-20-dist
+          path: chapter-20-knowledge-learning/dist
+
+  build-ch21:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-21-prob-models/package-lock.json
+      - run: npm ci
+        working-directory: chapter-21-prob-models
+      - run: npm test -- --run
+        working-directory: chapter-21-prob-models
+      - run: npm run build
+        working-directory: chapter-21-prob-models
+      - run: cp manifest.json dist/
+        working-directory: chapter-21-prob-models
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-21-dist
+          path: chapter-21-prob-models/dist
+
+  build-ch22:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-22-deep-learning/package-lock.json
+      - run: npm ci
+        working-directory: chapter-22-deep-learning
+      - run: npm test -- --run
+        working-directory: chapter-22-deep-learning
+      - run: npm run build
+        working-directory: chapter-22-deep-learning
+      - run: cp manifest.json dist/
+        working-directory: chapter-22-deep-learning
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-22-dist
+          path: chapter-22-deep-learning/dist
+
+  build-ch23:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-23-reinforcement-learning/package-lock.json
+      - run: npm ci
+        working-directory: chapter-23-reinforcement-learning
+      - run: npm test -- --run
+        working-directory: chapter-23-reinforcement-learning
+      - run: npm run build
+        working-directory: chapter-23-reinforcement-learning
+      - run: cp manifest.json dist/
+        working-directory: chapter-23-reinforcement-learning
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-23-dist
+          path: chapter-23-reinforcement-learning/dist
+
+  build-ch24:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-24-nlp/package-lock.json
+      - run: npm ci
+        working-directory: chapter-24-nlp
+      - run: npm test -- --run
+        working-directory: chapter-24-nlp
+      - run: npm run build
+        working-directory: chapter-24-nlp
+      - run: cp manifest.json dist/
+        working-directory: chapter-24-nlp
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-24-dist
+          path: chapter-24-nlp/dist
+
+  build-ch25:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-25-deep-nlp/package-lock.json
+      - run: npm ci
+        working-directory: chapter-25-deep-nlp
+      - run: npm test -- --run
+        working-directory: chapter-25-deep-nlp
+      - run: npm run build
+        working-directory: chapter-25-deep-nlp
+      - run: cp manifest.json dist/
+        working-directory: chapter-25-deep-nlp
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-25-dist
+          path: chapter-25-deep-nlp/dist
+
+  build-ch26:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-26-robotics/package-lock.json
+      - run: npm ci
+        working-directory: chapter-26-robotics
+      - run: npm test -- --run
+        working-directory: chapter-26-robotics
+      - run: npm run build
+        working-directory: chapter-26-robotics
+      - run: cp manifest.json dist/
+        working-directory: chapter-26-robotics
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-26-dist
+          path: chapter-26-robotics/dist
+
+  build-ch27:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-27-computer-vision/package-lock.json
+      - run: npm ci
+        working-directory: chapter-27-computer-vision
+      - run: npm test -- --run
+        working-directory: chapter-27-computer-vision
+      - run: npm run build
+        working-directory: chapter-27-computer-vision
+      - run: cp manifest.json dist/
+        working-directory: chapter-27-computer-vision
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-27-dist
+          path: chapter-27-computer-vision/dist
+
+  build-ch28:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-28-ethics-safety/package-lock.json
+      - run: npm ci
+        working-directory: chapter-28-ethics-safety
+      - run: npm test -- --run
+        working-directory: chapter-28-ethics-safety
+      - run: npm run build
+        working-directory: chapter-28-ethics-safety
+      - run: cp manifest.json dist/
+        working-directory: chapter-28-ethics-safety
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-28-dist
+          path: chapter-28-ethics-safety/dist
+
+  build-ch29:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: chapter-29-future-ai/package-lock.json
+      - run: npm ci
+        working-directory: chapter-29-future-ai
+      - run: npm test -- --run
+        working-directory: chapter-29-future-ai
+      - run: npm run build
+        working-directory: chapter-29-future-ai
+      - run: cp manifest.json dist/
+        working-directory: chapter-29-future-ai
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chapter-29-dist
+          path: chapter-29-future-ai/dist
+
+  # ─── Single deploy job ─────────────────────────────────────────────────────
+  # Waits for ALL build jobs to finish, then assembles a staging directory
+  # and pushes ONE commit to gh-pages — avoiding N sequential page-deploys.
+  deploy:
+    needs:
+      - build-landing
+      - build-ch01
+      - build-ch02
+      - build-ch03
+      - build-ch04
+      - build-ch05
+      - build-ch06
+      - build-ch07
+      - build-ch08
+      - build-ch09
+      - build-ch10
+      - build-ch11
+      - build-ch12
+      - build-ch13
+      - build-ch14
+      - build-ch15
+      - build-ch16
+      - build-ch17
+      - build-ch18
+      - build-ch19
+      - build-ch20
+      - build-ch21
+      - build-ch22
+      - build-ch23
+      - build-ch24
+      - build-ch25
+      - build-ch26
+      - build-ch27
+      - build-ch28
+      - build-ch29
+    runs-on: ubuntu-latest
+    concurrency:
+      group: gh-pages
+      cancel-in-progress: false
+    steps:
+      - name: Download landing
+        uses: actions/download-artifact@v4
+        with:
+          name: landing-dist
+          path: staging/
+
+      - name: Download chapter 01
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-01-dist
+          path: staging/chapter-01
+
+      - name: Download chapter 02
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-02-dist
+          path: staging/chapter-02
+
+      - name: Download chapter 03
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-03-dist
+          path: staging/chapter-03
+
+      - name: Download chapter 04
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-04-dist
+          path: staging/chapter-04
+
+      - name: Download chapter 05
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-05-dist
+          path: staging/chapter-05
+
+      - name: Download chapter 06
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-06-dist
+          path: staging/chapter-06
+
+      - name: Download chapter 07
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-07-dist
+          path: staging/chapter-07
+
+      - name: Download chapter 08
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-08-dist
+          path: staging/chapter-08
+
+      - name: Download chapter 09
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-09-dist
+          path: staging/chapter-09
+
+      - name: Download chapter 10
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-10-dist
+          path: staging/chapter-10
+
+      - name: Download chapter 11
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-11-dist
+          path: staging/chapter-11
+
+      - name: Download chapter 12
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-12-dist
+          path: staging/chapter-12
+
+      - name: Download chapter 13
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-13-dist
+          path: staging/chapter-13
+
+      - name: Download chapter 14
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-14-dist
+          path: staging/chapter-14
+
+      - name: Download chapter 15
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-15-dist
+          path: staging/chapter-15
+
+      - name: Download chapter 16
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-16-dist
+          path: staging/chapter-16
+
+      - name: Download chapter 17
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-17-dist
+          path: staging/chapter-17
+
+      - name: Download chapter 18
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-18-dist
+          path: staging/chapter-18
+
+      - name: Download chapter 19
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-19-dist
+          path: staging/chapter-19
+
+      - name: Download chapter 20
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-20-dist
+          path: staging/chapter-20
+
+      - name: Download chapter 21
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-21-dist
+          path: staging/chapter-21
+
+      - name: Download chapter 22
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-22-dist
+          path: staging/chapter-22
+
+      - name: Download chapter 23
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-23-dist
+          path: staging/chapter-23
+
+      - name: Download chapter 24
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-24-dist
+          path: staging/chapter-24
+
+      - name: Download chapter 25
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-25-dist
+          path: staging/chapter-25
+
+      - name: Download chapter 26
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-26-dist
+          path: staging/chapter-26
+
+      - name: Download chapter 27
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-27-dist
+          path: staging/chapter-27
+
+      - name: Download chapter 28
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-28-dist
+          path: staging/chapter-28
+
+      - name: Download chapter 29
+        uses: actions/download-artifact@v4
+        with:
+          name: chapter-29-dist
+          path: staging/chapter-29
+
+      - name: Deploy full site to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: landing/dist
-          keep_files: true
-
-  # ─── Chapters ─────────────────────────────────────────────────────────────
-  deploy-ch01:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-01-introduction
-      chapter-path: chapter-01
-    secrets: inherit
-
-  deploy-ch02:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-02-agents
-      chapter-path: chapter-02
-    secrets: inherit
-
-  deploy-ch03:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-03-search
-      chapter-path: chapter-03
-    secrets: inherit
-
-  deploy-ch04:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-04-search-complex
-      chapter-path: chapter-04
-    secrets: inherit
-
-  deploy-ch05:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-05-csp
-      chapter-path: chapter-05
-    secrets: inherit
-
-  deploy-ch06:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-06-adversarial
-      chapter-path: chapter-06
-    secrets: inherit
-
-  deploy-ch07:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-07-logical-agents
-      chapter-path: chapter-07
-    secrets: inherit
-
-  deploy-ch08:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-08-first-order-logic
-      chapter-path: chapter-08
-    secrets: inherit
-
-  deploy-ch09:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-09-inference-fol
-      chapter-path: chapter-09
-    secrets: inherit
-
-  deploy-ch10:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-10-knowledge-rep
-      chapter-path: chapter-10
-    secrets: inherit
-
-  deploy-ch11:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-11-planning
-      chapter-path: chapter-11
-    secrets: inherit
-
-  deploy-ch12:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-12-uncertainty
-      chapter-path: chapter-12
-    secrets: inherit
-
-  deploy-ch13:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-13-probabilistic-reasoning
-      chapter-path: chapter-13
-    secrets: inherit
-
-  deploy-ch14:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-14-temporal-reasoning
-      chapter-path: chapter-14
-    secrets: inherit
-
-  deploy-ch15:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-15-simple-decisions
-      chapter-path: chapter-15
-    secrets: inherit
-
-  deploy-ch16:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-16-complex-decisions
-      chapter-path: chapter-16
-    secrets: inherit
-
-  deploy-ch17:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-17-multiagent
-      chapter-path: chapter-17
-    secrets: inherit
-
-  deploy-ch18:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-18-prob-programming
-      chapter-path: chapter-18
-    secrets: inherit
-
-  deploy-ch19:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-19-learning
-      chapter-path: chapter-19
-    secrets: inherit
-
-  deploy-ch20:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-20-knowledge-learning
-      chapter-path: chapter-20
-    secrets: inherit
-
-  deploy-ch21:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-21-prob-models
-      chapter-path: chapter-21
-    secrets: inherit
-
-  deploy-ch22:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-22-deep-learning
-      chapter-path: chapter-22
-    secrets: inherit
-
-  deploy-ch23:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-23-reinforcement-learning
-      chapter-path: chapter-23
-    secrets: inherit
-
-  deploy-ch24:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-24-nlp
-      chapter-path: chapter-24
-    secrets: inherit
-
-  deploy-ch25:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-25-deep-nlp
-      chapter-path: chapter-25
-    secrets: inherit
-
-  deploy-ch26:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-26-robotics
-      chapter-path: chapter-26
-    secrets: inherit
-
-  deploy-ch27:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-27-computer-vision
-      chapter-path: chapter-27
-    secrets: inherit
-
-  deploy-ch28:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-28-ethics-safety
-      chapter-path: chapter-28
-    secrets: inherit
-
-  deploy-ch29:
-    uses: ./.github/workflows/deploy-chapter-template.yml
-    with:
-      chapter-dir: chapter-29-future-ai
-      chapter-path: chapter-29
-    secrets: inherit
+          publish_dir: staging
+          force_orphan: true

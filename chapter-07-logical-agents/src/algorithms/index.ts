@@ -11,6 +11,11 @@
 
 // ─── Propositional Logic Types ───────────────────────────────────────────────
 
+/**
+ * Propositional operators. 'not' is included per the type spec for completeness;
+ * it is handled as the dedicated `neg` kind in PropFormula rather than as a
+ * binary compound, so `Exclude<PropOp, 'not'>` is used in the compound node.
+ */
 export type PropOp = 'not' | 'and' | 'or' | 'implies' | 'iff';
 
 export type PropFormula =
@@ -215,13 +220,23 @@ export function dpll(cnf: CNF): ReadonlyArray<DPLLStep> {
         clauses,
         result: 'pending',
       });
-      // Pure literal elimination cannot produce an empty clause
+      // Invariant: simplify never returns null for a pure literal.
+      // A pure literal L has no negation ¬L in any clause, so removing ¬L
+      // from the remaining clauses (those not already satisfied by L) can
+      // never produce an empty clause.
       return run(simplify(clauses, pure)!, newAssignment);
     }
 
-    // Branch on first unassigned variable
-    const varName = [...new Set(allLits.map(literalVar))].find(v => !assignment.has(v))!;
+    // Branch on first unassigned variable.
+    // Invariant: clauses.length > 0 (checked above) and each clause is non-empty
+    // (checked above), so allLits is non-empty and an unassigned variable exists.
+    const candidates = [...new Set(allLits.map(literalVar))].filter(v => !assignment.has(v));
+    const varName = candidates[0]!;
     steps.push({ action: `Branch: try ${varName} = true`, assignment, clauses, result: 'pending' });
+    // Invariant: simplify cannot return null here because there are no unit clauses
+    // at this point (they were handled above). A clause becomes empty from simplify
+    // only if it contained exactly one literal equal to the negated branch literal,
+    // i.e., a unit clause — which we have already eliminated.
     if (run(simplify(clauses, varName)!, new Map([...assignment, [varName, true]]))) return true;
 
     steps.push({ action: `Backtrack: try ${varName} = false`, assignment, clauses, result: 'pending' });
