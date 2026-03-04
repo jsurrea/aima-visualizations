@@ -708,181 +708,181 @@ jobs:
       cancel-in-progress: false
     steps:
       - name: Download landing
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: landing-dist
           path: staging/
 
       - name: Download chapter 01
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-01-dist
           path: staging/chapter-01
 
       - name: Download chapter 02
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-02-dist
           path: staging/chapter-02
 
       - name: Download chapter 03
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-03-dist
           path: staging/chapter-03
 
       - name: Download chapter 04
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-04-dist
           path: staging/chapter-04
 
       - name: Download chapter 05
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-05-dist
           path: staging/chapter-05
 
       - name: Download chapter 06
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-06-dist
           path: staging/chapter-06
 
       - name: Download chapter 07
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-07-dist
           path: staging/chapter-07
 
       - name: Download chapter 08
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-08-dist
           path: staging/chapter-08
 
       - name: Download chapter 09
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-09-dist
           path: staging/chapter-09
 
       - name: Download chapter 10
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-10-dist
           path: staging/chapter-10
 
       - name: Download chapter 11
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-11-dist
           path: staging/chapter-11
 
       - name: Download chapter 12
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-12-dist
           path: staging/chapter-12
 
       - name: Download chapter 13
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-13-dist
           path: staging/chapter-13
 
       - name: Download chapter 14
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-14-dist
           path: staging/chapter-14
 
       - name: Download chapter 15
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-15-dist
           path: staging/chapter-15
 
       - name: Download chapter 16
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-16-dist
           path: staging/chapter-16
 
       - name: Download chapter 17
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-17-dist
           path: staging/chapter-17
 
       - name: Download chapter 18
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-18-dist
           path: staging/chapter-18
 
       - name: Download chapter 19
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-19-dist
           path: staging/chapter-19
 
       - name: Download chapter 20
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-20-dist
           path: staging/chapter-20
 
       - name: Download chapter 21
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-21-dist
           path: staging/chapter-21
 
       - name: Download chapter 22
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-22-dist
           path: staging/chapter-22
 
       - name: Download chapter 23
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-23-dist
           path: staging/chapter-23
 
       - name: Download chapter 24
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-24-dist
           path: staging/chapter-24
 
       - name: Download chapter 25
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-25-dist
           path: staging/chapter-25
 
       - name: Download chapter 26
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-26-dist
           path: staging/chapter-26
 
       - name: Download chapter 27
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-27-dist
           path: staging/chapter-27
 
       - name: Download chapter 28
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-28-dist
           path: staging/chapter-28
 
       - name: Download chapter 29
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: chapter-29-dist
           path: staging/chapter-29
