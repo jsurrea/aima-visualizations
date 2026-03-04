@@ -9,10 +9,10 @@
   "color": "#3B82F6",
   "basePath": "/chapter-06",
   "sections": [
-    { "id": "minimax", "title": "Minimax Game Tree", "status": "planned" },
-    { "id": "alpha-beta", "title": "Alpha-Beta Pruning", "status": "planned" },
-    { "id": "mcts", "title": "Monte Carlo Tree Search", "status": "planned" }
+    { "id": "minimax", "title": "Minimax Game Tree", "status": "complete" },
+    { "id": "alpha-beta", "title": "Alpha-Beta Pruning", "status": "complete" },
+    { "id": "mcts", "title": "Monte Carlo Tree Search", "status": "complete" }
   ],
-  "status": "planned",
-  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
 }
