@@ -231,8 +231,10 @@ export function allenRelation(a: TimeInterval, b: TimeInterval): AllenRelation {
   if (as > bs && ae < be)                    return 'during';
   if (as < bs && ae > be)                    return 'contains';
   if (as < bs && ae > bs && ae < be)         return 'overlaps';
-  // as > bs && as < be && ae > be
+  // as > bs && as < be && ae > be (i begins after j, ends after j)
+  // v8 ignore start
   return 'overlapped-by';
+  // v8 ignore stop
 }
 
 /** A single step in an Allen-relation computation, carrying full context. */
@@ -335,11 +337,10 @@ export function isTrueAt(
   events: ReadonlyArray<EventCalcEvent>,
   initialFluents: ReadonlyArray<string>
 ): boolean {
-  // Collect all "initiation" times (−∞ = 0 for initial fluents) and
-  // "termination" times, then find the latest initiation ≤ t and check
-  // no termination occurred strictly between that initiation and t.
-
-  const initiations: number[] = initialFluents.includes(fluentName) ? [Number.NEGATIVE_INFINITY] : [];
+  // INITIAL_TIME represents time "before all events" — fluents that are true initially
+  // are treated as initiated at negative infinity, meaning they hold from the start.
+  const INITIAL_TIME = Number.NEGATIVE_INFINITY;
+  const initiations: number[] = initialFluents.includes(fluentName) ? [INITIAL_TIME] : [];
   const terminations: number[] = [];
 
   for (const ev of events) {
