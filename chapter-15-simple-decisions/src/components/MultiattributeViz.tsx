@@ -122,6 +122,7 @@ export default function MultiattributeViz() {
       {tab === 'dominance' && (
         <div>
           <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '12px' }}>Site A strictly dominates B if A ≥ B on every attribute and A &gt; B on at least one.</p>
+
           <svg width={380} height={260} aria-label="Airport site scatter plot - Safety vs Quietness">
             <line x1={PAD} y1={PAD} x2={PAD} y2={PAD + CH + 10} stroke="rgba(255,255,255,0.2)" strokeWidth={1} />
             <line x1={PAD - 10} y1={PAD + CH} x2={PAD + CW} y2={PAD + CH} stroke="rgba(255,255,255,0.2)" strokeWidth={1} />

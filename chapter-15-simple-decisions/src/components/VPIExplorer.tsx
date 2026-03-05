@@ -130,7 +130,7 @@ export default function VPIExplorer() {
       {tab === 'info' && (
         <div>
           <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '12px' }}>
-            Myopic policy: greedily gather observations where VPI &gt; cost, ranked by VPI/cost ratio.
+            Myopic policy: greedily gather observations where VPI {'>'} cost, ranked by VPI/cost ratio.
           </p>
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', marginBottom: '12px' }}>

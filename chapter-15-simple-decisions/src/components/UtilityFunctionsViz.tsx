@@ -77,7 +77,7 @@ export default function UtilityFunctionsViz() {
     <div style={cardStyle}>
       <h3 style={{ color: '#EC4899', fontSize: '18px', fontWeight: 600, margin: '0 0 8px 0' }}>§15.3 Utility Functions</h3>
       <p style={{ color: '#9CA3AF', fontSize: '14px', marginBottom: '16px' }}>
-        Utility functions encode risk attitude. Risk-averse agents have concave utility (logarithmic/power with ρ{'<'}1); risk-seeking agents have convex utility.
+        Utility functions encode risk attitude. Risk-averse agents have concave utility (logarithmic/power with ρ&lt;1); risk-seeking agents have convex utility.
       </p>
 
       {/* Curve selector */}
