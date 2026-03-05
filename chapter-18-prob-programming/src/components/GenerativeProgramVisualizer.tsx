@@ -240,7 +240,7 @@ export function GenerativeProgramVisualizer() {
   }, [mcmcPlaying, mcmcTick, prefersReduced]);
 
   function handleRunMcmc() {
-    // Use an incrementing counter as seed for reproducibility between runs
+    // Multiply by a prime (7919) to scatter seed values and avoid correlated runs
     mcmcRunCountRef.current += 1;
     const rng = mulberry32(mcmcRunCountRef.current * 7919);
     const results = runMCMC(lambda, evidenceLetters, 30, noiseRate, model === 'markov', rng);

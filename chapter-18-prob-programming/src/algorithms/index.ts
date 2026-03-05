@@ -647,7 +647,10 @@ export function hungarianAlgorithm(cost: ReadonlyArray<ReadonlyArray<number>>): 
     return false;
   };
 
-  // Main loop: keep adjusting until all rows are assigned
+  // Main loop: adjust cost matrix until all N rows are assigned.
+  // Each outer iteration either terminates (all assigned) or adds at least one zero
+  // to an uncovered position, guaranteeing progress. At most N adjustment phases
+  // are needed, each taking O(N²) to find the min uncovered value → O(N³) total.
   for (let mainIter = 0; mainIter < n * n + n; mainIter++) {
     // Try to augment all unassigned rows
     for (let row = 0; row < n; row++) {

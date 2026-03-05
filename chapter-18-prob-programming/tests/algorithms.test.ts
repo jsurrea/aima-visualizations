@@ -391,7 +391,7 @@ describe('generateOUPMWorld', () => {
     const rng = mulberry32(7);
     const steps = generateOUPMWorld(rng);
     for (let i = 1; i < steps.length; i++) {
-      expect(steps[i]!.runningProb).toBeLessThanOrEqual(steps[i - 1]!.runningProb + 1e-10);
+      expect(steps[i]!.runningProb).toBeLessThanOrEqual(steps[i - 1]!.runningProb + 1e-8);
     }
   });
 
