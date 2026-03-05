@@ -1,18 +1,43 @@
 import manifest from '../manifest.json';
-import Placeholder from './components/Placeholder';
+import OntologyViz from './components/OntologyViz';
+import EventCalculusViz from './components/EventCalculusViz';
+import ModalLogicViz from './components/ModalLogicViz';
+import SemanticNetworkViz from './components/SemanticNetworkViz';
+import DefaultReasoningViz from './components/DefaultReasoningViz';
+
+const NAV_SECTIONS = [
+  { id: 'ontological-engineering', label: 'Ontological Engineering' },
+  { id: 'event-calculus', label: 'Event Calculus' },
+  { id: 'modal-logic', label: 'Modal Logic' },
+  { id: 'semantic-networks', label: 'Semantic Networks' },
+  { id: 'default-reasoning', label: 'Default Reasoning' },
+];
 
 export default function App() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--surface-base)', color: 'white', fontFamily: 'system-ui, sans-serif' }}>
       {/* Header */}
-      <header style={{ background: 'var(--surface-1)', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '16px 24px' }}>
-        <a
-          href="/aima-visualizations/"
-          style={{ color: 'var(--chapter-color)', textDecoration: 'none', fontSize: '14px', fontWeight: 500 }}
-          aria-label="Back to all chapters"
-        >
-          ← Back to All Chapters
-        </a>
+      <header style={{ background: 'var(--surface-1)', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '16px 24px', position: 'sticky', top: 0, zIndex: 100 }}>
+        <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <a
+            href="/aima-visualizations/"
+            style={{ color: manifest.color, textDecoration: 'none', fontSize: '14px', fontWeight: 500 }}
+            aria-label="Back to all chapters"
+          >
+            ← Back
+          </a>
+          <nav aria-label="Section navigation" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {NAV_SECTIONS.map(s => (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                style={{ color: '#9CA3AF', textDecoration: 'none', fontSize: '13px', padding: '2px 8px', borderRadius: 6, background: 'var(--surface-2)' }}
+              >
+                {s.label}
+              </a>
+            ))}
+          </nav>
+        </div>
       </header>
 
       {/* Chapter hero */}
@@ -35,23 +60,14 @@ export default function App() {
         </p>
       </section>
 
-      {/* Sections list */}
-      <section style={{ padding: '0 24px 48px', maxWidth: '900px', margin: '0 auto' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '16px', color: '#E5E7EB' }}>
-          Planned Visualizations
-        </h2>
-        <div style={{ display: 'grid', gap: '12px' }}>
-          {manifest.sections.map((section) => (
-            <Placeholder
-              key={section.id}
-              id={section.id}
-              title={section.title}
-              status={section.status}
-              chapterColor={manifest.color}
-            />
-          ))}
-        </div>
-      </section>
+      {/* Visualizations */}
+      <main style={{ padding: '0 24px 64px', maxWidth: '900px', margin: '0 auto' }}>
+        <OntologyViz />
+        <EventCalculusViz />
+        <ModalLogicViz />
+        <SemanticNetworkViz />
+        <DefaultReasoningViz />
+      </main>
     </div>
   );
 }

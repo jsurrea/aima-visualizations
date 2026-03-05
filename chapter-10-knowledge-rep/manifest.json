@@ -9,10 +9,12 @@
   "color": "#8B5CF6",
   "basePath": "/chapter-10",
   "sections": [
-    { "id": "ontology", "title": "Ontology Hierarchy", "status": "planned" },
-    { "id": "event-calculus", "title": "Event Calculus Timeline", "status": "planned" },
-    { "id": "description-logic", "title": "Description Logic Browser", "status": "planned" }
+    { "id": "ontological-engineering", "title": "Ontological Engineering & Categories", "status": "complete" },
+    { "id": "event-calculus", "title": "Event Calculus & Time", "status": "complete" },
+    { "id": "modal-logic", "title": "Mental Objects & Modal Logic", "status": "complete" },
+    { "id": "semantic-networks", "title": "Semantic Networks & Description Logic", "status": "complete" },
+    { "id": "default-reasoning", "title": "Default Reasoning & JTMS", "status": "complete" }
   ],
-  "status": "planned",
-  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
 }
