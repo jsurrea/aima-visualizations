@@ -715,7 +715,7 @@ describe('getKnowledgeEngineeringSteps', () => {
   });
 });
 
-// Test for y-variable occurs-check failure (lines 403-409 in algorithms/index.ts)
+// Test for y-variable occurs-check failure (the sy.kind==='var' && occursIn branch in unifyPairs)
 describe('unify - y variable occurs check', () => {
   it('fails when second arg is a variable that occurs in the first arg structure', () => {
     // unify(g(y), y): the second term is a var 'y', occursIn('y', g(y))=true → failure
