@@ -393,14 +393,14 @@ describe('convolution1D', () => {
 
   it('relu activation clips negatives to 0', () => {
     // input=[1,2,3,4,5], kernel=[1,0,-1]
-    // pos=0: [1,2,3]·[1,0,-1] = 1-3 = -2 → relu→0
-    // pos=1: [2,3,4]·[1,0,-1] = 2-4 = -2 → relu→0
+    // pos=0: [1,2,3]·[1,0,-1] = 1-3 = -2 --> relu-->0
+    // pos=1: [2,3,4]·[1,0,-1] = 2-4 = -2 --> relu-->0
     // Use a kernel that produces a positive value at some position
     const posInput = [3, 1, 5, 2];
-    const posKernel = [1, -1]; // pos=0: 3-1=2>0, pos=1: 1-5=-4→0, pos=2: 5-2=3>0
+    const posKernel = [1, -1]; // pos=0: 3-1=2>0, pos=1: 1-5=-4-->0, pos=2: 5-2=3>0
     const steps = convolution1D(posInput, posKernel, 'relu');
-    expect(steps[0]?.output).toBeGreaterThan(0); // 2 → relu → 2
-    expect(steps[1]?.output).toBe(0);             // -4 → relu → 0
+    expect(steps[0]?.output).toBeGreaterThan(0); // 2 --> relu --> 2
+    expect(steps[1]?.output).toBe(0);             // -4 --> relu --> 0
   });
 
   it('captures correct input patch', () => {
@@ -426,25 +426,25 @@ describe('convolution1D', () => {
 // Max pooling 1D
 // ---------------------------------------------------------------------------
 describe('maxPool1D', () => {
-  it('basic 4 elements, poolSize=2 → 2 windows', () => {
+  it('basic 4 elements, poolSize=2 -> 2 windows', () => {
     const steps = maxPool1D([1, 3, 2, 4], 2);
     expect(steps.length).toBe(2);
     expect(steps[0]?.maxValue).toBe(3);
     expect(steps[1]?.maxValue).toBe(4);
   });
 
-  it('poolSize=1 → every element is a window', () => {
+  it('poolSize=1 -> every element is a window', () => {
     const steps = maxPool1D([5, 3, 9], 1);
     expect(steps.length).toBe(3);
     expect(steps[2]?.maxValue).toBe(9);
   });
 
-  it('poolSize larger than input → 0 windows', () => {
+  it('poolSize larger than input -> 0 windows', () => {
     const steps = maxPool1D([1, 2], 5);
     expect(steps.length).toBe(0);
   });
 
-  it('poolSize=3 with 6 elements → 2 windows', () => {
+  it('poolSize=3 with 6 elements -> 2 windows', () => {
     const steps = maxPool1D([1, 2, 3, 4, 5, 6], 3);
     expect(steps.length).toBe(2);
     expect(steps[0]?.maxValue).toBe(3);
@@ -616,7 +616,7 @@ describe('applyDropout', () => {
 // Autoencoder
 // ---------------------------------------------------------------------------
 describe('autoencoderPass', () => {
-  // 4 → 2 → 4 autoencoder
+  // 4 -> 2 -> 4 autoencoder
   const input = [0.9, 0.1, 0.8, 0.2];
   // encoderWeights: each element is a 2D matrix (weight matrix for one layer)
   const encoderWeights: ReadonlyArray<ReadonlyArray<number>> = [
@@ -675,10 +675,10 @@ describe('autoencoderPass', () => {
   });
 
   it('works with multiple encoder/decoder layers', () => {
-    const enc1: ReadonlyArray<ReadonlyArray<number>> = [[0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5]]; // 4→2
-    const enc2: ReadonlyArray<ReadonlyArray<number>> = [[0.5, 0.5]]; // 2→1
-    const dec1: ReadonlyArray<ReadonlyArray<number>> = [[0.5], [0.5]]; // 1→2
-    const dec2: ReadonlyArray<ReadonlyArray<number>> = [[0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5]]; // 2→4
+    const enc1: ReadonlyArray<ReadonlyArray<number>> = [[0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5]]; // 4->2
+    const enc2: ReadonlyArray<ReadonlyArray<number>> = [[0.5, 0.5]]; // 2->1
+    const dec1: ReadonlyArray<ReadonlyArray<number>> = [[0.5], [0.5]]; // 1->2
+    const dec2: ReadonlyArray<ReadonlyArray<number>> = [[0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5]]; // 2->4
     const steps = autoencoderPass(input, [enc1, enc2], [dec1, dec2]);
     // 1 + 2 + 2 = 5 steps
     expect(steps.length).toBe(5);

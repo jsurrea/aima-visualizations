@@ -9,22 +9,22 @@ const DECODE_COLOR = '#6366F1';
 const INPUT = [0.9, 0.1, 0.8, 0.2, 0.7, 0.3, 0.6, 0.4];
 const ENC_WEIGHTS: ReadonlyArray<ReadonlyArray<ReadonlyArray<number>>> = [
   // 8→4
-  Array.from({ length: 4 }, (_row, i) =>
-    Array.from({ length: 8 }, (_col, j) => (Math.sin(i * 2 + j) * 0.5 + 0.5) * 0.8 - 0.2)
+  Array.from({ length: 4 }, (_, i) =>
+    Array.from({ length: 8 }, (__, j) => (Math.sin(i * 2 + j) * 0.5 + 0.5) * 0.8 - 0.2)
   ),
   // 4→2
-  Array.from({ length: 2 }, (_row, i) =>
-    Array.from({ length: 4 }, (_col, j) => (Math.cos(i + j) * 0.5 + 0.5) * 0.8 - 0.2)
+  Array.from({ length: 2 }, (_, i) =>
+    Array.from({ length: 4 }, (__, j) => (Math.cos(i + j) * 0.5 + 0.5) * 0.8 - 0.2)
   ),
 ];
 const DEC_WEIGHTS: ReadonlyArray<ReadonlyArray<ReadonlyArray<number>>> = [
   // 2→4
-  Array.from({ length: 4 }, (_row, i) =>
-    Array.from({ length: 2 }, (_col, j) => (Math.sin(i + j * 2) * 0.5 + 0.5) * 0.8 - 0.2)
+  Array.from({ length: 4 }, (_, i) =>
+    Array.from({ length: 2 }, (__, j) => (Math.sin(i + j * 2) * 0.5 + 0.5) * 0.8 - 0.2)
   ),
   // 4→8
-  Array.from({ length: 8 }, (_row, i) =>
-    Array.from({ length: 4 }, (_col, j) => (Math.cos(i * 2 + j) * 0.5 + 0.5) * 0.8 - 0.2)
+  Array.from({ length: 8 }, (_, i) =>
+    Array.from({ length: 4 }, (__, j) => (Math.cos(i * 2 + j) * 0.5 + 0.5) * 0.8 - 0.2)
   ),
 ];
 
@@ -43,7 +43,6 @@ function LayerBars({ values, color, label, isActive }:
       <div style={{ display: 'flex', gap: 3, alignItems: 'flex-end', height: 60 }}>
         {values.map((v, i) => (
           <div key={i}
-            title={`[${i}] = ${v.toFixed(3)}`}
             aria-label={`Unit ${i}: ${v.toFixed(3)}`}
             style={{ width: Math.max(8, Math.min(20, 120 / values.length)),
               height: `${Math.round((v / maxVal) * 100)}%`,

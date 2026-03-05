@@ -13,7 +13,11 @@
 /** Small epsilon to prevent log(0) in cross-entropy loss. */
 const EPSILON = 1e-15;
 
-/** LCG PRNG constants from Numerical Recipes (Knuth). */
+/**
+ * LCG PRNG constants (Park-Miller variant from Numerical Recipes / Knuth).
+ * Provides deterministic, seed-reproducible pseudo-random numbers for dropout simulation.
+ * State update: s = (A*s + C) mod M
+ */
 const LCG_A = 1664525;
 const LCG_C = 1013904223;
 const LCG_M = 0xffffffff;

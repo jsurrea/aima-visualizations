@@ -106,7 +106,7 @@ export default function LSTMViz() {
           style={{ background: 'var(--surface-2,#1A1A24)', borderRadius: 12, padding: 16,
             minWidth: 220, border: '1px solid var(--surface-border,rgba(255,255,255,0.08))' }}>
           <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 12 }}>
-            LSTM Gates — t = {displayIdx}
+            LSTM Gates — t = {displayIdx + 1}
           </div>
           {current ? (
             <>

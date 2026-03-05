@@ -124,6 +124,44 @@ export default function App() {
         description="An autoencoder learns a compressed representation by encoding input to a lower-dimensional bottleneck, then decoding back to reconstruct the original input.">
         <AutoencoderViz />
       </Section>
+
+      <section aria-labelledby="applications" style={{
+        padding: '40px 24px',
+        maxWidth: '960px',
+        margin: '0 auto',
+      }}>
+        <SectionHeader
+          id="applications"
+          title="§22.8 Applications"
+          description="Deep learning is applied across image classification (CNNs), sequence-to-sequence translation (encoder-decoder RNNs/LSTMs), and language modelling. The interactive visualizations above demonstrate all key building blocks: convolutional feature extraction, recurrent sequence processing, and autoencoding for representation learning."
+        />
+        <div style={{
+          background: 'var(--surface-1, #111118)',
+          borderRadius: 'var(--radius-lg, 20px)',
+          padding: '24px',
+          border: '1px solid var(--surface-border, rgba(255,255,255,0.08))',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          gap: 16,
+        }}>
+          {[
+            { icon: '🖼️', title: 'Image Classification', detail: 'CNNs (§22.3) extract hierarchical spatial features via convolution + pooling, enabling recognition of objects in images.' },
+            { icon: '🔄', title: 'Sequence-to-Sequence', detail: 'Encoder–decoder RNNs/LSTMs (§22.6) map variable-length input sequences to variable-length outputs for translation and summarisation.' },
+            { icon: '📝', title: 'Language Models', detail: 'Recurrent networks and transformers model conditional word probabilities P(wt | w1…wt-1) for text generation and speech recognition.' },
+          ].map(app => (
+            <div key={app.title} style={{
+              background: 'var(--surface-2, #1A1A24)',
+              borderRadius: 12,
+              padding: 20,
+              border: '1px solid var(--surface-border, rgba(255,255,255,0.08))',
+            }}>
+              <div style={{ fontSize: 28, marginBottom: 10 }} aria-hidden="true">{app.icon}</div>
+              <h3 style={{ fontSize: 16, fontWeight: 600, color: '#F9FAFB', marginBottom: 8 }}>{app.title}</h3>
+              <p style={{ fontSize: 13, color: '#9CA3AF', lineHeight: 1.6, margin: 0 }}>{app.detail}</p>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
