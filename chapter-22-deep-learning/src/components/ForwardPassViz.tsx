@@ -134,10 +134,11 @@ export default function ForwardPassViz() {
     <div tabIndex={0} onKeyDown={handleKey} aria-label="Forward Pass Visualization"
       style={{ outline: 'none', fontFamily: 'var(--font-sans, system-ui)' }}>
       {/* Activation selector */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+      <div role="radiogroup" aria-label="Activation function" style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
         {(['sigmoid', 'relu', 'tanh'] as Activation[]).map((a) => (
           <button key={a} onClick={() => setActivation(a)}
-            aria-label={`Use ${a} activation`} aria-pressed={activation === a}
+            role="radio" aria-checked={activation === a}
+            aria-label={`Use ${a} activation`}
             style={{ padding: '6px 14px', borderRadius: 8, border: 'none', cursor: 'pointer',
               background: activation === a ? COLOR : 'var(--surface-3, #242430)',
               color: activation === a ? '#fff' : '#9CA3AF', fontWeight: 600, fontSize: 14 }}>

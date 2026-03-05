@@ -93,7 +93,7 @@ export default function TrainingViz() {
         <div style={{ display: 'flex', gap: 6 }}>
           {(['sigmoid', 'relu', 'tanh'] as Activation[]).map((a) => (
             <button key={a} onClick={() => setActivation(a)}
-              aria-label={`Use ${a} activation`} aria-pressed={activation === a}
+              aria-label={`Use ${a} activation`} role="radio" aria-checked={activation === a}
               style={{ padding: '5px 12px', borderRadius: 8, border: 'none', cursor: 'pointer',
                 background: activation === a ? COLOR : 'var(--surface-3,#242430)',
                 color: activation === a ? '#fff' : '#9CA3AF', fontWeight: 600, fontSize: 13 }}>
@@ -105,7 +105,7 @@ export default function TrainingViz() {
           LR:
           {[0.01, 0.1, 0.5].map((v) => (
             <button key={v} onClick={() => setLr(v)}
-              aria-label={`Learning rate ${v}`} aria-pressed={lr === v}
+              aria-label={`Learning rate ${v}`} role="radio" aria-checked={lr === v}
               style={{ padding: '4px 10px', borderRadius: 6, border: 'none', cursor: 'pointer',
                 background: lr === v ? LOSS_COLOR : 'var(--surface-3,#242430)',
                 color: lr === v ? '#000' : '#9CA3AF', fontSize: 13 }}>

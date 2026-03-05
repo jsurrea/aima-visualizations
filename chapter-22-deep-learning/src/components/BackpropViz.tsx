@@ -144,7 +144,7 @@ export default function BackpropViz() {
       <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
         {(['sigmoid', 'relu', 'tanh'] as Activation[]).map((a) => (
           <button key={a} onClick={() => setActivation(a)}
-            aria-label={`Use ${a} activation`} aria-pressed={activation === a}
+            aria-label={`Use ${a} activation`} role="radio" aria-checked={activation === a}
             style={{ padding: '6px 14px', borderRadius: 8, border: 'none', cursor: 'pointer',
               background: activation === a ? COLOR : 'var(--surface-3,#242430)',
               color: activation === a ? '#fff' : '#9CA3AF', fontWeight: 600, fontSize: 14 }}>

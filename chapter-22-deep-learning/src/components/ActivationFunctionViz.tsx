@@ -100,7 +100,7 @@ export default function ActivationFunctionViz() {
         {(['sigmoid', 'relu', 'softplus', 'tanh'] as FnName[]).map((f) => (
           <button key={f} onClick={() => { setFn(f); reset(); }}
             aria-label={`Show ${f} function`}
-            aria-pressed={fn === f}
+            role="radio" aria-checked={fn === f}
             style={{ padding: '6px 14px', borderRadius: 8, border: 'none', cursor: 'pointer',
               background: fn === f ? COLOR : 'var(--surface-3, #242430)',
               color: fn === f ? '#fff' : '#9CA3AF', fontWeight: 600, fontSize: 14 }}>

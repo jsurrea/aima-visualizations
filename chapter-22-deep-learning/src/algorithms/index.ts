@@ -1,8 +1,22 @@
 /**
  * Chapter 22 — Deep Learning
  * Pure algorithm implementations.
+ *
+ * Note on non-null assertions (`!`): Throughout this module, array accesses
+ * inside `for` loops use `arr[i]!` assertions. These are safe because loop
+ * bounds (`i < arr.length`, `j < hiddenSize`, etc.) guarantee defined values.
+ * This avoids uncovered `?? 0` branches under `noUncheckedIndexedAccess`.
+ *
  * @module algorithms
  */
+
+/** Small epsilon to prevent log(0) in cross-entropy loss. */
+const EPSILON = 1e-15;
+
+/** LCG PRNG constants from Numerical Recipes (Knuth). */
+const LCG_A = 1664525;
+const LCG_C = 1013904223;
+const LCG_M = 0xffffffff;
 
 // ---------------------------------------------------------------------------
 // Activation functions
@@ -81,7 +95,7 @@ export function crossEntropyLoss(
   predicted: ReadonlyArray<number>,
   target: ReadonlyArray<number>,
 ): number {
-  return -target.reduce((acc, t, i) => acc + t * Math.log((predicted[i] ?? 0) + 1e-15), 0);
+  return -target.reduce((acc, t, i) => acc + t * Math.log((predicted[i] ?? 0) + EPSILON), 0);
 }
 
 // ---------------------------------------------------------------------------
@@ -533,8 +547,8 @@ export function applyDropout(
 ): ReadonlyArray<DropoutStep> {
   let state = seed >>> 0;
   function nextRandom(): number {
-    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
-    return state / 0xffffffff;
+    state = (Math.imul(state, LCG_A) + LCG_C) >>> 0;
+    return state / LCG_M;
   }
   const scale = dropoutRate > 0 && dropoutRate < 1 ? 1 / (1 - dropoutRate) : 1;
 
