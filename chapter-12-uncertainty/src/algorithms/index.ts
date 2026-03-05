@@ -209,7 +209,7 @@ export function bayesNormalized(
   priors: ReadonlyArray<number>,
 ): number[] {
   if (likelihoods.length === 0 || likelihoods.length !== priors.length) return [];
-  const raw = likelihoods.map((l, i) => l * (priors[i] as number));
+  const raw = likelihoods.map((l, i) => l * priors[i]!);
   const total = raw.reduce((s, v) => s + v, 0);
   if (total === 0) return raw.map(() => 1 / raw.length);
   return raw.map(v => v / total);
@@ -280,6 +280,11 @@ export function wumpusPitProbability(
   const result = new Map<string, number>();
   if (querySquares.length === 0) return result;
 
+  const parseKey = (key: string): [number, number] => {
+    const comma = key.indexOf(',');
+    return [parseInt(key.slice(0, comma), 10), parseInt(key.slice(comma + 1), 10)];
+  };
+
   const safeSet = new Set(knownSafeSquares.map(([x, y]) => `${x},${y}`));
   const breezySet = new Set(breezySquares.map(([x, y]) => `${x},${y}`));
 
@@ -298,23 +303,20 @@ export function wumpusPitProbability(
   // Frontier: unknown squares adjacent to any explored square
   const frontierSet = new Set<string>();
   for (const key of exploredSet) {
-    const [x, y] = key.split(',').map(Number) as [number, number];
+    const [x, y] = parseKey(key);
     for (const [ax, ay] of getAdj(x, y)) {
       const aKey = `${ax},${ay}`;
       if (!exploredSet.has(aKey)) frontierSet.add(aKey);
     }
   }
 
-  const frontier = Array.from(frontierSet).map(k => {
-    const [x, y] = k.split(',').map(Number) as [number, number];
-    return [x, y] as [number, number];
-  });
+  const frontier = Array.from(frontierSet).map(k => parseKey(k));
 
   // Check consistency of a pit configuration (subset of frontier has pits)
   const isConsistent = (pitSubset: Set<string>): boolean => {
     // Each breezy explored square must have at least one adjacent pit in frontier
     for (const bKey of breezySet) {
-      const [bx, by] = bKey.split(',').map(Number) as [number, number];
+      const [bx, by] = parseKey(bKey);
       const adjFrontier = getAdj(bx, by).filter(([ax, ay]) => frontierSet.has(`${ax},${ay}`));
       const hasPit = adjFrontier.some(([ax, ay]) => pitSubset.has(`${ax},${ay}`));
       if (!hasPit) return false;
@@ -323,7 +325,7 @@ export function wumpusPitProbability(
     // (a breezy square is explored but has adjacent pits, so only check non-breezy)
     for (const sKey of exploredSet) {
       if (breezySet.has(sKey)) continue;
-      const [sx, sy] = sKey.split(',').map(Number) as [number, number];
+      const [sx, sy] = parseKey(sKey);
       for (const [ax, ay] of getAdj(sx, sy)) {
         if (pitSubset.has(`${ax},${ay}`)) return false;
       }

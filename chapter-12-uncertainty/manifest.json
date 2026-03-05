@@ -9,10 +9,13 @@
   "color": "#EC4899",
   "basePath": "/chapter-12",
   "sections": [
-    { "id": "probability-axioms", "title": "Probability Axiom Explorer", "status": "planned" },
-    { "id": "joint-distribution", "title": "Joint Distribution Table", "status": "planned" },
-    { "id": "bayes-rule", "title": "Bayes' Rule Demo", "status": "planned" }
+    { "id": "probability-axioms", "title": "§12.1–12.2 Probability Axiom Explorer", "status": "complete" },
+    { "id": "joint-distribution", "title": "§12.3 Full Joint Distribution", "status": "complete" },
+    { "id": "independence-explorer", "title": "§12.4 Independence Explorer", "status": "complete" },
+    { "id": "bayes-rule", "title": "§12.5 Bayes' Rule Demo", "status": "complete" },
+    { "id": "naive-bayes", "title": "§12.6 Naive Bayes Classifier", "status": "complete" },
+    { "id": "wumpus-world", "title": "§12.7 Wumpus World Uncertainty", "status": "complete" }
   ],
-  "status": "planned",
-  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
 }
