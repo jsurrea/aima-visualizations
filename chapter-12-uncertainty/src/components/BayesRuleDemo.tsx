@@ -4,6 +4,12 @@ import { renderInlineMath, renderDisplayMath } from '../utils/mathUtils';
 
 const CHAPTER_COLOR = '#EC4899';
 
+// Joint distribution values (Cavity/Toothache/Catch) from §12.3 Fig 12.3
+const P_CAVITY = 0.2;
+const P_CAVITY_TOOTH_CATCH = 0.108;
+const P_CAVITY_TOOTH_NOCATCH = 0.012;
+const P_CAVITY_NOTOOTH_CATCH = 0.072;
+
 interface Step {
   title: string;
   latex: string;
@@ -84,10 +90,10 @@ export default function BayesRuleDemo() {
   const handleReset = () => { clearTimer(); setPlaying(false); setCurrentStep(0); };
 
   // Conditional independence verification using joint distribution values
-  // P(T∧C|cavity) = P(cavity,T,C)/P(cavity) = 0.108/0.2
-  const pToothacheAndCatchGivenCavity = 0.108 / 0.2; // = 0.54
-  const pToothacheGivenCavity = (0.108 + 0.012) / 0.2; // = 0.60
-  const pCatchGivenCavity = (0.108 + 0.072) / 0.2;     // = 0.90
+  // P(T∧C|cavity) = P(cavity,T,C)/P(cavity)
+  const pToothacheAndCatchGivenCavity = P_CAVITY_TOOTH_CATCH / P_CAVITY;
+  const pToothacheGivenCavity = (P_CAVITY_TOOTH_CATCH + P_CAVITY_TOOTH_NOCATCH) / P_CAVITY;
+  const pCatchGivenCavity = (P_CAVITY_TOOTH_CATCH + P_CAVITY_NOTOOTH_CATCH) / P_CAVITY;
 
   const cardStyle: React.CSSProperties = {
     background: 'var(--surface-2)',
@@ -204,7 +210,7 @@ export default function BayesRuleDemo() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '8px', marginTop: '12px', fontSize: '13px' }}>
           <div style={{ background: 'var(--surface-3)', borderRadius: '8px', padding: '10px' }}>
             <div style={{ color: '#9CA3AF', marginBottom: '4px' }}>P(toothache∧catch|cavity)</div>
-            <div style={{ color: '#10B981', fontWeight: 700 }}>{(0.108 / 0.2).toFixed(4)} = 0.5400</div>
+            <div style={{ color: '#10B981', fontWeight: 700 }}>{pToothacheAndCatchGivenCavity.toFixed(4)} = 0.5400</div>
           </div>
           <div style={{ background: 'var(--surface-3)', borderRadius: '8px', padding: '10px' }}>
             <div style={{ color: '#9CA3AF', marginBottom: '4px' }}>P(T|C) × P(catch|C)</div>
