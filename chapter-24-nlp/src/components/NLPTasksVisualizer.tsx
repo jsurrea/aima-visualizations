@@ -119,7 +119,7 @@ function renderNERResult(text: string, spans: NERSpan[]): React.ReactNode[] {
 // ─── Sentiment keyword analysis ───────────────────────────────────────────────
 
 const POS_WORDS = ['great','good','love','excellent','amazing','fantastic','wonderful','happy','best','brilliant','enjoy','nice','perfect','impressive','helpful'];
-const NEG_WORDS = ['terrible','bad','hate','awful','horrible','worst','terrible','poor','useless','disgusting','annoying','boring','broken','hard','fail','terrifying','unavoidable'];
+const NEG_WORDS = ['terrible','bad','hate','awful','horrible','worst','poor','useless','disgusting','annoying','boring','broken','hard','fail','terrifying','unavoidable'];
 
 interface SentimentResult { label: 'positive' | 'negative' | 'neutral'; confidence: number; posCount: number; negCount: number }
 

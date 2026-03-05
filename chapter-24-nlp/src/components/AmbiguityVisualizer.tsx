@@ -207,9 +207,10 @@ function PronounDemo() {
       const clean = w.replace(/[^a-zA-Z]/g, '');
       const first = clean[0];
       if (first === undefined) return;
-      if (i > 0 && clean.length > 0 && first === first.toUpperCase()) {
+      const isCapitalized = first === first.toUpperCase();
+      if (i > 0 && clean.length > 0 && isCapitalized) {
         if (!found.includes(clean)) found.push(clean);
-      } else if (i === 0 && clean.length > 1 && first === first.toUpperCase()) {
+      } else if (i === 0 && clean.length > 1 && isCapitalized) {
         if (!found.includes(clean)) found.push(clean);
       }
     });
