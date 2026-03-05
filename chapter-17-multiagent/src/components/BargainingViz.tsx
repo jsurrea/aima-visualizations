@@ -8,6 +8,8 @@ import { renderInlineMath, renderDisplayMath } from '../utils/mathUtils';
 const CHAPTER_COLOR = '#EC4899';
 const AGENT2_COLOR = '#6B21A8';
 const AGENT2_LIGHT = '#A855F7';
+/** Minimum share percentage (%) before hiding the label inside the split bar to keep it readable. */
+const MIN_LABEL_WIDTH_PERCENT = 12;
 
 const btnStyle = (active = false): React.CSSProperties => ({
   padding: '6px 14px',
@@ -163,7 +165,7 @@ export default function BargainingViz() {
               color: 'white',
               minWidth: pctA > 10 ? '0' : undefined,
             }}>
-              {pctA > 12 ? `A: ${pctA.toFixed(1)}%` : ''}
+              {pctA > MIN_LABEL_WIDTH_PERCENT ? `A: ${pctA.toFixed(1)}%` : ''}
             </div>
             <div style={{
               width: `${pctB}%`,
@@ -175,7 +177,7 @@ export default function BargainingViz() {
               fontWeight: 600,
               color: 'white',
             }}>
-              {pctB > 12 ? `B: ${pctB.toFixed(1)}%` : ''}
+              {pctB > MIN_LABEL_WIDTH_PERCENT ? `B: ${pctB.toFixed(1)}%` : ''}
             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginTop: '4px' }}>

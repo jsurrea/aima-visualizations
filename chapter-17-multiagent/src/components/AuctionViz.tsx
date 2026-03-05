@@ -314,7 +314,7 @@ export default function AuctionViz() {
         <strong style={{ color: 'white', fontSize: '14px' }}>Revenue Comparison</strong>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '10px' }}>
           {[
-            { label: 'English (final)', revenue: englishSteps.length > 0 ? englishSteps[englishSteps.length - 1]!.currentPrice : 0, color: CHAPTER_COLOR },
+            { label: 'English (final)', revenue: englishSteps[englishSteps.length - 1]?.currentPrice ?? 0, color: CHAPTER_COLOR },
             { label: 'Vickrey', revenue: vickreyRevenue, color: '#6366F1' },
             { label: 'VCG total tax', revenue: Math.round(vcgRevenue * 10) / 10, color: '#10B981' },
           ].map(({ label, revenue, color }) => (

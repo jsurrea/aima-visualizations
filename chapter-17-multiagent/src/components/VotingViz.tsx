@@ -120,7 +120,7 @@ export default function VotingViz() {
             style={{ accentColor: CHAPTER_COLOR }}
             aria-label="Enable strategic voting for voter 1"
           />
-          Strategic voting (Voter 1: B{'>'} A{'>'} C{'>'} D{'>'} E)
+          Strategic voting (Voter 1: B &gt; A &gt; C &gt; D &gt; E)
         </label>
       </div>
 

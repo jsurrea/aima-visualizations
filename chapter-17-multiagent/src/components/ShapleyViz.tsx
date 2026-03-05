@@ -298,7 +298,7 @@ export default function ShapleyViz() {
           dangerouslySetInnerHTML={{
             __html: renderInlineMath(`\\sum_{i} \\phi_i = ${totalShapley.toFixed(3)} \\quad v(N) = ${charFnValues.get(coalitionKey(players)) ?? 0}`)
           }}
-          aria-label={`Sum of Shapley values equals ${totalShapley.toFixed(3)}, grand coalition value is ${charFnValues.get(players.map(p => p).join(',')) ?? 0}`}
+          aria-label={`Sum of Shapley values equals ${totalShapley.toFixed(3)}, grand coalition value is ${charFnValues.get(coalitionKey(players)) ?? 0}`}
         />
         <span style={{ color: '#9CA3AF', marginLeft: '12px', fontSize: '12px' }}>
           (Efficiency: Shapley sums to grand coalition value)
