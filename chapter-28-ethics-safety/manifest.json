@@ -2,17 +2,20 @@
   "chapter": 28,
   "title": "Philosophy, Ethics, and Safety of AI",
   "shortTitle": "AI Ethics",
-  "description": "AI ethics taxonomy, algorithmic fairness metrics, and value alignment timeline.",
+  "description": "The philosophical limits of AI, the Chinese Room, algorithmic fairness metrics, k-anonymity, differential privacy, fault tree analysis, and the value alignment problem.",
   "part": 7,
   "partName": "Conclusions",
   "icon": "⚖️",
   "color": "#EF4444",
   "basePath": "/chapter-28",
   "sections": [
-    { "id": "ethics-taxonomy", "title": "AI Ethics Taxonomy", "status": "planned" },
-    { "id": "fairness", "title": "Algorithmic Fairness Demo", "status": "planned" },
-    { "id": "safety-spectrum", "title": "AI Safety Spectrum", "status": "planned" }
+    { "id": "limits",   "title": "§28.1 The Limits of AI — Arguments explorer & Turing Test timeline",              "status": "complete" },
+    { "id": "thinking", "title": "§28.2 Can Machines Think? — Chinese Room simulation & consciousness theories",    "status": "complete" },
+    { "id": "ethics",   "title": "§28.3 Ethics Taxonomy & Future of Work — principles + automation risk explorer",  "status": "complete" },
+    { "id": "privacy",  "title": "§28.3.2 Privacy — k-anonymity generalizer & differential privacy (Laplace)",     "status": "complete" },
+    { "id": "fairness", "title": "§28.3.3 Fairness & Bias — COMPAS-style demo with threshold controls",             "status": "complete" },
+    { "id": "safety",   "title": "§28.3.7 AI Safety — Fault tree analysis & value alignment simulator",             "status": "complete" }
   ],
-  "status": "planned",
-  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
 }
