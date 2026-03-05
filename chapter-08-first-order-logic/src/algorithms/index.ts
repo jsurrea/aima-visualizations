@@ -682,7 +682,7 @@ export function getRepresentationLevels(): ReadonlyArray<RepresentationLevel> {
     {
       name: 'Propositional Logic',
       description: 'Facts as atomic propositions. Cannot express relationships between objects.',
-      example: 'RichardAlive \\land JohnBrother',
+      example: 'Alive \\land Brother(John)',
       expressiveness: 'low',
       complexity: 'low',
     },

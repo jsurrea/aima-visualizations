@@ -717,8 +717,8 @@ describe('getKnowledgeEngineeringSteps', () => {
 
 // Test for y-variable occurs-check failure (lines 403-409 in algorithms/index.ts)
 describe('unify - y variable occurs check', () => {
-  it('fails when y variable occurs in x term (occurs check from y side)', () => {
-    // unify g(y) with y: sy=y is a var, occursIn('y', g(y))=true → failure
+  it('fails when second arg is a variable that occurs in the first arg structure', () => {
+    // unify(g(y), y): the second term is a var 'y', occursIn('y', g(y))=true → failure
     const y: FOLTerm = { kind: 'var', name: 'y' };
     const gy: FOLTerm = { kind: 'fn', name: 'g', args: [y] };
     const steps = unify(gy, y);
