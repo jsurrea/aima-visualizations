@@ -368,3 +368,382 @@ export function exploreWumpusWorld(): ReadonlyArray<WumpusStep> {
 
   return steps;
 }
+
+// ─── TT-ENTAILS (§7.4) ───────────────────────────────────────────────────────
+
+export interface TTEntailsStep {
+  readonly assignment: ReadonlyMap<string, boolean>;
+  readonly kbValue: boolean;
+  readonly alphaValue: boolean;
+  readonly rowIndex: number;
+  readonly totalRows: number;
+  readonly result: 'pending' | 'proved' | 'disproved';
+}
+
+/**
+ * TT-ENTAILS: Check whether KB |= alpha using truth tables (Figure 7.10).
+ * Enumerates all 2^n variable assignments; for each row where the KB is true,
+ * verifies alpha is also true.  Returns a step for every row evaluated.
+ * Terminates early with 'disproved' on the first counter-example.
+ * The final step is marked 'proved' when no counter-example is found.
+ *
+ * @param kb    - Conjunction of KB formulas.
+ * @param alpha - Query formula.
+ * @returns Steps for each truth-table row checked.
+ */
+export function ttEntails(
+  kb: ReadonlyArray<PropFormula>,
+  alpha: PropFormula,
+): ReadonlyArray<TTEntailsStep> {
+  const varSet = new Set<string>();
+  for (const f of kb) for (const v of extractVariables(f)) varSet.add(v);
+  for (const v of extractVariables(alpha)) varSet.add(v);
+  const vars = [...varSet].sort();
+  const n = vars.length;
+  const totalRows = 1 << n;
+  const steps: TTEntailsStep[] = [];
+
+  for (let i = 0; i < totalRows; i++) {
+    const assignment = new Map<string, boolean>();
+    for (let j = 0; j < n; j++) {
+      assignment.set(vars[j]!, Boolean((i >> (n - 1 - j)) & 1));
+    }
+    const kbValue = kb.length === 0 || kb.every(f => evaluateFormula(f, assignment));
+    const alphaValue = evaluateFormula(alpha, assignment);
+    if (kbValue && !alphaValue) {
+      steps.push({ assignment, kbValue, alphaValue, rowIndex: i, totalRows, result: 'disproved' });
+      return steps;
+    }
+    steps.push({ assignment, kbValue, alphaValue, rowIndex: i, totalRows, result: 'pending' });
+  }
+
+  // All KB-true rows had alpha true → entailment holds; mark last step 'proved'.
+  const last = steps[steps.length - 1]!;
+  steps[steps.length - 1] = { ...last, result: 'proved' };
+  return steps;
+}
+
+// ─── PL-RESOLUTION (§7.5) ────────────────────────────────────────────────────
+
+/** Returns true iff `clause` (order-independent) is already in `set`. */
+function clauseInSet(clause: Clause, set: Clause[]): boolean {
+  const sorted = [...clause].sort();
+  return set.some(c => {
+    const cs = [...c].sort();
+    return cs.length === sorted.length && cs.every((l, i) => l === sorted[i]);
+  });
+}
+
+/**
+ * Attempt to resolve two clauses by finding a complementary literal pair.
+ * Returns the resolvent (with duplicates removed) or null if no resolution
+ * is possible.
+ */
+function plResolve(ci: Clause, cj: Clause): Clause | null {
+  for (const l of ci) {
+    const neg = negateLiteral(l);
+    if (cj.includes(neg)) {
+      const resolvent = [
+        ...ci.filter(x => x !== l),
+        ...cj.filter(x => x !== neg),
+      ];
+      return [...new Set(resolvent)];
+    }
+  }
+  return null;
+}
+
+export interface ResolutionStep {
+  readonly action: string;
+  readonly clause1: Clause;
+  readonly clause2: Clause;
+  readonly resolvent: Clause | null;
+  readonly allClauses: CNF;
+  readonly result: 'pending' | 'proved' | 'disproved';
+}
+
+/**
+ * PL-RESOLUTION: Proves KB |= alpha by showing (KB ∧ ¬alpha) is unsatisfiable
+ * (Figure 7.12).  Repeatedly resolves pairs of clauses; terminates when the
+ * empty clause is derived (proved) or no new clauses can be added (disproved).
+ *
+ * @param kbClauses      - KB in CNF.
+ * @param negAlphaClauses - Negation of alpha in CNF.
+ * @returns Steps of resolution.
+ */
+export function plResolution(
+  kbClauses: CNF,
+  negAlphaClauses: CNF,
+): ReadonlyArray<ResolutionStep> {
+  const steps: ResolutionStep[] = [];
+  let clauses: Clause[] = [...kbClauses, ...negAlphaClauses];
+
+  for (;;) {
+    const newClauses: Clause[] = [];
+
+    for (let i = 0; i < clauses.length; i++) {
+      for (let j = i + 1; j < clauses.length; j++) {
+        const ci = clauses[i]!;
+        const cj = clauses[j]!;
+        const resolvent = plResolve(ci, cj);
+        if (resolvent === null) continue;
+
+        if (resolvent.length === 0) {
+          steps.push({
+            action: 'Empty clause derived — KB ∧ ¬α is unsatisfiable (proved)',
+            clause1: ci, clause2: cj, resolvent,
+            allClauses: [...clauses, resolvent],
+            result: 'proved',
+          });
+          return steps;
+        }
+
+        if (!clauseInSet(resolvent, clauses) && !clauseInSet(resolvent, newClauses)) {
+          newClauses.push(resolvent);
+          steps.push({
+            action: `Derived [${resolvent.join(', ')}] from [${ci.join(', ')}] and [${cj.join(', ')}]`,
+            clause1: ci, clause2: cj, resolvent,
+            allClauses: [...clauses, ...newClauses],
+            result: 'pending',
+          });
+        }
+      }
+    }
+
+    if (newClauses.length === 0) {
+      steps.push({
+        action: 'No new clauses can be derived — KB ∧ ¬α is satisfiable (disproved)',
+        clause1: [], clause2: [], resolvent: null,
+        allClauses: [...clauses],
+        result: 'disproved',
+      });
+      return steps;
+    }
+
+    clauses = [...clauses, ...newClauses];
+  }
+}
+
+// ─── WALKSAT (§7.6) ──────────────────────────────────────────────────────────
+
+/** Linear congruential generator for deterministic pseudo-random numbers. */
+function makeLCG(seed: number): () => number {
+  let state = seed >>> 0;
+  return (): number => {
+    state = ((1664525 * state + 1013904223) & 0xFFFFFFFF) >>> 0;
+    return state / 0x100000000;
+  };
+}
+
+export interface WalkSATStep {
+  readonly iteration: number;
+  readonly assignment: ReadonlyMap<string, boolean>;
+  readonly flip: string | null;
+  readonly flipType: 'greedy' | 'random' | null;
+  readonly satisfiedCount: number;
+  readonly totalClauses: number;
+  readonly result: 'pending' | 'sat' | 'max_flips';
+}
+
+/**
+ * WALKSAT: Randomized local search for satisfiability (Figure 7.18).
+ * Each step picks an unsatisfied clause, then either flips the variable that
+ * maximises satisfied clauses (prob 1−p, "greedy") or flips a random variable
+ * from the clause (prob p, "random walk").
+ *
+ * @param clauses  - CNF formula.
+ * @param p        - Random-walk probability (noise), in [0, 1].
+ * @param maxFlips - Maximum number of variable flips.
+ * @param seed     - Seed for the internal LCG (default 0).
+ * @returns Steps of WalkSAT execution.
+ */
+export function walkSat(
+  clauses: CNF,
+  p: number,
+  maxFlips: number,
+  seed = 0,
+): ReadonlyArray<WalkSATStep> {
+  const rng = makeLCG(seed);
+
+  const varSet = new Set<string>();
+  for (const clause of clauses) {
+    for (const l of clause) varSet.add(literalVar(l));
+  }
+  const vars = [...varSet].sort();
+
+  const assignment = new Map<string, boolean>();
+  for (const v of vars) assignment.set(v, rng() >= 0.5);
+
+  /** Count how many clauses are satisfied under the given assignment. */
+  function countSat(asgn: ReadonlyMap<string, boolean>): number {
+    return clauses.filter(clause =>
+      clause.some(l => {
+        const val = asgn.get(literalVar(l));
+        return val !== undefined && literalValue(l) === val;
+      })
+    ).length;
+  }
+
+  const steps: WalkSATStep[] = [];
+
+  // Check initial state (before any flip).
+  const initSat = countSat(assignment);
+  if (initSat === clauses.length) {
+    return [{ iteration: 0, assignment: new Map(assignment), flip: null, flipType: null, satisfiedCount: initSat, totalClauses: clauses.length, result: 'sat' }];
+  }
+  if (maxFlips === 0) {
+    return [{ iteration: 0, assignment: new Map(assignment), flip: null, flipType: null, satisfiedCount: initSat, totalClauses: clauses.length, result: 'max_flips' }];
+  }
+
+  // Main flip loop: each iteration makes one flip then records the state.
+  for (let i = 0; i < maxFlips; i++) {
+    const unsatisfied = clauses.filter(c =>
+      !c.some(l => {
+        const val = assignment.get(literalVar(l));
+        return val !== undefined && literalValue(l) === val;
+      })
+    );
+    const pickedClause = unsatisfied[Math.floor(rng() * unsatisfied.length)]!;
+    const clauseVars = [...new Set(pickedClause.map(l => literalVar(l)))];
+
+    let flipVar: string;
+    let flipType: 'greedy' | 'random';
+
+    if (rng() < p) {
+      flipVar = clauseVars[Math.floor(rng() * clauseVars.length)]!;
+      flipType = 'random';
+    } else {
+      let bestVar = clauseVars[0]!;
+      let bestCount = -1;
+      for (const v of clauseVars) {
+        const temp = new Map(assignment);
+        temp.set(v, !(assignment.get(v)!));
+        const cnt = countSat(temp);
+        if (cnt > bestCount) { bestCount = cnt; bestVar = v; }
+      }
+      flipVar = bestVar;
+      flipType = 'greedy';
+    }
+
+    assignment.set(flipVar, !(assignment.get(flipVar)!));
+    const postSat = countSat(assignment);
+    const isLast = i === maxFlips - 1;
+    const result: 'sat' | 'max_flips' | 'pending' =
+      postSat === clauses.length ? 'sat' : isLast ? 'max_flips' : 'pending';
+
+    steps.push({
+      iteration: i + 1, assignment: new Map(assignment),
+      flip: flipVar, flipType,
+      satisfiedCount: postSat, totalClauses: clauses.length, result,
+    });
+
+    if (result !== 'pending') return steps;
+  }
+
+  /* v8 ignore next */
+  return steps;
+}
+
+// ─── KB-AGENT (§7.1 — Figure 7.1) ───────────────────────────────────────────
+
+export interface KBAgentPercept {
+  readonly stench: boolean;
+  readonly breeze: boolean;
+  readonly glitter: boolean;
+  readonly bump: boolean;
+  readonly scream: boolean;
+}
+
+export interface KBAgentStep {
+  readonly time: number;
+  readonly percept: KBAgentPercept;
+  readonly action: string;
+  readonly kbFacts: ReadonlyArray<string>;
+  readonly tellStatements: ReadonlyArray<string>;
+  readonly askQuery: string;
+}
+
+/**
+ * KB-AGENT: Simulates the knowledge-based agent loop (Figure 7.1).
+ * At each time step the agent TELLs the KB what was perceived and any
+ * immediate inferences, then ASKs for the best action.
+ *
+ * @param percepts - Ordered sequence of percepts.
+ * @returns One KBAgentStep per time step.
+ */
+export function kbAgent(
+  percepts: ReadonlyArray<KBAgentPercept>,
+): ReadonlyArray<KBAgentStep> {
+  const kbFacts: string[] = [];
+  const steps: KBAgentStep[] = [];
+
+  for (let t = 0; t < percepts.length; t++) {
+    const percept = percepts[t]!;
+    const tellStatements: string[] = [];
+
+    // TELL — record percept and derive immediate facts
+    tellStatements.push(
+      `Percept(t=${t}): stench=${percept.stench}, breeze=${percept.breeze}, ` +
+      `glitter=${percept.glitter}, bump=${percept.bump}, scream=${percept.scream}`,
+    );
+    kbFacts.push(`Percept(t=${t}): ${JSON.stringify(percept)}`);
+
+    if (percept.stench) {
+      const fact = `Stench(t=${t}) → Wumpus is in an adjacent cell`;
+      tellStatements.push(fact);
+      kbFacts.push(fact);
+    }
+    if (percept.breeze) {
+      const fact = `Breeze(t=${t}) → Pit is in an adjacent cell`;
+      tellStatements.push(fact);
+      kbFacts.push(fact);
+    }
+    if (percept.glitter) {
+      const fact = `Glitter(t=${t}) → Gold is in this cell`;
+      tellStatements.push(fact);
+      kbFacts.push(fact);
+    }
+    if (percept.bump) {
+      const fact = `Bump(t=${t}) → Wall detected ahead`;
+      tellStatements.push(fact);
+      kbFacts.push(fact);
+    }
+    if (percept.scream) {
+      const fact = `Scream(t=${t}) → Wumpus has been killed`;
+      tellStatements.push(fact);
+      kbFacts.push(fact);
+    }
+
+    // ASK — choose action based on current KB state
+    let action: string;
+    let askQuery: string;
+
+    if (percept.glitter) {
+      askQuery = 'Is there gold in the current cell?';
+      action = 'Grab';
+    } else if (percept.bump) {
+      askQuery = 'Is there a wall directly ahead?';
+      action = 'TurnLeft';
+    } else if (percept.scream) {
+      askQuery = 'Has the Wumpus been killed?';
+      action = 'MoveForward';
+    } else if (!percept.stench && !percept.breeze) {
+      askQuery = 'Is the cell ahead provably safe?';
+      action = 'MoveForward';
+    } else {
+      askQuery = 'Is any adjacent cell known to be safe?';
+      action = 'TurnLeft';
+    }
+
+    steps.push({
+      time: t,
+      percept,
+      action,
+      kbFacts: [...kbFacts],
+      tellStatements,
+      askQuery,
+    });
+  }
+
+  return steps;
+}
