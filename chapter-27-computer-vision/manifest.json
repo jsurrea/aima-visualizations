@@ -2,17 +2,21 @@
   "chapter": 27,
   "title": "Computer Vision",
   "shortTitle": "Vision",
-  "description": "Convolution, edge detection, optical flow, object detection, and CNN feature visualization.",
+  "description": "Pinhole camera projection, edge detection, optical flow, CNNs, object detection, and 3D vision — a complete interactive tour of §27.1–§27.7.",
   "part": 6,
   "partName": "Communicating, Perceiving, and Acting",
   "icon": "👁️",
   "color": "#F59E0B",
   "basePath": "/chapter-27",
   "sections": [
-    { "id": "convolution", "title": "Convolution Animation", "status": "planned" },
-    { "id": "edge-detection", "title": "Edge Detection Pipeline", "status": "planned" },
-    { "id": "optical-flow", "title": "Optical Flow", "status": "planned" }
+    { "id": "introduction", "title": "Introduction (§27.1)", "status": "complete" },
+    { "id": "image-formation", "title": "Image Formation (§27.2)", "status": "complete" },
+    { "id": "image-features", "title": "Simple Image Features (§27.3)", "status": "complete" },
+    { "id": "classification", "title": "Classifying Images (§27.4)", "status": "complete" },
+    { "id": "object-detection", "title": "Detecting Objects (§27.5)", "status": "complete" },
+    { "id": "3d-world", "title": "The 3D World (§27.6)", "status": "complete" },
+    { "id": "applications", "title": "Using Computer Vision (§27.7)", "status": "complete" }
   ],
-  "status": "planned",
-  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
 }
