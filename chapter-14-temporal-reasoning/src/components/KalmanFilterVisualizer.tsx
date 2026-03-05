@@ -30,8 +30,10 @@ function buildParams2D(sigmaZRatio: number): KalmanParams2D {
   const dt = 0.5;
   const sigmaObs = sigmaZRatio;
   // Initial velocity estimated from first two trajectory points
-  const vx0 = TRUE_TRAJ[1] ? (TRUE_TRAJ[1].x - TRUE_TRAJ[0]!.x) / dt : 0;
-  const vy0 = TRUE_TRAJ[1] ? (TRUE_TRAJ[1].y - TRUE_TRAJ[0]!.y) / dt : 0;
+  const p0 = TRUE_TRAJ[0];
+  const p1 = TRUE_TRAJ[1];
+  const vx0 = (p0 !== undefined && p1 !== undefined) ? (p1.x - p0.x) / dt : 0;
+  const vy0 = (p0 !== undefined && p1 !== undefined) ? (p1.y - p0.y) / dt : 0;
   return {
     mu0: [TRUE_TRAJ[0]!.x, TRUE_TRAJ[0]!.y, vx0, vy0] as ReadonlyArray<number>,
     sigma0: [

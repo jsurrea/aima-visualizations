@@ -801,10 +801,11 @@ export function particleFilter(
     const resampled = resampleMultinomial(propagated, weights, numParticles, rng);
 
     // Belief estimate: normalised histogram of resampled particles
-    const beliefEstimate: number[] = Array(S).fill(0) as number[];
+    const counts: number[] = Array(S).fill(0) as number[];
     for (const s of resampled) {
-      beliefEstimate[s] = beliefEstimate[s]! + 1 / numParticles;
+      counts[s] = counts[s]! + 1;
     }
+    const beliefEstimate = normalize(counts);
 
     steps.push({
       t: t + 1,

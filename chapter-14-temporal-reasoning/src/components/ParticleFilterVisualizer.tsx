@@ -44,7 +44,7 @@ function runSIS(params: HMMParams, evidence: number[], nParticles: number, seed:
     z = z + Math.imul(z ^ z >>> 7, 61 | z) ^ z;
     return ((z ^ z >>> 14) >>> 0) / 4294967296;
   }
-  function sampleCat(probs: number[]): number {
+  function sampleCat(probs: ReadonlyArray<number>): number {
     const r = rng();
     let cum = 0;
     for (let i = 0; i < probs.length; i++) {
@@ -53,13 +53,13 @@ function runSIS(params: HMMParams, evidence: number[], nParticles: number, seed:
     }
     return probs.length - 1;
   }
-  let particles: number[] = Array.from({ length: nParticles }, () => sampleCat([...params.prior]));
+  let particles: number[] = Array.from({ length: nParticles }, () => sampleCat(params.prior));
   let weights: number[] = Array(nParticles).fill(1 / nParticles) as number[];
   const steps: SISStep[] = [];
   for (let t = 0; t < evidence.length; t++) {
     const e = evidence[t]!;
     const obsRow = params.observationProbs[e]!;
-    const propagated = particles.map(s => sampleCat([...params.transitionMatrix[s]!]));
+    const propagated = particles.map(s => sampleCat(params.transitionMatrix[s]!));
     const newWeights = weights.map((w, i) => w * obsRow[propagated[i]!]!);
     const sum = newWeights.reduce((a, b) => a + b, 0);
     const normWeights = sum > 0 ? newWeights.map(w => w / sum) : newWeights;

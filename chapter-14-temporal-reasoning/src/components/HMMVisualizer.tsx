@@ -274,7 +274,7 @@ export default function HMMVisualizer(): React.ReactElement {
             </svg>
             {isViterbi && (
               <div style={{ textAlign: 'center', marginTop: 6, fontSize: '12px', color: '#FBBF24' }}>
-                Most likely: state {viterbiState} (row={STATE_COORDS[viterbiState]?.[0]}, col={STATE_COORDS[viterbiState]?.[1]})
+                Most likely: state {viterbiState} (row={STATE_COORDS[viterbiState]![0]}, col={STATE_COORDS[viterbiState]![1]})
               </div>
             )}
           </div>
