@@ -370,6 +370,7 @@ describe('optimizerCurseDistribution', () => {
     // At x≈0: f(0) = 1·φ(0)·Φ(0)^0 = φ(0) ≈ 0.3989
     // Grid spacing is 8/59 ≈ 0.135, so use a threshold of 0.15
     const mid = pts.find((p) => Math.abs(p.x) < 0.15);
+    expect(mid).toBeDefined();
     expect(mid!.density).toBeCloseTo(1 / Math.sqrt(2 * Math.PI), 2);
   });
 

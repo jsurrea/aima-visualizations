@@ -227,8 +227,13 @@ export type UtilityCurveType = 'logarithmic' | 'linear' | 'power' | 'exponential
 // ── Internal numerical helpers ────────────────────────────────────────────────
 
 /**
- * Approximation of the error function via Chebyshev fitting (max error < 1.2e-7).
- * Used only for the normal CDF approximation required by optimizerCurseDistribution.
+ * Approximation of the error function via Horner's method (Chebyshev fitting).
+ *
+ * Implements the approximation from Numerical Recipes §6.2:
+ *   erfc(|x|) ≈ t · exp(−x² + polynomial(t)),  t = 1/(1 + 0.5|x|)
+ *
+ * Maximum absolute error: < 1.2×10⁻⁷ for all real x.
+ * Valid for all finite real inputs; the result lies in [−1, 1].
  */
 function erf(x: number): number {
   const sign = x >= 0 ? 1 : -1;
