@@ -2,6 +2,9 @@ import { useState, useMemo } from 'react';
 import { computeDepthFromDisparity } from '../algorithms';
 import { renderDisplayMath } from '../utils/mathUtils';
 
+/** Pixels-per-unit depth scale: maps world-unit depth to SVG pixel disparity. */
+const DEPTH_SCALE_FACTOR = 30;
+
 const INITIAL_POINTS = [
   { x: 250, depth: 3.0, color: '#6366F1' },
   { x: 180, depth: 5.0, color: '#10B981' },
@@ -16,12 +19,12 @@ export default function StereopsisViz() {
   const [focalLength, setFocalLength] = useState(100);
 
   const currentDepth = depths[selectedPoint]!;
-  const disparity = (baseline * focalLength) / (currentDepth * 30);
+  const disparity = (baseline * focalLength) / (currentDepth * DEPTH_SCALE_FACTOR);
   const computedDepth = computeDepthFromDisparity(disparity, baseline, focalLength);
 
   const curvePoints = useMemo(() => Array.from({ length: 50 }, (_, i) => {
     const z = 1 + i * 0.18;
-    const d = baseline * focalLength / (z * 30);
+    const d = baseline * focalLength / (z * DEPTH_SCALE_FACTOR);
     return { x: (z - 1) / 9 * 190 + 5, y: 75 - Math.min(70, d * 0.5) };
   }), [baseline, focalLength]);
 

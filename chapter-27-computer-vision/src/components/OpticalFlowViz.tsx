@@ -12,6 +12,9 @@ function makeFrame(cx: number, cy: number): ReadonlyArray<number> {
   });
 }
 
+/** Total pixels in each 16×16 frame (index of last pixel). */
+const TOTAL_PIXELS = 16 * 16 - 1;
+
 export default function OpticalFlowViz() {
   const [playing, setPlaying] = useState(false);
   const [currentPixelIdx, setCurrentPixelIdx] = useState(0);
@@ -37,9 +40,9 @@ export default function OpticalFlowViz() {
     if (!playing || reducedMotion) return;
     const step = () => {
       setCurrentPixelIdx(idx => {
-        if (idx >= 255) {
+        if (idx >= TOTAL_PIXELS) {
           setPlaying(false);
-          return 255;
+          return TOTAL_PIXELS;
         }
         return idx + 1;
       });
@@ -193,7 +196,7 @@ export default function OpticalFlowViz() {
         </div>
         <div><span style={{ color: '#9CA3AF' }}>Block Radius: </span>{blockRadius}</div>
         <div><span style={{ color: '#9CA3AF' }}>Search Radius: </span>{searchRadius}</div>
-        <div><span style={{ color: '#9CA3AF' }}>Progress: </span>{currentPixelIdx}/255</div>
+        <div><span style={{ color: '#9CA3AF' }}>Progress: </span>{currentPixelIdx}/{TOTAL_PIXELS}</div>
       </div>
     </div>
   );
