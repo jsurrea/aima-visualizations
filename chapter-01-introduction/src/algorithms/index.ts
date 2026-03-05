@@ -259,3 +259,371 @@ export function getStandardModelSteps(): ReadonlyArray<StandardModelStep> {
     },
   ];
 }
+
+export interface AIFoundation {
+  readonly id: string;
+  readonly name: string;
+  readonly emoji: string;
+  readonly coreQuestion: string;
+  readonly keyContributions: ReadonlyArray<string>;
+  readonly keyFigures: ReadonlyArray<string>;
+  readonly connectionToAI: string;
+  readonly color: string;
+}
+
+export function getAIFoundations(): ReadonlyArray<AIFoundation> {
+  return [
+    {
+      id: 'philosophy',
+      name: 'Philosophy',
+      emoji: '📜',
+      coreQuestion: 'Can formal rules capture all of rational thought? Can a physical mind have a non-physical soul?',
+      keyContributions: [
+        'Formal rules of inference (Aristotle\'s syllogisms)',
+        'Dualism vs. materialism — the mind–body problem',
+        'Empiricism and the principle of induction (Hume)',
+        'Connection from knowledge to action (Aristotle\'s practical syllogism)',
+      ],
+      keyFigures: ['Aristotle', 'René Descartes', 'David Hume', 'John Stuart Mill', 'Bertrand Russell'],
+      connectionToAI: 'AI inherited philosophy\'s core question: can a machine reason correctly? The answer required formal logic, probability theory, and decision theory — all rooted in philosophical inquiry.',
+      color: '#6366F1',
+    },
+    {
+      id: 'mathematics',
+      name: 'Mathematics',
+      emoji: '∑',
+      coreQuestion: 'What are the formal rules for valid inference and what can — or cannot — be computed?',
+      keyContributions: [
+        'Boolean algebra and formal propositional logic (Boole, Frege)',
+        'Probability theory as an extension of logic (Laplace, Kolmogorov)',
+        'Computability theory and the Turing machine (Turing, Church–Turing thesis)',
+        'NP-completeness — tractability boundaries (Cook, 1971)',
+      ],
+      keyFigures: ['George Boole', 'Gottlob Frege', 'Alan Turing', 'Alonzo Church', 'Stephen Cook'],
+      connectionToAI: 'Mathematics gave AI its language: logic for knowledge representation, probability for uncertainty, and complexity theory to distinguish feasible from infeasible problems.',
+      color: '#3B82F6',
+    },
+    {
+      id: 'economics',
+      name: 'Economics',
+      emoji: '📊',
+      coreQuestion: 'How should agents make decisions to maximise utility, and how do multiple agents interact?',
+      keyContributions: [
+        'Utility theory and expected-value decision making (Bernoulli, von Neumann)',
+        'Game theory for multi-agent strategic interaction (Nash equilibrium)',
+        'Operations research and satisficing (Herbert Simon)',
+        'Markov Decision Processes for sequential decisions under uncertainty',
+      ],
+      keyFigures: ['Daniel Bernoulli', 'John von Neumann', 'John Nash', 'Herbert Simon', 'Richard Bellman'],
+      connectionToAI: 'AI agents are decision-makers. Economics provided utility theory, game theory, and MDPs — the mathematical backbone of rational agent behaviour in complex environments.',
+      color: '#10B981',
+    },
+    {
+      id: 'neuroscience',
+      name: 'Neuroscience',
+      emoji: '🧠',
+      coreQuestion: 'How does the brain process information, and can a biological neural network inspire artificial ones?',
+      keyContributions: [
+        'Discovery of the neuron as the brain\'s basic processing unit (Cajal)',
+        'Hebbian learning rule: neurons that fire together wire together',
+        'Neural correlates of memory, vision, and language',
+        'Brain–machine interfaces and neural plasticity research',
+      ],
+      keyFigures: ['Santiago Ramón y Cajal', 'Donald Hebb', 'David Hubel & Torsten Wiesel', 'Francis Crick'],
+      connectionToAI: 'The McCulloch–Pitts neuron model (1943) launched neural networks. Modern deep learning architectures loosely mimic cortical organisation, though the brain remains far more efficient.',
+      color: '#EC4899',
+    },
+    {
+      id: 'psychology',
+      name: 'Psychology',
+      emoji: '🧪',
+      coreQuestion: 'How do humans and animals perceive, learn, and choose actions — and can we model this computationally?',
+      keyContributions: [
+        'Behaviorism: learning as stimulus–response conditioning (Watson, Skinner)',
+        'Cognitive psychology: the mind as an information-processing system (Craik 1943)',
+        'Mental models, knowledge representations, and cognitive architecture',
+        'Human–computer interaction and intelligence augmentation',
+      ],
+      keyFigures: ['William James', 'Kenneth Craik', 'B.F. Skinner', 'George Miller', 'Ulric Neisser'],
+      connectionToAI: 'Cognitive psychology reframed the mind as a symbol-processing machine — a direct inspiration for AI\'s knowledge representation and search paradigms.',
+      color: '#F59E0B',
+    },
+    {
+      id: 'computer-engineering',
+      name: 'Computer Engineering',
+      emoji: '💻',
+      coreQuestion: 'How do we build machines fast and capable enough to run AI algorithms at scale?',
+      keyContributions: [
+        'ENIAC (1945) — the first programmable electronic computer',
+        'Moore\'s law: transistor density doubling every ~18 months',
+        'GPU parallel architectures enabling deep learning (2012 onward)',
+        'Tensor Processing Units (TPUs) and neuromorphic chips',
+      ],
+      keyFigures: ['John von Neumann', 'Gordon Moore', 'John Backus', 'Jensen Huang'],
+      connectionToAI: 'AI algorithms are only feasible because of exponential improvements in hardware. The GPU revolution directly enabled the 2012 deep learning breakthrough and every advance since.',
+      color: '#8B5CF6',
+    },
+    {
+      id: 'control-theory',
+      name: 'Control Theory',
+      emoji: '⚙️',
+      coreQuestion: 'How can a device regulate itself to achieve and maintain a desired state over time?',
+      keyContributions: [
+        'Feedback control loops and PID controllers',
+        'Cybernetics: purposive machines and self-regulation (Norbert Wiener, 1948)',
+        'Optimal control theory and cost-function minimisation (Pontryagin, Bellman)',
+        'Stochastic optimal control bridging to reinforcement learning',
+      ],
+      keyFigures: ['James Watt', 'Norbert Wiener', 'Rudolf Kalman', 'Lev Pontryagin', 'Richard Bellman'],
+      connectionToAI: 'Control theory and AI converged on the same objective — building goal-directed machines. Modern RL formalises this as a stochastic optimal control problem with a reward signal.',
+      color: '#14B8A6',
+    },
+    {
+      id: 'linguistics',
+      name: 'Linguistics',
+      emoji: '💬',
+      coreQuestion: 'How is language structured and understood, and can machines process it meaningfully?',
+      keyContributions: [
+        'Generative grammar: language as infinite rule-governed structure (Chomsky, 1957)',
+        'Computational linguistics and formal grammars (context-free, context-sensitive)',
+        'Knowledge representation for language semantics',
+        'Statistical and neural approaches to NLP',
+      ],
+      keyFigures: ['Noam Chomsky', 'Zellig Harris', 'Roger Schank', 'Eugene Charniak'],
+      connectionToAI: 'Language is the richest human capability. Linguistics gave AI the tools to parse, represent, and generate text — from early parsers to today\'s large language models.',
+      color: '#F97316',
+    },
+  ];
+}
+
+export interface AICapability {
+  readonly id: string;
+  readonly domain: string;
+  readonly emoji: string;
+  readonly title: string;
+  readonly description: string;
+  readonly milestone: string;
+  readonly humanComparison: 'exceeds' | 'matches' | 'approaching' | 'below';
+  readonly year: number;
+}
+
+export function getAICapabilities(): ReadonlyArray<AICapability> {
+  return [
+    {
+      id: 'image-recognition',
+      domain: 'Vision',
+      emoji: '👁️',
+      title: 'Image Recognition',
+      description: 'Top-5 error on ImageNet fell from 28% (2010) to under 2% (2017), surpassing estimated human-level performance of ~5%.',
+      milestone: 'AlexNet (2012) → SENet / EfficientNet (2017–2020)',
+      humanComparison: 'exceeds',
+      year: 2017,
+    },
+    {
+      id: 'reading-comprehension',
+      domain: 'Language',
+      emoji: '📖',
+      title: 'Reading Comprehension',
+      description: 'On the Stanford SQuAD benchmark, machine F1 score rose from ~60 (2015) to 95+ (2019), matching and slightly exceeding human annotator scores.',
+      milestone: 'BERT / XLNet surpass human F1 on SQuAD 2.0 (2019)',
+      humanComparison: 'exceeds',
+      year: 2019,
+    },
+    {
+      id: 'chess',
+      domain: 'Games',
+      emoji: '♟️',
+      title: 'Chess',
+      description: 'Deep Blue defeated world champion Garry Kasparov in 1997. Today\'s engines (Stockfish, AlphaZero) are effectively unchallenged at any level of human play.',
+      milestone: 'Deep Blue defeats Kasparov, 1997',
+      humanComparison: 'exceeds',
+      year: 1997,
+    },
+    {
+      id: 'go',
+      domain: 'Games',
+      emoji: '⚫',
+      title: 'Go',
+      description: 'AlphaGo defeated world champion Lee Sedol 4–1 in 2016, a milestone once thought to be decades away. AlphaZero later mastered it from scratch in hours.',
+      milestone: 'AlphaGo defeats Lee Sedol, 2016',
+      humanComparison: 'exceeds',
+      year: 2016,
+    },
+    {
+      id: 'poker',
+      domain: 'Games',
+      emoji: '🃏',
+      title: 'Texas Hold\'em Poker',
+      description: 'Libratus (2017) and Pluribus (2019) defeated top professional players in heads-up and 6-player no-limit Texas Hold\'em, a game requiring bluffing and imperfect information reasoning.',
+      milestone: 'Pluribus defeats professionals in 6-player poker, 2019',
+      humanComparison: 'exceeds',
+      year: 2019,
+    },
+    {
+      id: 'speech-recognition',
+      domain: 'Language',
+      emoji: '🎙️',
+      title: 'Speech Recognition',
+      description: 'Microsoft achieved a word error rate of 5.1% on the Switchboard benchmark (2017), matching human transcriptionists. Modern systems handle diverse accents and noisy environments.',
+      milestone: 'Microsoft reaches 5.1% WER, matching human parity (2017)',
+      humanComparison: 'matches',
+      year: 2017,
+    },
+    {
+      id: 'machine-translation',
+      domain: 'Language',
+      emoji: '🌐',
+      title: 'Machine Translation',
+      description: 'Neural machine translation (transformer-based) now covers 100+ languages with near-professional quality for major language pairs. Google Translate serves 500M+ daily users.',
+      milestone: 'Transformer architecture (2017), 100+ languages (2019)',
+      humanComparison: 'approaching',
+      year: 2019,
+    },
+    {
+      id: 'skin-cancer',
+      domain: 'Medicine',
+      emoji: '🔬',
+      title: 'Skin Cancer Diagnosis',
+      description: 'A deep CNN matched board-certified dermatologists in classifying skin lesions from images, correctly identifying melanoma with sensitivity/specificity comparable to expert physicians.',
+      milestone: 'Stanford CNN matches dermatologist accuracy (Esteva et al., 2017)',
+      humanComparison: 'matches',
+      year: 2017,
+    },
+    {
+      id: 'autonomous-driving',
+      domain: 'Robotics',
+      emoji: '🚗',
+      title: 'Autonomous Driving',
+      description: 'Waymo began commercial robotaxi service in 2018 (Phoenix) and 2020 (fully driverless). DARPA Grand Challenge (2005) demonstrated cross-desert autonomous navigation.',
+      milestone: 'Waymo commercial robotaxi launches driverless (2020)',
+      humanComparison: 'approaching',
+      year: 2020,
+    },
+    {
+      id: 'starcraft',
+      domain: 'Games',
+      emoji: '🎮',
+      title: 'StarCraft II',
+      description: 'DeepMind\'s AlphaStar reached Grandmaster level in StarCraft II (top 0.2% of players) using self-play reinforcement learning on raw visual input, a complex real-time strategy game.',
+      milestone: 'AlphaStar reaches Grandmaster (top 0.2%), 2019',
+      humanComparison: 'exceeds',
+      year: 2019,
+    },
+  ];
+}
+
+export interface AIRisk {
+  readonly id: string;
+  readonly type: 'risk' | 'benefit';
+  readonly title: string;
+  readonly description: string;
+  readonly emoji: string;
+  readonly severity: 'high' | 'medium' | 'low';
+  readonly timeframe: 'near-term' | 'long-term' | 'present';
+}
+
+export function getAIRisksAndBenefits(): ReadonlyArray<AIRisk> {
+  return [
+    // Benefits
+    {
+      id: 'benefit-menial-work',
+      type: 'benefit',
+      title: 'Freedom from Menial Work',
+      description: 'AI can automate repetitive, dangerous, or tedious tasks — freeing humans for creative, social, and high-level cognitive work.',
+      emoji: '🤖',
+      severity: 'low',
+      timeframe: 'present',
+    },
+    {
+      id: 'benefit-science',
+      type: 'benefit',
+      title: 'Accelerate Scientific Discovery',
+      description: 'AI systems like AlphaFold have already transformed structural biology. AI assists drug discovery, materials science, climate modelling, and mathematics.',
+      emoji: '🔬',
+      severity: 'low',
+      timeframe: 'present',
+    },
+    {
+      id: 'benefit-medicine',
+      type: 'benefit',
+      title: 'Cure Diseases',
+      description: 'AI diagnostic systems match or exceed specialist physicians in radiology, pathology, and dermatology. Personalised medicine and accelerated drug development could save millions of lives.',
+      emoji: '💊',
+      severity: 'low',
+      timeframe: 'near-term',
+    },
+    {
+      id: 'benefit-climate',
+      type: 'benefit',
+      title: 'Combat Climate Change',
+      description: 'AI optimises energy grids, improves weather forecasting, accelerates clean energy research, and can reduce emissions in logistics, manufacturing, and agriculture.',
+      emoji: '🌍',
+      severity: 'low',
+      timeframe: 'near-term',
+    },
+    // Risks
+    {
+      id: 'risk-autonomous-weapons',
+      type: 'risk',
+      title: 'Lethal Autonomous Weapons',
+      description: 'AI-enabled weapons can select and engage targets without human oversight. Their scalability (millions of autonomous drones at low cost) creates unprecedented asymmetric warfare risks. A UN Group of Governmental Experts reached formal stage in 2017.',
+      emoji: '⚔️',
+      severity: 'high',
+      timeframe: 'near-term',
+    },
+    {
+      id: 'risk-surveillance',
+      type: 'risk',
+      title: 'Mass Surveillance & Manipulation',
+      description: 'AI-powered facial recognition enables authoritarian mass surveillance. Algorithmic recommender systems can amplify political polarisation, spread disinformation, and enable micro-targeted propaganda.',
+      emoji: '👁️',
+      severity: 'high',
+      timeframe: 'present',
+    },
+    {
+      id: 'risk-bias',
+      type: 'risk',
+      title: 'Biased Decision Making',
+      description: 'AI systems trained on historical data inherit and can amplify societal biases. Documented cases include discriminatory parole risk scores (COMPAS), biased loan approval systems, and facial recognition errors on darker skin tones.',
+      emoji: '⚖️',
+      severity: 'high',
+      timeframe: 'present',
+    },
+    {
+      id: 'risk-employment',
+      type: 'risk',
+      title: 'Impact on Employment',
+      description: 'Automation displaces routine cognitive and manual jobs. While new jobs may emerge, the transition could deepen inequality if the benefits of AI accrue primarily to capital owners and highly skilled workers.',
+      emoji: '🏭',
+      severity: 'medium',
+      timeframe: 'near-term',
+    },
+    {
+      id: 'risk-safety-critical',
+      type: 'risk',
+      title: 'Safety-Critical Failures',
+      description: 'AI systems deployed in high-stakes domains (self-driving cars, medical diagnosis, aircraft) can fail catastrophically. The 2018 Uber and 2018 Tesla fatal accidents highlighted challenges in edge-case handling.',
+      emoji: '🚨',
+      severity: 'high',
+      timeframe: 'present',
+    },
+    {
+      id: 'risk-cybersecurity',
+      type: 'risk',
+      title: 'AI-Powered Cybersecurity Threats',
+      description: 'AI lowers the barrier for sophisticated cyberattacks: automated vulnerability discovery, AI-generated phishing, deepfake fraud, and AI-powered malware that evades traditional defences.',
+      emoji: '🔓',
+      severity: 'medium',
+      timeframe: 'present',
+    },
+    {
+      id: 'risk-value-alignment',
+      type: 'risk',
+      title: 'The Value Alignment Problem',
+      description: 'The "King Midas problem": an AI optimising the wrong objective can cause catastrophic harm even with good intentions. The "gorilla problem": once a more intelligent system exists, the less intelligent species (us) may lose control. The standard model\'s core flaw: we cannot fully specify what we actually want.',
+      emoji: '🎯',
+      severity: 'high',
+      timeframe: 'long-term',
+    },
+  ];
+}

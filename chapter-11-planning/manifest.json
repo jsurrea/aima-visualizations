@@ -2,17 +2,21 @@
   "chapter": 11,
   "title": "Automated Planning",
   "shortTitle": "Planning",
-  "description": "PDDL editor, GRAPHPLAN, HTN decomposition, and job-shop scheduling visualizations.",
+  "description": "Interactive visualizations of PDDL state transitions, forward/backward search, HTN decomposition, sensorless belief-state planning, and critical-path scheduling.",
   "part": 3,
   "partName": "Knowledge, Reasoning, and Planning",
   "icon": "📋",
   "color": "#8B5CF6",
   "basePath": "/chapter-11",
   "sections": [
-    { "id": "pddl", "title": "PDDL Editor", "status": "planned" },
-    { "id": "graphplan", "title": "GRAPHPLAN Layer Builder", "status": "planned" },
-    { "id": "htn", "title": "HTN Decomposition", "status": "planned" }
+    { "id": "classical-planning", "title": "Classical Planning & PDDL", "status": "complete" },
+    { "id": "search-algorithms", "title": "Forward & Backward Search", "status": "complete" },
+    { "id": "heuristics", "title": "Heuristics for Planning", "status": "complete" },
+    { "id": "htn-planning", "title": "Hierarchical Task Networks", "status": "complete" },
+    { "id": "nondeterministic", "title": "Sensorless & Contingent Planning", "status": "complete" },
+    { "id": "scheduling", "title": "Time, Schedules & Resources", "status": "complete" },
+    { "id": "analysis", "title": "Analysis of Planning Approaches", "status": "complete" }
   ],
-  "status": "planned",
-  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
 }

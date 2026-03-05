@@ -429,3 +429,221 @@ export function aStar(
   });
   return steps;
 }
+
+// ─── Greedy Best-First Search ────────────────────────────────────────────────
+
+/** An entry in the GBFS priority queue. */
+export interface GBFSFrontierEntry {
+  readonly node: string;
+  readonly h: number;
+  readonly path: ReadonlyArray<string>;
+}
+
+/** A single step in a Greedy Best-First Search traversal. */
+export interface GBFSStep {
+  /** Priority queue sorted by h ascending. */
+  readonly frontier: ReadonlyArray<GBFSFrontierEntry>;
+  /** Nodes that have been expanded. */
+  readonly explored: ReadonlySet<string>;
+  /** Node currently being expanded. */
+  readonly currentNode: string;
+  /** Heuristic value h of currentNode. */
+  readonly currentH: number;
+  /** Human-readable description of this step. */
+  readonly action: string;
+  /** Path from start to currentNode. */
+  readonly path: ReadonlyArray<string>;
+}
+
+/**
+ * Greedy Best-First Search.
+ * Expands the node with the lowest heuristic value h(n) first.
+ * Not guaranteed to be optimal.
+ *
+ * @param graph     - Adjacency map with edge costs (costs ignored; only h used for ordering).
+ * @param start     - Start node key.
+ * @param goal      - Goal node key.
+ * @param heuristic - Map from node to estimated cost to goal. Missing nodes default to 0.
+ * @returns All expansion steps for playback.
+ */
+export function greedyBestFirst(
+  graph: Graph,
+  start: string,
+  goal: string,
+  heuristic: ReadonlyMap<string, number>,
+): ReadonlyArray<GBFSStep> {
+  const steps: GBFSStep[] = [];
+  const h = (node: string): number => heuristic.get(node) ?? 0;
+
+  const hStart = h(start);
+  if (start === goal) {
+    steps.push({
+      frontier: [],
+      explored: new Set<string>([start]),
+      currentNode: start,
+      currentH: hStart,
+      action: `"${start}" is already the goal!`,
+      path: [start],
+    });
+    return steps;
+  }
+
+  const frontier: Array<{ node: string; h: number; path: string[] }> = [
+    { node: start, h: hStart, path: [start] },
+  ];
+  const explored = new Set<string>();
+
+  while (frontier.length > 0) {
+    frontier.sort((a, b) => a.h - b.h);
+    const { node: currentNode, h: currentH, path } = frontier.shift()!;
+
+    if (explored.has(currentNode)) continue;
+    explored.add(currentNode);
+
+    const isGoal = currentNode === goal;
+    steps.push({
+      frontier: frontier.map(e => ({
+        node: e.node,
+        h: e.h,
+        path: e.path as ReadonlyArray<string>,
+      })),
+      explored: new Set(explored),
+      currentNode,
+      currentH,
+      action: isGoal
+        ? `Goal "${goal}" found! Path: ${path.join(' → ')}`
+        : `Expanding "${currentNode}" (h=${currentH})`,
+      path,
+    });
+
+    if (isGoal) return steps;
+
+    for (const { node: neighbor } of graph.get(currentNode) ?? []) {
+      if (!explored.has(neighbor)) {
+        frontier.push({ node: neighbor, h: h(neighbor), path: [...path, neighbor] });
+      }
+    }
+  }
+
+  steps.push({
+    frontier: [],
+    explored: new Set(explored),
+    currentNode: '',
+    currentH: 0,
+    action: `No path from "${start}" to "${goal}"`,
+    path: [],
+  });
+  return steps;
+}
+
+// ─── Iterative Deepening DFS ─────────────────────────────────────────────────
+
+/** A single step in an IDDFS traversal. */
+export interface IDDFSStep {
+  /** Nodes currently in the stack (LIFO), top-first. */
+  readonly frontier: ReadonlyArray<string>;
+  /** Nodes expanded in the current iteration. */
+  readonly explored: ReadonlySet<string>;
+  /** Node currently being expanded. */
+  readonly currentNode: string;
+  /** Depth of currentNode from start. */
+  readonly currentDepth: number;
+  /** Current depth limit for this iteration. */
+  readonly depthLimit: number;
+  /** Iteration number (0-based, equals the depth limit used). */
+  readonly iteration: number;
+  /** Human-readable description of this step. */
+  readonly action: string;
+  /** Path from start to currentNode. */
+  readonly path: ReadonlyArray<string>;
+}
+
+/**
+ * Iterative Deepening Depth-First Search.
+ * Runs depth-limited DFS from depth 0 up to maxDepth, stopping when the goal is found.
+ * Combines BFS's optimality (in unweighted graphs) with DFS's space efficiency.
+ *
+ * @param graph    - Adjacency map.
+ * @param start    - Start node key.
+ * @param goal     - Goal node key.
+ * @param maxDepth - Maximum depth limit to try (default 10).
+ * @returns All expansion steps across all iterations for playback.
+ * @complexity O(b^d) time, O(bd) space.
+ */
+export function iddfs(
+  graph: Graph,
+  start: string,
+  goal: string,
+  maxDepth = 10,
+): ReadonlyArray<IDDFSStep> {
+  const allSteps: IDDFSStep[] = [];
+
+  if (start === goal) {
+    allSteps.push({
+      frontier: [],
+      explored: new Set<string>([start]),
+      currentNode: start,
+      currentDepth: 0,
+      depthLimit: 0,
+      iteration: 0,
+      action: `"${start}" is already the goal!`,
+      path: [start],
+    });
+    return allSteps;
+  }
+
+  for (let limit = 0; limit <= maxDepth; limit++) {
+    const stack: Array<{ node: string; path: string[]; depth: number }> = [
+      { node: start, path: [start], depth: 0 },
+    ];
+    // Explored set is intentionally reset each iteration so nodes can be
+    // re-explored at deeper limits (this is correct IDDFS behavior).
+    const explored = new Set<string>();
+
+    while (stack.length > 0) {
+      const entry = stack.pop()!;
+      const { node: currentNode, path, depth } = entry;
+
+      if (explored.has(currentNode)) continue;
+      explored.add(currentNode);
+
+      const isGoal = currentNode === goal;
+      allSteps.push({
+        frontier: stack.map(e => e.node).reverse(),
+        explored: new Set(explored),
+        currentNode,
+        currentDepth: depth,
+        depthLimit: limit,
+        iteration: limit,
+        action: isGoal
+          ? `Goal "${goal}" found! Depth: ${depth}, Path: ${path.join(' → ')}`
+          : `[Iter ${limit}] Expanding "${currentNode}" (depth=${depth}/${limit})`,
+        path,
+      });
+
+      if (isGoal) return allSteps;
+
+      if (depth < limit) {
+        const neighbors = graph.get(currentNode) ?? [];
+        for (let i = neighbors.length - 1; i >= 0; i--) {
+          const nbr = neighbors[i];
+          if (nbr && !explored.has(nbr.node)) {
+            stack.push({ node: nbr.node, path: [...path, nbr.node], depth: depth + 1 });
+          }
+        }
+      }
+    }
+  }
+
+  allSteps.push({
+    frontier: [],
+    explored: new Set<string>(),
+    currentNode: '',
+    currentDepth: 0,
+    depthLimit: maxDepth,
+    iteration: maxDepth,
+    action: `No path from "${start}" to "${goal}" within depth ${maxDepth}`,
+    path: [],
+  });
+  return allSteps;
+}

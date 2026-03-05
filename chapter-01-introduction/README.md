@@ -6,11 +6,14 @@ The four approaches to AI, history of artificial intelligence, and the standard 
 
 ---
 
-## Planned Visualizations
+## Visualizations
 
-- **The Four Approaches to AI** (`bfs-intro`)
-- **AI History Timeline** (`timeline`)
-- **Standard Model Loop** (`standard-model`)
+- **The Four Approaches to AI** (`approaches`) — §1.1: Interactive 2×2 matrix (Thinking/Acting × Human/Rational). Click any cell to see examples and key figures.
+- **The Foundations of AI** (`foundations`) — §1.2: The 8 disciplines that contributed to AI (Philosophy, Mathematics, Economics, Neuroscience, Psychology, Computer Engineering, Control Theory, Linguistics). Expandable cards with a "What if?" selector.
+- **AI History Timeline** (`timeline`) — §1.3: Chronological timeline of key AI events from 1943 to present.
+- **Standard Agent-Environment Loop** (`standard-model`) — §1.1.4: Animated step-through of the perceive–decide–act–update cycle.
+- **The State of the Art** (`capabilities`) — §1.4: What AI can do today, with domain filters, human-comparison badges, and sortable cards.
+- **Risks and Benefits of AI** (`risks-benefits`) — §1.5: Two-column layout of benefits vs risks, AI capability level slider, and a dedicated Value Alignment Problem section with King Midas, Gorilla, and Standard Model's Flaw explanations.
 
 ---
 
