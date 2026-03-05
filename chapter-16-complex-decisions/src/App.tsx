@@ -1,5 +1,9 @@
 import manifest from '../manifest.json';
-import Placeholder from './components/Placeholder';
+import MDPGridWorldViz from './components/MDPGridWorldViz';
+import ValueIterationViz from './components/ValueIterationViz';
+import PolicyIterationViz from './components/PolicyIterationViz';
+import BanditSimulator from './components/BanditSimulator';
+import POMDPViz from './components/POMDPViz';
 
 export default function App() {
   return (
@@ -16,7 +20,7 @@ export default function App() {
       </header>
 
       {/* Chapter hero */}
-      <section style={{ padding: '48px 24px 32px', maxWidth: '900px', margin: '0 auto' }}>
+      <section style={{ padding: '48px 24px 32px', maxWidth: '960px', margin: '0 auto' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
           <span style={{
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
@@ -35,22 +39,13 @@ export default function App() {
         </p>
       </section>
 
-      {/* Sections list */}
-      <section style={{ padding: '0 24px 48px', maxWidth: '900px', margin: '0 auto' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '16px', color: '#E5E7EB' }}>
-          Planned Visualizations
-        </h2>
-        <div style={{ display: 'grid', gap: '12px' }}>
-          {manifest.sections.map((section) => (
-            <Placeholder
-              key={section.id}
-              id={section.id}
-              title={section.title}
-              status={section.status}
-              chapterColor={manifest.color}
-            />
-          ))}
-        </div>
+      {/* Visualizations */}
+      <section style={{ padding: '0 24px 48px', maxWidth: '960px', margin: '0 auto' }}>
+        <MDPGridWorldViz />
+        <ValueIterationViz />
+        <PolicyIterationViz />
+        <BanditSimulator />
+        <POMDPViz />
       </section>
     </div>
   );

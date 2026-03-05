@@ -1,18 +1,20 @@
 {
   "chapter": 16,
   "title": "Making Complex Decisions",
-  "shortTitle": "MDPs",
-  "description": "MDP grid worlds, value iteration, policy iteration, bandits, and POMDPs.",
+  "shortTitle": "MDPs & POMDPs",
+  "description": "MDP grid worlds, value iteration, policy iteration, bandit problems, and partially observable MDPs.",
   "part": 4,
   "partName": "Uncertain Knowledge and Reasoning",
   "icon": "🗺️",
   "color": "#EC4899",
   "basePath": "/chapter-16",
   "sections": [
-    { "id": "mdp-grid", "title": "MDP Grid World", "status": "planned" },
-    { "id": "value-iteration", "title": "Value Iteration", "status": "planned" },
-    { "id": "bandits", "title": "Bandit Simulator", "status": "planned" }
+    { "id": "mdp-gridworld", "title": "MDP Grid World", "status": "complete" },
+    { "id": "value-iteration", "title": "Value Iteration", "status": "complete" },
+    { "id": "policy-iteration", "title": "Policy Iteration", "status": "complete" },
+    { "id": "bandits", "title": "Bandit Problems", "status": "complete" },
+    { "id": "pomdp", "title": "POMDPs", "status": "complete" }
   ],
-  "status": "planned",
-  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
 }
