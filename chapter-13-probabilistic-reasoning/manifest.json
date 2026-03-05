@@ -9,10 +9,12 @@
   "color": "#EC4899",
   "basePath": "/chapter-13",
   "sections": [
-    { "id": "bayes-net", "title": "Bayesian Network Builder", "status": "planned" },
-    { "id": "variable-elimination", "title": "Variable Elimination", "status": "planned" },
-    { "id": "mcmc", "title": "MCMC Sampling", "status": "planned" }
+    { "id": "bayes-net", "title": "Bayesian Networks", "status": "complete" },
+    { "id": "exact-inference", "title": "Exact Inference", "status": "complete" },
+    { "id": "sampling", "title": "Approximate Sampling", "status": "complete" },
+    { "id": "gibbs", "title": "Gibbs Sampling (MCMC)", "status": "complete" },
+    { "id": "causal", "title": "Causal Networks", "status": "complete" }
   ],
-  "status": "planned",
-  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
 }

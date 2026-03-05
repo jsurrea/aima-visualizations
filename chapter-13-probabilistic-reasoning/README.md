@@ -1,51 +1,48 @@
 # Chapter 13 — Probabilistic Reasoning
 
-**Part 4: Uncertain Knowledge and Reasoning**
+Interactive visualizations for AIMA 4th Ed., Chapter 13 (§13.1–13.5).
 
-Bayesian network builder, variable elimination, MCMC, and causal inference visualizations.
+## Visualizations
 
----
+### 1. Bayesian Networks (§13.1–13.2)
+Interactive DAG visualization supporting both the **Alarm network** (Burglary/Earthquake → Alarm → JohnCalls/MaryCalls) and the **Sprinkler network** (Cloudy → Sprinkler/Rain → WetGrass).
 
-## Planned Visualizations
+- Click any node to highlight its **Markov blanket** (parents + children + children's other parents)
+- View the full **CPT table** for any selected node
+- Toggle variable assignments (T/F) to compute the **joint probability** P(x₁,...,xₙ) = ∏ P(xᵢ | parents(Xᵢ))
+- **Path explorer**: select two nodes to check connectivity
 
-- **Bayesian Network Builder** (`bayes-net`)
-- **Variable Elimination** (`variable-elimination`)
-- **MCMC Sampling** (`mcmc`)
+### 2. Exact Inference (§13.3)
+Step-by-step visualization of the two exact inference algorithms on the Alarm network.
 
----
+- **Enumeration-Ask** (Figure 13.11): depth-first enumeration over hidden variables with configurable query and evidence
+- **Variable Elimination** (Figure 13.13): factor creation, pointwise products, marginalization, and normalization
+- Play/Pause/Step Forward/Step Back/Reset controls with speed slider
 
-## Development
+### 3. Approximate Sampling (§13.4.1–13.4.3)
+Side-by-side comparison of three sampling methods on the Sprinkler network (query: Rain, evidence: Sprinkler=true).
 
-```bash
-# Install dependencies
-npm install
+- **Prior Sampling**: generates samples from the joint prior, showing P(Rain) without conditioning
+- **Rejection Sampling**: discards samples inconsistent with evidence; tracks acceptance rate
+- **Likelihood Weighting**: weights each sample by the likelihood of the evidence; no rejection
 
-# Start dev server
-npm run dev
+Each method shows a 200-sample grid (green=true, red=false, gray=rejected) with running estimate vs. true value from enumeration.
 
-# Run tests
-npm test
+### 4. Gibbs Sampling / MCMC (§13.4.4)
+Visualizes the Gibbs sampling Markov chain on the Sprinkler network.
 
-# Build for production
-npm run build
-```
+- Animated network diagram highlighting the currently resampled variable and its Markov blanket
+- **MB distribution bar chart**: P(false) / P(true) for the resampled variable given its blanket
+- **Markov chain history**: last 20 states shown as a color-coded grid
+- Convergence tracking: running estimate vs. true value
 
----
+### 5. Causal Networks (§13.5)
+Side-by-side comparison of observational and interventional probabilities.
 
-## Architecture
+- **Observe panel**: standard conditioning P(WetGrass=T | Sprinkler=T)
+- **Intervene panel**: do-operator P(WetGrass=T | do(Sprinkler=T)) with the Cloudy→Sprinkler edge removed (shown as dashed red)
+- **Back-door criterion**: shows the confounding path S ← C → R → WG and the adjustment formula
+- Step-by-step back-door computation displaying each confounder's contribution
 
-This chapter is a **self-contained microfrontend** built with:
-- **React 18** + **TypeScript** (strict mode)
-- **Vite** for bundling (base path: `/chapter-13/`)
-- **Vitest** for unit testing (100% coverage required on `src/algorithms/`)
-- **KaTeX** for math rendering
-
-All algorithm logic lives in `src/algorithms/index.ts` as pure functions.
-Never import from other chapter directories.
-
----
-
-## Contribution
-
-See [CONTRIBUTING.md](../../CONTRIBUTING.md) for standards and PR checklist.
-Branch naming: `chapter-13/viz-name`
+## Tech Stack
+React · TypeScript (strict) · KaTeX · Vite · Vitest
