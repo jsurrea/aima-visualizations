@@ -3,6 +3,8 @@ import { renderDisplayMath } from '../utils/mathUtils';
 import { generateOUPMWorld, mulberry32, type OUPMGenerationStep } from '../algorithms';
 
 const COLOR = '#EC4899';
+/** Honest customers have exactly 1 login; more than this indicates dishonesty. */
+const HONEST_LOGIN_COUNT = 1;
 
 function MathBlock({ latex }: { latex: string }) {
   return (
@@ -236,7 +238,7 @@ export function OUPMVisualizer() {
   const dishonestInfo = useMemo(() => {
     const result: string[] = [];
     for (const s of visibleSteps) {
-      if (s.variableName.startsWith('#LoginID') && Number(s.value) > 1) {
+      if (s.variableName.startsWith('#LoginID') && Number(s.value) > HONEST_LOGIN_COUNT) {
         result.push(`${s.variableName} = ${s.value} (dishonest!)`);
       }
     }
@@ -389,7 +391,7 @@ export function OUPMVisualizer() {
             {visibleSteps.map((s, i) => {
               const isNumber = s.kind === 'number';
               const isCurrent = i === currentStep;
-              const isDishonest = s.variableName.startsWith('#LoginID') && Number(s.value) > 1;
+              const isDishonest = s.variableName.startsWith('#LoginID') && Number(s.value) > HONEST_LOGIN_COUNT;
               return (
                 <tr
                   key={i}

@@ -177,6 +177,7 @@ export function GenerativeProgramVisualizer() {
   const [mcmcPlaying, setMcmcPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [hasRunMcmc, setHasRunMcmc] = useState(false);
+  const mcmcRunCountRef = useRef(0);
 
   const prefersReduced =
     typeof window !== 'undefined'
@@ -239,7 +240,9 @@ export function GenerativeProgramVisualizer() {
   }, [mcmcPlaying, mcmcTick, prefersReduced]);
 
   function handleRunMcmc() {
-    const rng = mulberry32(Date.now() % 100000);
+    // Use an incrementing counter as seed for reproducibility between runs
+    mcmcRunCountRef.current += 1;
+    const rng = mulberry32(mcmcRunCountRef.current * 7919);
     const results = runMCMC(lambda, evidenceLetters, 30, noiseRate, model === 'markov', rng);
     setMcmcSteps(results);
     setCurrentMcmcIdx(0);

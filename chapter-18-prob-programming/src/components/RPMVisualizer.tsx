@@ -170,11 +170,13 @@ function StateField({
   );
 }
 
+const CUSTOMER_HONEST_PROBS: Record<string, number> = { C1: 0.9, C2: 0.6, C3: 0.3 };
+
 const makeCustomers = (n: number): RPMCustomer[] => {
   const names = ['C1', 'C2', 'C3'];
   return names.slice(0, n).map(id => ({
     id,
-    honestProb: id === 'C1' ? 0.9 : id === 'C2' ? 0.6 : 0.3,
+    honestProb: CUSTOMER_HONEST_PROBS[id] ?? 0.5,
     kindnessPrior: [0.05, 0.15, 0.3, 0.35, 0.15],
   }));
 };

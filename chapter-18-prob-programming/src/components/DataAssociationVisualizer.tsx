@@ -299,6 +299,8 @@ export function DataAssociationVisualizer() {
     return PAD.top + (t / 5) * plotH;
   }
 
+  // crossingAt = 2 means the paths have crossed by step index 2 (1-based time t=3),
+  // where TRUE_POSITIONS[2] has a1x=44, a2x=46 — nearly equal, causing NN confusion.
   const crossingAt = 2;
   const hasSwap = mode === 'nn' && currentStep >= crossingAt;
 
