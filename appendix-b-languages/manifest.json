@@ -1,0 +1,20 @@
+{
+  "id": "appendix-b",
+  "label": "Appendix B",
+  "chapter": 31,
+  "title": "Notes on Languages and Algorithms",
+  "shortTitle": "Languages & Algorithms",
+  "description": "Interactive BNF grammar explorer and pseudocode reference — the notation conventions used in every algorithm in the book.",
+  "part": 8,
+  "partName": "Appendices",
+  "icon": "::=",
+  "color": "#64748B",
+  "basePath": "/appendix-b",
+  "sections": [
+    { "id": "bnf", "title": "Defining Languages with BNF", "status": "complete" },
+    { "id": "pseudocode", "title": "Describing Algorithms with Pseudocode", "status": "complete" },
+    { "id": "supplemental", "title": "Online Supplemental Material", "status": "complete" }
+  ],
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
+}
