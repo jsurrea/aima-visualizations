@@ -108,7 +108,7 @@ export const SPRINKLER_NET: BayesNet = (() => {
 export function cptIndex(parents: string[], assignment: Assignment): number {
   let idx = 0;
   for (let j = 0; j < parents.length; j++) {
-    if (assignment.get(parents[j]) === true) {
+    if (assignment.get(parents[j]!) === true) {
       idx |= (1 << j);
     }
   }
