@@ -168,6 +168,8 @@ export default function CausalViz() {
     padding: '16px',
   };
 
+  const centeredPanelStyle: React.CSSProperties = { ...panelStyle, textAlign: 'center' };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* Intro */}
@@ -181,7 +183,7 @@ export default function CausalViz() {
 
       {/* Side-by-side networks */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-        <div style={{ ...panelStyle, textAlign: 'center' as const }}>
+        <div style={centeredPanelStyle}>
           <CausalSVG
             net={SPRINKLER_NET}
             highlightNode="Sprinkler"
@@ -211,7 +213,7 @@ export default function CausalViz() {
           </div>
         </div>
 
-        <div style={{ ...panelStyle, textAlign: 'center' as const }}>
+        <div style={centeredPanelStyle}>
           <CausalSVG
             net={result.mutilatedNet}
             highlightNode="Sprinkler"

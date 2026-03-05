@@ -211,7 +211,7 @@ export default function GibbsViz() {
   );
 
   // History: last HISTORY_LEN states
-  const history = useMemo<Array<Readonly<Record<string, boolean>>>>((): Array<Readonly<Record<string, boolean>>> => {
+  const history = useMemo<Array<Readonly<Record<string, boolean>>>>(() => {
     if (currentIdx < 0) return [];
     const start = Math.max(0, currentIdx - HISTORY_LEN + 1);
     return steps.slice(start, currentIdx + 1).map((s) => s.state);
