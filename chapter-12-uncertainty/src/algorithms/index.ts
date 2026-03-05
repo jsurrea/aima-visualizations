@@ -209,9 +209,8 @@ export function bayesNormalized(
   priors: ReadonlyArray<number>,
 ): number[] {
   if (likelihoods.length === 0 || likelihoods.length !== priors.length) return [];
-  /* v8 ignore start */
-  const raw = likelihoods.map((l, i) => l * (priors[i] ?? 0)); // lengths already verified equal above
-  /* v8 ignore end */
+  // lengths verified equal above — non-null assertion is safe
+  const raw = likelihoods.map((l, i) => l * priors[i]!);
   const total = raw.reduce((s, v) => s + v, 0);
   if (total === 0) return raw.map(() => 1 / raw.length);
   return raw.map(v => v / total);
@@ -344,10 +343,8 @@ export function wumpusPitProbability(
     const pitSubset = new Set<string>();
     for (let i = 0; i < n; i++) {
       if (mask & (1 << i)) {
-        /* v8 ignore start */
-        const cell = frontier[i] ?? ((): readonly [number, number] => [0, 0])(); // loop bounds guarantee i < frontier.length
-        /* v8 ignore end */
-        const [x, y] = cell;
+        // loop bounds guarantee i < frontier.length; non-null assertion is safe
+        const [x, y] = frontier[i]!;
         pitSubset.add(`${x},${y}`);
       }
     }

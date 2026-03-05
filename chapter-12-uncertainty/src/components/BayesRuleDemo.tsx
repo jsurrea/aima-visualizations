@@ -154,17 +154,14 @@ export default function BayesRuleDemo() {
         <div style={{ fontSize: '12px', fontWeight: 700, color: CHAPTER_COLOR, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>
           Step {currentStep + 1} / {STEPS.length}
         </div>
-        {STEPS[currentStep] !== undefined && (
-          <>
-            <div style={{ fontSize: '18px', fontWeight: 700, color: '#F9FAFB', marginBottom: '12px' }}>
-              {STEPS[currentStep].title}
-            </div>
-            <div dangerouslySetInnerHTML={{ __html: renderDisplayMath(STEPS[currentStep].latex) }} />
-            <div style={{ color: '#9CA3AF', fontSize: '14px', marginTop: '12px' }}>
-              {STEPS[currentStep].description}
-            </div>
-          </>
-        )}
+        {/* currentStep is always a valid index (clamped in handleNext/handleBack/handleReset) */}
+        <div style={{ fontSize: '18px', fontWeight: 700, color: '#F9FAFB', marginBottom: '12px' }}>
+          {STEPS[currentStep]!.title}
+        </div>
+        <div dangerouslySetInnerHTML={{ __html: renderDisplayMath(STEPS[currentStep]!.latex) }} />
+        <div style={{ color: '#9CA3AF', fontSize: '14px', marginTop: '12px' }}>
+          {STEPS[currentStep]!.description}
+        </div>
         {currentStep === STEPS.length - 1 && (
           <div style={{ marginTop: '12px', padding: '10px 16px', background: `rgba(236,72,153,0.15)`, borderRadius: '8px', color: CHAPTER_COLOR, fontWeight: 700, fontSize: '16px', display: 'inline-block' }}>
             0.0014 ← Posterior
