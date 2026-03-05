@@ -698,6 +698,54 @@ jobs:
           path: chapter-29-future-ai/dist/
           retention-days: 1
 
+  # ─── Appendix build jobs ───────────────────────────────────────────────────
+
+  build-appendix-a:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: appendix-a-math/package-lock.json
+      - run: npm ci
+        working-directory: appendix-a-math
+      - run: npm test -- --run
+        working-directory: appendix-a-math
+      - run: npm run build
+        working-directory: appendix-a-math
+      - run: cp manifest.json dist/
+        working-directory: appendix-a-math
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-appendix-a
+          path: appendix-a-math/dist/
+          retention-days: 1
+
+  build-appendix-b:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: appendix-b-languages/package-lock.json
+      - run: npm ci
+        working-directory: appendix-b-languages
+      - run: npm test -- --run
+        working-directory: appendix-b-languages
+      - run: npm run build
+        working-directory: appendix-b-languages
+      - run: cp manifest.json dist/
+        working-directory: appendix-b-languages
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-appendix-b
+          path: appendix-b-languages/dist/
+          retention-days: 1
+
   # ─── Single deploy job — assembles all artifacts then pushes once ──────────
   deploy:
     runs-on: ubuntu-latest
@@ -732,6 +780,8 @@ jobs:
       - build-ch27
       - build-ch28
       - build-ch29
+      - build-appendix-a
+      - build-appendix-b
     concurrency:
       group: gh-pages
       cancel-in-progress: false
@@ -748,13 +798,17 @@ jobs:
           # Landing page goes to root
           cp -r staging/dist-landing/. site/
 
-          # Each chapter goes into its subdirectory
+          # Chapters
           for num in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29; do
             if [ -d "staging/dist-ch${num}" ]; then
               mkdir -p "site/chapter-${num}"
               cp -r "staging/dist-ch${num}/." "site/chapter-${num}/"
             fi
           done
+
+          # Appendices
+          mkdir -p site/appendix-a && cp -r staging/dist-appendix-a/. site/appendix-a/
+          mkdir -p site/appendix-b && cp -r staging/dist-appendix-b/. site/appendix-b/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
