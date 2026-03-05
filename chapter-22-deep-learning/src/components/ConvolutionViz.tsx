@@ -11,6 +11,7 @@ const DEFAULT_INPUT = [1, 2, 3, 4, 5, 4, 3, 2, 1, 2];
 const DEFAULT_KERNEL = [1, 0, -1];
 
 function numToColor(v: number, max: number): string {
+  // Map absolute magnitude to alpha: minimum alpha 30/255, range 200/255, epsilon 0.01 prevents div-by-zero.
   const t = Math.abs(v) / Math.max(Math.abs(max), 0.01);
   const a = Math.round(t * 200 + 30);
   return v >= 0 ? `rgba(16,185,129,${a / 255})` : `rgba(239,68,68,${a / 255})`;

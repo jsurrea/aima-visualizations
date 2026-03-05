@@ -27,6 +27,7 @@ const ACTIVE_LAYERS: Record<string, string[]> = {
 
 function NetworkSVG({ step }: { step: ForwardPassStep | null }) {
   const activeNodes = step ? (ACTIVE_LAYERS[step.layer] ?? []) : [];
+  const outNode = NODES.output[0]!;
   return (
     <svg width={420} height={200} role="img" aria-label="Neural network diagram"
       style={{ background: 'var(--surface-2, #1A1A24)', borderRadius: 12 }}>
@@ -41,7 +42,7 @@ function NetworkSVG({ step }: { step: ForwardPassStep | null }) {
       )}
       {/* Edges hidden→output */}
       {NODES.hidden.map((src, si) => (
-        <line key={`ho-${si}`} x1={src.x} y1={src.y} x2={NODES.output[0]!.x} y2={NODES.output[0]!.y}
+        <line key={`ho-${si}`} x1={src.x} y1={src.y} x2={outNode.x} y2={outNode.y}
           stroke={activeNodes.includes('hidden') && activeNodes.includes('output')
             ? COLOR : 'rgba(255,255,255,0.12)'}
           strokeWidth={activeNodes.includes('hidden') && activeNodes.includes('output') ? 2 : 1} />
@@ -69,10 +70,10 @@ function NetworkSVG({ step }: { step: ForwardPassStep | null }) {
         </g>
       ))}
       {/* Output node */}
-      <circle cx={NODES.output[0]!.x} cy={NODES.output[0]!.y} r={20}
+      <circle cx={outNode.x} cy={outNode.y} r={20}
         fill={activeNodes.includes('output') ? COLOR : 'var(--surface-3, #242430)'}
         stroke={activeNodes.includes('output') ? '#fff' : 'rgba(255,255,255,0.2)'} strokeWidth={1.5} />
-      <text x={NODES.output[0]!.x} y={NODES.output[0]!.y + 5} textAnchor="middle" fill="#fff" fontSize={12} fontWeight={600}>out</text>
+      <text x={outNode.x} y={outNode.y + 5} textAnchor="middle" fill="#fff" fontSize={12} fontWeight={600}>out</text>
       {/* Layer labels */}
       <text x={60} y={180} textAnchor="middle" fill="#6B7280" fontSize={11}>Input</text>
       <text x={200} y={180} textAnchor="middle" fill="#6B7280" fontSize={11}>Hidden</text>

@@ -25,6 +25,7 @@ function BackpropSVG({ step }: { step: BackpropStep | null }) {
   const highlightOut = step?.layer === 'output';
   const highlightH0 = step?.layer === 'hidden_0';
   const highlightH1 = step?.layer === 'hidden_1';
+  const outNode = NODES.output[0]!;
 
   return (
     <svg width={420} height={200} role="img" aria-label="Backpropagation network diagram"
@@ -32,11 +33,11 @@ function BackpropSVG({ step }: { step: BackpropStep | null }) {
       {/* Edges W2 (highlighted if output step) */}
       {NODES.hidden.map((src, si) => (
         <g key={`ho-${si}`}>
-          <line x1={src.x} y1={src.y} x2={NODES.output[0]!.x} y2={NODES.output[0]!.y}
+          <line x1={src.x} y1={src.y} x2={outNode.x} y2={outNode.y}
             stroke={highlightOut ? GRAD_COLOR : 'rgba(255,255,255,0.12)'}
             strokeWidth={highlightOut ? 2.5 : 1} strokeDasharray={highlightOut ? '6 3' : 'none'} />
           {highlightOut && step.gradients[si] !== undefined && (
-            <text x={(src.x + NODES.output[0]!.x) / 2} y={(src.y + NODES.output[0]!.y) / 2 - 6}
+            <text x={(src.x + outNode.x) / 2} y={(src.y + outNode.y) / 2 - 6}
               fill={GRAD_COLOR} fontSize={10} textAnchor="middle">
               ∇={step.gradients[si]!.toFixed(3)}
             </text>
@@ -76,10 +77,10 @@ function BackpropSVG({ step }: { step: BackpropStep | null }) {
         );
       })}
       {/* Output node */}
-      <circle cx={NODES.output[0]!.x} cy={NODES.output[0]!.y} r={20}
+      <circle cx={outNode.x} cy={outNode.y} r={20}
         fill={highlightOut ? COLOR : 'var(--surface-3,#242430)'}
         stroke={highlightOut ? '#fff' : 'rgba(255,255,255,0.2)'} strokeWidth={1.5} />
-      <text x={NODES.output[0]!.x} y={NODES.output[0]!.y + 5} textAnchor="middle" fill="#fff" fontSize={12} fontWeight={600}>out</text>
+      <text x={outNode.x} y={outNode.y + 5} textAnchor="middle" fill="#fff" fontSize={12} fontWeight={600}>out</text>
       {/* Backprop arrow direction */}
       <text x={370} y={20} fill="#6B7280" fontSize={10}>← backprop</text>
       <text x={60} y={180} textAnchor="middle" fill="#6B7280" fontSize={11}>Input</text>
