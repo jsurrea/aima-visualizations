@@ -37,6 +37,7 @@ const NUM_OBS = 16;
 // True sensor readings per state (NESW bits)
 const TRUE_SENSORS = [13, 3, 12, 3, 12, 3, 14];
 
+/** Count differing bits between two 4-bit sensor readings (NESW wall patterns). */
 function hamming(a: number, b: number): number {
   let x = a ^ b, count = 0;
   while (x) { count += x & 1; x >>= 1; }

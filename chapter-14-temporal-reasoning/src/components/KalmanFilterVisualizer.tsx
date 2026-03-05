@@ -80,6 +80,12 @@ function gaussianPath(cx: number, baseY: number, sigma: number, scale: number): 
 }
 
 // Compute covariance ellipse params from 2×2 matrix [[a,b],[b,d]]
+/**
+ * Compute SVG ellipse parameters from the upper-left 2×2 position submatrix [[a,b],[b,d]]
+ * of a covariance matrix via closed-form eigendecomposition.
+ * The eigenvalues λ₁ ≥ λ₂ give the squared semi-axes (rx=√λ₁, ry=√λ₂) and
+ * the principal eigenvector angle gives the rotation of the ±1σ ellipse.
+ */
 function covEllipse(a: number, b: number, d: number): { rx: number; ry: number; angleDeg: number } {
   const trace2 = (a + d) / 2;
   const det = Math.sqrt(Math.max(0, ((a - d) / 2) ** 2 + b * b));

@@ -9,10 +9,11 @@
   "color": "#EC4899",
   "basePath": "/chapter-14",
   "sections": [
-    { "id": "hmm", "title": "Hidden Markov Model", "status": "planned" },
-    { "id": "kalman-filter", "title": "Kalman Filter", "status": "planned" },
-    { "id": "particle-filter", "title": "Particle Filter", "status": "planned" }
+    { "id": "temporal-model", "title": "Time & Inference in Temporal Models", "status": "complete" },
+    { "id": "hmm", "title": "Hidden Markov Models", "status": "complete" },
+    { "id": "kalman-filter", "title": "Kalman Filters", "status": "complete" },
+    { "id": "particle-filter", "title": "Particle Filter & DBNs", "status": "complete" }
   ],
-  "status": "planned",
-  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
 }

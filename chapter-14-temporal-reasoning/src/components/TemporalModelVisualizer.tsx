@@ -33,7 +33,7 @@ function buildHMM(pStayRain: number, pUmbrellaGivenRain: number): HMMParams {
 
 function predictFuture(posterior: readonly number[], transMatrix: ReadonlyArray<ReadonlyArray<number>>, k: number): number[] {
   let p = [...posterior];
-  const result: number[] = [p[0]!];
+  const futureProbabilities: number[] = [p[0]!];
   for (let i = 0; i < k; i++) {
     const next = [0, 0];
     for (let s = 0; s < 2; s++) {
@@ -42,9 +42,9 @@ function predictFuture(posterior: readonly number[], transMatrix: ReadonlyArray<
       }
     }
     p = next;
-    result.push(p[0]!);
+    futureProbabilities.push(p[0]!);
   }
-  return result;
+  return futureProbabilities;
 }
 
 export default function TemporalModelVisualizer(): React.ReactElement {
