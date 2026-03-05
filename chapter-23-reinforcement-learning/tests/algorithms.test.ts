@@ -210,7 +210,7 @@ describe('passiveTDLearner', () => {
       { state: 'A', action: 'right', reward: 1.0, nextState: 'T' },
     ];
     const hist = passiveTDLearner(Array(100).fill(trial), 0.9, 0.3);
-    expect(hist[99]!!.utilities.get('A') ?? 0).toBeGreaterThan(0.7);
+    expect(hist[99]!.utilities.get('A') ?? 0).toBeGreaterThan(0.7);
   });
 });
 

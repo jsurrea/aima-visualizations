@@ -28,7 +28,7 @@ const EXPERT_TRAJECTORIES: ReadonlyArray<ReadonlyArray<State>> = [
   ['2,1','2,2','1,2','0,2','0,3'],
   ['2,2','1,2','0,2','0,3'],
   ['1,2','0,2','0,3'],
-  ['2,0','2,1','1,1','1,2','0,2','0,3'], // 1,1 is wall → just for feature demo
+  ['2,0','2,1','2,2','2,3','1,3','0,3'],
 ];
 
 // 5 hand-crafted features for IRL

@@ -27,8 +27,7 @@ const GW_TRIALS: ReadonlyArray<Trial> = (() => {
       { state: '2,1', action: 'right', reward: -0.04, nextState: '2,2' },
       { state: '2,2', action: 'right', reward: -0.04, nextState: '2,3' },
       { state: '2,3', action: 'up',    reward: -0.04, nextState: '1,3' },
-      { state: '1,3', action: 'up',    reward: -0.04, nextState: '0,3' },
-      { state: '0,3', action: 'up',    reward:  1.00, nextState: '0,3' },
+      { state: '1,3', action: 'up',    reward:  1.00, nextState: '0,3' },
     ],
   ];
   // Repeat 80 times alternating paths
