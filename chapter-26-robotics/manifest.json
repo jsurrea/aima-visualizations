@@ -2,17 +2,23 @@
   "chapter": 26,
   "title": "Robotics",
   "shortTitle": "Robotics",
-  "description": "Configuration space, RRT path planning, particle filter localization, and SLAM.",
+  "description": "Interactive visualizations for robotics: configuration space, RRT/PRM motion planning, Monte Carlo localization, EKF, PID/MPC control, uncertainty-aware planning, RL domain randomization, human intent inference, reactive FSM controllers, and application domains.",
   "part": 6,
   "partName": "Communicating, Perceiving, and Acting",
   "icon": "🦾",
   "color": "#F59E0B",
   "basePath": "/chapter-26",
   "sections": [
-    { "id": "config-space", "title": "Configuration Space", "status": "planned" },
-    { "id": "rrt", "title": "RRT Path Planning", "status": "planned" },
-    { "id": "slam", "title": "SLAM Demo", "status": "planned" }
+    { "id": "overview", "title": "§26.1–26.3 Robots, Hardware & Problem Types", "status": "complete" },
+    { "id": "config-space", "title": "§26.3–26.5 Configuration Space & Kinematics", "status": "complete" },
+    { "id": "localization", "title": "§26.4 Robotic Perception & Localization (MCL / EKF)", "status": "complete" },
+    { "id": "motion-planning", "title": "§26.5.2 Motion Planning (RRT & PRM)", "status": "complete" },
+    { "id": "control", "title": "§26.5.3–26.5.4 Trajectory Tracking Control (PID & MPC)", "status": "complete" },
+    { "id": "uncertainty", "title": "§26.6 Planning Uncertain Movements", "status": "complete" },
+    { "id": "rl-robotics", "title": "§26.7 Reinforcement Learning in Robotics", "status": "complete" },
+    { "id": "human-robot", "title": "§26.8–26.9 Human-Robot Interaction & Reactive Controllers", "status": "complete" },
+    { "id": "applications", "title": "§26.10 Application Domains & Future Challenges", "status": "complete" }
   ],
-  "status": "planned",
-  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX", "SVG"]
 }
