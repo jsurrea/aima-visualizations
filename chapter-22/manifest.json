@@ -1,0 +1,23 @@
+{
+  "chapter": 22,
+  "title": "Deep Learning",
+  "shortTitle": "Deep Learning",
+  "description": "Neural network playground, backpropagation, CNNs, LSTMs, and more — step-by-step visualizations of Chapter 22.",
+  "part": 5,
+  "partName": "Machine Learning",
+  "icon": "🧬",
+  "color": "#10B981",
+  "basePath": "/chapter-22",
+  "sections": [
+    { "id": "feedforward", "title": "§22.1 Simple Feedforward Networks", "status": "complete" },
+    { "id": "computation-graphs", "title": "§22.2 Computation Graphs & Backpropagation", "status": "complete" },
+    { "id": "cnn", "title": "§22.3 Convolutional Networks", "status": "complete" },
+    { "id": "learning-algorithms", "title": "§22.4 Learning Algorithms", "status": "complete" },
+    { "id": "generalization", "title": "§22.5 Generalization", "status": "complete" },
+    { "id": "rnn", "title": "§22.6 Recurrent Neural Networks", "status": "complete" },
+    { "id": "unsupervised", "title": "§22.7 Unsupervised & Transfer Learning", "status": "complete" },
+    { "id": "applications", "title": "§22.8 Applications", "status": "complete" }
+  ],
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
+}

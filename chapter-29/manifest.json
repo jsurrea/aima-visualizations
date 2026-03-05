@@ -1,0 +1,17 @@
+{
+  "chapter": 29,
+  "title": "The Future of AI",
+  "shortTitle": "Future of AI",
+  "description": "AI capabilities roadmap, architecture spectrum, anytime algorithms, and bounded optimality visualizations.",
+  "part": 7,
+  "partName": "Conclusions",
+  "icon": "🚀",
+  "color": "#EF4444",
+  "basePath": "/chapter-29",
+  "sections": [
+    { "id": "ai-components", "title": "AI Components (§29.1)", "status": "complete" },
+    { "id": "ai-architectures", "title": "AI Architectures (§29.2)", "status": "complete" }
+  ],
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
+}

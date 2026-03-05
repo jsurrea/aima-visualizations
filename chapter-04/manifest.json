@@ -1,0 +1,21 @@
+{
+  "chapter": 4,
+  "title": "Search in Complex Environments",
+  "shortTitle": "Local Search",
+  "description": "Hill climbing, simulated annealing, genetic algorithms, beam search, gradient descent, AND-OR search, belief states, and online search.",
+  "part": 2,
+  "partName": "Problem Solving",
+  "icon": "⛰️",
+  "color": "#3B82F6",
+  "basePath": "/chapter-04",
+  "sections": [
+    { "id": "local-search", "title": "Hill Climbing, SA & Genetic Algorithms", "status": "complete" },
+    { "id": "beam-search", "title": "Local Beam Search", "status": "complete" },
+    { "id": "continuous-search", "title": "Gradient Descent (Continuous Spaces)", "status": "complete" },
+    { "id": "and-or-search", "title": "AND-OR Search (Nondeterministic)", "status": "complete" },
+    { "id": "belief-states", "title": "Belief State Search (Partial Observability)", "status": "complete" },
+    { "id": "online-search", "title": "Online Search (DFS + LRTA*)", "status": "complete" }
+  ],
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

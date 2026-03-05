@@ -1,0 +1,20 @@
+{
+  "chapter": 13,
+  "title": "Probabilistic Reasoning",
+  "shortTitle": "Bayes Nets",
+  "description": "Bayesian network builder, variable elimination, MCMC, and causal inference visualizations.",
+  "part": 4,
+  "partName": "Uncertain Knowledge and Reasoning",
+  "icon": "🕸️",
+  "color": "#EC4899",
+  "basePath": "/chapter-13",
+  "sections": [
+    { "id": "bayes-net", "title": "Bayesian Networks", "status": "complete" },
+    { "id": "exact-inference", "title": "Exact Inference", "status": "complete" },
+    { "id": "sampling", "title": "Approximate Sampling", "status": "complete" },
+    { "id": "gibbs", "title": "Gibbs Sampling (MCMC)", "status": "complete" },
+    { "id": "causal", "title": "Causal Networks", "status": "complete" }
+  ],
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
+}

@@ -1,0 +1,22 @@
+{
+  "chapter": 15,
+  "title": "Making Simple Decisions",
+  "shortTitle": "Decisions",
+  "description": "Utility functions, decision networks, value of information, and human preference anomalies.",
+  "part": 4,
+  "partName": "Uncertain Knowledge and Reasoning",
+  "icon": "⚖️",
+  "color": "#EC4899",
+  "basePath": "/chapter-15",
+  "sections": [
+    { "id": "meu", "title": "Maximum Expected Utility", "status": "complete" },
+    { "id": "utility-axioms", "title": "Utility Axioms & Paradoxes", "status": "complete" },
+    { "id": "utility-functions", "title": "Utility Functions", "status": "complete" },
+    { "id": "multiattribute", "title": "Multiattribute Utility", "status": "complete" },
+    { "id": "decision-network", "title": "Decision Network Evaluator", "status": "complete" },
+    { "id": "voi", "title": "Value of Information", "status": "complete" },
+    { "id": "unknown-preferences", "title": "Unknown Preferences & Off-Switch", "status": "complete" }
+  ],
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
+}

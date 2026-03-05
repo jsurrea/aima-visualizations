@@ -1,0 +1,19 @@
+{
+  "chapter": 14,
+  "title": "Probabilistic Reasoning over Time",
+  "shortTitle": "Temporal",
+  "description": "HMMs, Kalman filters, particle filters, and dynamic Bayesian networks over time.",
+  "part": 4,
+  "partName": "Uncertain Knowledge and Reasoning",
+  "icon": "⏳",
+  "color": "#EC4899",
+  "basePath": "/chapter-14",
+  "sections": [
+    { "id": "temporal-model", "title": "Time & Inference in Temporal Models", "status": "complete" },
+    { "id": "hmm", "title": "Hidden Markov Models", "status": "complete" },
+    { "id": "kalman-filter", "title": "Kalman Filters", "status": "complete" },
+    { "id": "particle-filter", "title": "Particle Filter & DBNs", "status": "complete" }
+  ],
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
+}

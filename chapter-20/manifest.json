@@ -1,0 +1,40 @@
+{
+  "chapter": 20,
+  "title": "Knowledge in Learning",
+  "shortTitle": "ILP",
+  "description": "Interactive visualizations of explanation-based learning, relevance-based learning, version spaces, and FOIL — covering all of AIMA Chapter 20.",
+  "part": 5,
+  "partName": "Machine Learning",
+  "icon": "📚",
+  "color": "#10B981",
+  "basePath": "/chapter-20",
+  "sections": [
+    {
+      "id": "logical-formulation",
+      "title": "§20.1 Logical Formulation of Learning",
+      "status": "complete"
+    },
+    {
+      "id": "knowledge-in-learning",
+      "title": "§20.2 Knowledge in Learning",
+      "status": "complete"
+    },
+    {
+      "id": "ebl",
+      "title": "§20.3 Explanation-Based Learning",
+      "status": "complete"
+    },
+    {
+      "id": "relevance",
+      "title": "§20.4 Relevance-Based Learning",
+      "status": "complete"
+    },
+    {
+      "id": "ilp",
+      "title": "§20.5 Inductive Logic Programming",
+      "status": "complete"
+    }
+  ],
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX", "Vitest"]
+}

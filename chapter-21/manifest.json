@@ -1,0 +1,18 @@
+{
+  "chapter": 21,
+  "title": "Learning Probabilistic Models",
+  "shortTitle": "Prob. Models",
+  "description": "Interactive visualizations for Bayesian learning, MLE, Beta conjugate prior, and the EM algorithm for Mixture of Gaussians — covering §21.1–21.3 with step-by-step playback.",
+  "part": 5,
+  "partName": "Machine Learning",
+  "icon": "📈",
+  "color": "#10B981",
+  "basePath": "/chapter-21",
+  "sections": [
+    { "id": "mle", "title": "Maximum Likelihood Estimation", "status": "complete" },
+    { "id": "bayesian-learning", "title": "Bayesian Parameter Learning", "status": "complete" },
+    { "id": "em-algorithm", "title": "EM Algorithm", "status": "complete" }
+  ],
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX", "SVG"]
+}

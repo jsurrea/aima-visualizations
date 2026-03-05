@@ -1,0 +1,20 @@
+{
+  "chapter": 10,
+  "title": "Knowledge Representation",
+  "shortTitle": "Knowledge Rep",
+  "description": "Ontology hierarchies, event calculus, description logics, and default reasoning.",
+  "part": 3,
+  "partName": "Knowledge, Reasoning, and Planning",
+  "icon": "🗂️",
+  "color": "#8B5CF6",
+  "basePath": "/chapter-10",
+  "sections": [
+    { "id": "ontological-engineering", "title": "Ontological Engineering & Categories", "status": "complete" },
+    { "id": "event-calculus", "title": "Event Calculus & Time", "status": "complete" },
+    { "id": "modal-logic", "title": "Mental Objects & Modal Logic", "status": "complete" },
+    { "id": "semantic-networks", "title": "Semantic Networks & Description Logic", "status": "complete" },
+    { "id": "default-reasoning", "title": "Default Reasoning & JTMS", "status": "complete" }
+  ],
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
+}

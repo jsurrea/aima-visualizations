@@ -1,0 +1,18 @@
+{
+  "chapter": 25,
+  "title": "Deep Learning for NLP",
+  "shortTitle": "Deep NLP",
+  "description": "Word embeddings, attention mechanisms, Transformer architecture, and GPT generation.",
+  "part": 6,
+  "partName": "Communicating, Perceiving, and Acting",
+  "icon": "🔤",
+  "color": "#F59E0B",
+  "basePath": "/chapter-25",
+  "sections": [
+    { "id": "word-embeddings", "title": "Word Embeddings Explorer", "status": "planned" },
+    { "id": "attention", "title": "Attention Mechanism", "status": "planned" },
+    { "id": "transformer", "title": "Transformer Architecture", "status": "planned" }
+  ],
+  "status": "planned",
+  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+}

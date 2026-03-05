@@ -1,0 +1,21 @@
+{
+  "chapter": 23,
+  "title": "Reinforcement Learning",
+  "shortTitle": "RL",
+  "description": "TD learning, Q-learning, SARSA, function approximation, policy gradient, and inverse RL on interactive grid worlds.",
+  "part": 5,
+  "partName": "Machine Learning",
+  "icon": "🏆",
+  "color": "#10B981",
+  "basePath": "/chapter-23",
+  "sections": [
+    { "id": "passive-rl",       "title": "Passive & Active RL — Grid World (Q-Learning / SARSA)", "status": "complete" },
+    { "id": "td-learning",      "title": "Passive TD(0) — Utility Convergence Chart",             "status": "complete" },
+    { "id": "q-learning",       "title": "Q-Learning — Q-Table Heat Map & Policy Arrows",         "status": "complete" },
+    { "id": "function-approx",  "title": "Linear Function Approximation (§23.4)",                 "status": "complete" },
+    { "id": "policy-gradient",  "title": "Softmax Policy & REINFORCE (§23.5)",                    "status": "complete" },
+    { "id": "inverse-rl",       "title": "Inverse Reinforcement Learning — Feature Matching (§23.6)", "status": "complete" }
+  ],
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
+}

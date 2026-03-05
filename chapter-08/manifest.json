@@ -1,0 +1,21 @@
+{
+  "chapter": 8,
+  "title": "First-Order Logic",
+  "shortTitle": "FOL",
+  "description": "Syntax trees, Robinson's unification algorithm, quantifier scope analysis, kinship domain knowledge bases, and knowledge engineering process — all 4 sections of Chapter 8.",
+  "part": 3,
+  "partName": "Knowledge, Reasoning, and Planning",
+  "icon": "∀",
+  "color": "#8B5CF6",
+  "basePath": "/chapter-08",
+  "sections": [
+    { "id": "representation", "title": "§8.1 Representation Revisited", "status": "complete" },
+    { "id": "syntax-tree", "title": "§8.2 FOL Syntax Tree Builder", "status": "complete" },
+    { "id": "unification", "title": "§8.2 Unification (Robinson's Algorithm)", "status": "complete" },
+    { "id": "quantifiers", "title": "§8.2 Quantifier Scope", "status": "complete" },
+    { "id": "kinship-kb", "title": "§8.3 Kinship Domain Knowledge Base", "status": "complete" },
+    { "id": "knowledge-engineering", "title": "§8.4 Knowledge Engineering", "status": "complete" }
+  ],
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
+}

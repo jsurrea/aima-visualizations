@@ -1,0 +1,19 @@
+{
+  "chapter": 18,
+  "title": "Probabilistic Programming",
+  "shortTitle": "Prob. Prog.",
+  "description": "Relational probability models, open-universe models, data association, and probabilistic programs as probability models — with MCMC inference.",
+  "part": 4,
+  "partName": "Uncertain Knowledge and Reasoning",
+  "icon": "🎯",
+  "color": "#EC4899",
+  "basePath": "/chapter-18",
+  "sections": [
+    { "id": "relational-model", "title": "Relational Probability Models (RPMs)", "status": "complete" },
+    { "id": "open-universe", "title": "Open-Universe Probability Models (OUPMs)", "status": "complete" },
+    { "id": "data-association", "title": "Data Association & Multitarget Tracking", "status": "complete" },
+    { "id": "generative-programs", "title": "Programs as Probability Models", "status": "complete" }
+  ],
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
+}

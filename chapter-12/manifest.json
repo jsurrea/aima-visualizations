@@ -1,0 +1,21 @@
+{
+  "chapter": 12,
+  "title": "Quantifying Uncertainty",
+  "shortTitle": "Uncertainty",
+  "description": "Probability axioms, joint distributions, Bayes' rule, and naive Bayes with interactive demos.",
+  "part": 4,
+  "partName": "Uncertain Knowledge and Reasoning",
+  "icon": "🎲",
+  "color": "#EC4899",
+  "basePath": "/chapter-12",
+  "sections": [
+    { "id": "probability-axioms", "title": "§12.1–12.2 Probability Axiom Explorer", "status": "complete" },
+    { "id": "joint-distribution", "title": "§12.3 Full Joint Distribution", "status": "complete" },
+    { "id": "independence-explorer", "title": "§12.4 Independence Explorer", "status": "complete" },
+    { "id": "bayes-rule", "title": "§12.5 Bayes' Rule Demo", "status": "complete" },
+    { "id": "naive-bayes", "title": "§12.6 Naive Bayes Classifier", "status": "complete" },
+    { "id": "wumpus-world", "title": "§12.7 Wumpus World Uncertainty", "status": "complete" }
+  ],
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
+}

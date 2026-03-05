@@ -1,0 +1,21 @@
+{
+  "chapter": 17,
+  "title": "Multiagent Decision Making",
+  "shortTitle": "Game Theory",
+  "description": "Normal-form games, Nash equilibria, cooperative game theory, mechanism design, voting, and bargaining visualizations.",
+  "part": 4,
+  "partName": "Uncertain Knowledge and Reasoning",
+  "icon": "🎮",
+  "color": "#EC4899",
+  "basePath": "/chapter-17",
+  "sections": [
+    { "id": "normal-form", "title": "Normal-Form Games & Nash Equilibria", "status": "complete" },
+    { "id": "repeated-games", "title": "Repeated Games & Strategies", "status": "complete" },
+    { "id": "cooperative", "title": "Cooperative Game Theory & Shapley Value", "status": "complete" },
+    { "id": "auctions", "title": "Auction Mechanisms", "status": "complete" },
+    { "id": "voting", "title": "Voting Procedures & Social Choice", "status": "complete" },
+    { "id": "bargaining", "title": "Bargaining & Negotiation", "status": "complete" }
+  ],
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
+}
