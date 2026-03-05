@@ -159,6 +159,8 @@ function StateField({
   );
 }
 
+// A1 moves right (x: 20→68), A2 moves left (x: 70→22); paths cross at t=3
+// (positions 44 and 46), confusing the greedy nearest-neighbor filter.
 const TRUE_POSITIONS: Array<{ a1x: number; a2x: number }> = [
   { a1x: 20, a2x: 70 },
   { a1x: 32, a2x: 58 },

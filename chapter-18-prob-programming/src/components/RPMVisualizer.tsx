@@ -421,7 +421,7 @@ export function RPMVisualizer() {
           Total variables: <strong style={{ color: 'white' }}>{totalVars}</strong>
           {' = '}
           <InlineMath
-            latex={`${numCustomers}(${numBooks}+3) = ${numCustomers} \\times ${numBooks + 3}`}
+            latex={`${numBooks} + ${numCustomers}(${numBooks}+2) = ${numBooks} + ${numCustomers} \\times ${numBooks + 2}`}
           />
         </span>
       </div>
