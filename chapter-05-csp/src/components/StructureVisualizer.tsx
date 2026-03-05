@@ -7,10 +7,11 @@ const CHAPTER_COLOR = '#3B82F6';
 const NODE_RADIUS = 28;
 
 const CHAIN_DOMAIN = ['1', '2', '3'] as const;
+const CHAIN_VARS = ['A', 'B', 'C', 'D', 'E'] as const;
 
 const CHAIN_CSP: CSP = {
-  variables: ['A', 'B', 'C', 'D', 'E'],
-  domains: new Map((['A', 'B', 'C', 'D', 'E'] as const).map(v => [v, [...CHAIN_DOMAIN]])),
+  variables: [...CHAIN_VARS],
+  domains: new Map(CHAIN_VARS.map(v => [v, [...CHAIN_DOMAIN]])),
   neighbors: new Map([['A', ['B']], ['B', ['A', 'C']], ['C', ['B', 'D']], ['D', ['C', 'E']], ['E', ['D']]]),
   constraints: (_xi: string, vi: string, _xj: string, vj: string) => vi !== vj,
 };
