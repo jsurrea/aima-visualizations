@@ -9,10 +9,14 @@
   "color": "#EC4899",
   "basePath": "/chapter-15",
   "sections": [
-    { "id": "utility-functions", "title": "Utility Function Explorer", "status": "planned" },
-    { "id": "decision-network", "title": "Decision Network Editor", "status": "planned" },
-    { "id": "voi", "title": "Value of Information", "status": "planned" }
+    { "id": "meu", "title": "Maximum Expected Utility", "status": "complete" },
+    { "id": "utility-axioms", "title": "Utility Axioms & Paradoxes", "status": "complete" },
+    { "id": "utility-functions", "title": "Utility Functions", "status": "complete" },
+    { "id": "multiattribute", "title": "Multiattribute Utility", "status": "complete" },
+    { "id": "decision-network", "title": "Decision Network Evaluator", "status": "complete" },
+    { "id": "voi", "title": "Value of Information", "status": "complete" },
+    { "id": "unknown-preferences", "title": "Unknown Preferences & Off-Switch", "status": "complete" }
   ],
-  "status": "planned",
-  "techStack": ["React", "TypeScript", "D3.js", "KaTeX"]
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
 }
