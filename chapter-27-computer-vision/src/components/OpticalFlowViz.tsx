@@ -23,7 +23,7 @@ export default function OpticalFlowViz() {
   const [speed, setSpeed] = useState(100);
 
   const rafRef = useRef<number>(0);
-  const timeoutRef = useRef<number>(0);
+  const lastTimeRef = useRef<number>(0);
 
   const frame1 = useMemo(() => makeFrame(8, 8), []);
   const frame2 = useMemo(() => makeFrame(10, 9), []);
@@ -38,22 +38,22 @@ export default function OpticalFlowViz() {
 
   useEffect(() => {
     if (!playing || reducedMotion) return;
-    const step = () => {
-      setCurrentPixelIdx(idx => {
-        if (idx >= TOTAL_PIXELS - 1) {
-          setPlaying(false);
-          return TOTAL_PIXELS - 1;
-        }
-        return idx + 1;
-      });
-      timeoutRef.current = window.setTimeout(() => {
-        rafRef.current = requestAnimationFrame(step);
-      }, speed);
+    const step = (timestamp: number) => {
+      if (timestamp - lastTimeRef.current >= speed) {
+        lastTimeRef.current = timestamp;
+        setCurrentPixelIdx(idx => {
+          if (idx >= TOTAL_PIXELS - 1) {
+            setPlaying(false);
+            return TOTAL_PIXELS - 1;
+          }
+          return idx + 1;
+        });
+      }
+      rafRef.current = requestAnimationFrame(step);
     };
     rafRef.current = requestAnimationFrame(step);
     return () => {
       cancelAnimationFrame(rafRef.current);
-      clearTimeout(timeoutRef.current);
     };
   }, [playing, speed, reducedMotion]);
 
