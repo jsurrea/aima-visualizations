@@ -6,9 +6,11 @@ import { AUSTRALIA_CSP, NODE_POSITIONS, AUSTRALIA_EDGES } from '../shared';
 const CHAPTER_COLOR = '#3B82F6';
 const NODE_RADIUS = 28;
 
+const CHAIN_DOMAIN = ['1', '2', '3'] as const;
+
 const CHAIN_CSP: CSP = {
   variables: ['A', 'B', 'C', 'D', 'E'],
-  domains: new Map([['A', ['1', '2', '3']], ['B', ['1', '2', '3']], ['C', ['1', '2', '3']], ['D', ['1', '2', '3']], ['E', ['1', '2', '3']]]),
+  domains: new Map((['A', 'B', 'C', 'D', 'E'] as const).map(v => [v, [...CHAIN_DOMAIN]])),
   neighbors: new Map([['A', ['B']], ['B', ['A', 'C']], ['C', ['B', 'D']], ['D', ['C', 'E']], ['E', ['D']]]),
   constraints: (_xi: string, vi: string, _xj: string, vj: string) => vi !== vj,
 };
@@ -140,7 +142,7 @@ function TreeCSPGraph({ step }: { step: TreeCSPStep }) {
             />
             <text x={pos.x} y={pos.y - 4} textAnchor="middle" fill="white" fontSize="13" fontWeight="bold">{node}</text>
             {assignedVal ? (
-              <text x={pos.x} y={pos.y + 12} textAnchor="middle" fill="#60A5FA" fontSize="11">=&apos;{assignedVal}&apos;</text>
+              <text x={pos.x} y={pos.y + 12} textAnchor="middle" fill="#60A5FA" fontSize="11">='{assignedVal}'</text>
             ) : (
               <text x={pos.x} y={pos.y + 12} textAnchor="middle" fill="#6B7280" fontSize="9">{domain.slice(0, 5).join(',')}</text>
             )}

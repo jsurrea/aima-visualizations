@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import { ac3 } from '../algorithms/index';
 import type { AC3Step, CSP } from '../algorithms/index';
 import { AUSTRALIA_CSP, NODE_POSITIONS, AUSTRALIA_EDGES, colorToHex } from '../shared';
+import { renderInlineMath } from '../utils/mathUtils';
 
 const NODE_RADIUS = 28;
 const CHAPTER_COLOR = '#3B82F6';
@@ -177,8 +178,14 @@ export default function AC3Visualizer() {
     <div>
       <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '8px' }}>5.2 AC-3: Arc Consistency</h2>
       <p style={{ color: '#9CA3AF', marginBottom: '16px', lineHeight: 1.6 }}>
-        AC-3 enforces arc consistency by repeatedly removing values that have no support in neighbor domains.
-        Arc (X<sub>i</sub>, X<sub>j</sub>) is consistent if for every value in D<sub>i</sub>, there exists some value in D<sub>j</sub> satisfying the constraint.
+        AC-3 enforces arc consistency by repeatedly removing values that have no support in neighbor domains.{' '}
+        Arc{' '}
+        <span dangerouslySetInnerHTML={{ __html: renderInlineMath('(X_i, X_j)') }} />{' '}
+        is consistent if for every value in{' '}
+        <span dangerouslySetInnerHTML={{ __html: renderInlineMath('D_i') }} />,
+        there exists some value in{' '}
+        <span dangerouslySetInnerHTML={{ __html: renderInlineMath('D_j') }} />{' '}
+        satisfying the constraint.
       </p>
 
       <div style={{ display: 'flex', gap: '4px', marginBottom: '16px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
