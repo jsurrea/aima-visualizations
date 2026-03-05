@@ -21,9 +21,9 @@ interface TreeNodeData {
   y: number;
 }
 
-function applyMove(board: Board, idx: number, player: 'X' | 'O'): Board {
+function applyMove(board: Board, cellIndex: number, player: 'X' | 'O'): Board {
   const next = [...board] as Board;
-  next[idx] = player;
+  next[cellIndex] = player;
   return next;
 }
 

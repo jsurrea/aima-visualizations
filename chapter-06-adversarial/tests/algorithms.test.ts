@@ -503,7 +503,7 @@ describe('expectiminimax', () => {
     expect(root?.value).toBeCloseTo(4);
   });
 
-  it('3-level tree: MAX→CHANCE→leaves computes correct result', () => {
+  it('3-level tree: MAX to CHANCE to leaves computes correct result', () => {
     const tree: StochasticNode = {
       id: 'root', type: 'max',
       children: [

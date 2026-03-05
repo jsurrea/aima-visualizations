@@ -50,13 +50,13 @@ function buildMiniTree(): MiniNode {
 }
 
 // Evaluate minimax value at a given cutoff depth (heuristic = node's x position % 10)
-function evalMini(node: MiniNode, cutoff: number, isMax: boolean): number {
+function evaluateMinimaxNode(node: MiniNode, cutoff: number, isMax: boolean): number {
   if (node.depth >= cutoff || node.children.length === 0) {
     // Heuristic: x-position mod 10 gives a visually varied spread of values
     // that simulates a real heuristic evaluation function for demo purposes.
     return node.value ?? (node.x % 10);
   }
-  const childVals = node.children.map(c => evalMini(c, cutoff, !isMax));
+  const childVals = node.children.map(c => evaluateMinimaxNode(c, cutoff, !isMax));
   return isMax ? Math.max(...childVals) : Math.min(...childVals);
 }
 
@@ -68,7 +68,7 @@ function renderMiniTree(
 ): React.ReactNode {
   const isBeyondCutoff = node.depth >= cutoff && node.children.length > 0;
   const isBomb = node.depth === bombDepth && node.value !== undefined && node.value <= 1;
-  const val = node.value ?? (isBeyondCutoff ? null : evalMini(node, cutoff, isMax));
+  const val = node.value ?? (isBeyondCutoff ? null : evaluateMinimaxNode(node, cutoff, isMax));
 
   const nodeColor = node.depth >= cutoff
     ? '#4B5563'
@@ -120,7 +120,7 @@ export function LimitationsViz() {
   // The "bomb" node is at depth = depthLimit+1 (always just past horizon)
   const bombDepth = depthLimit + 1;
 
-  const rootVal = useMemo(() => evalMini(miniTree, depthLimit, true), [miniTree, depthLimit]);
+  const rootVal = useMemo(() => evaluateMinimaxNode(miniTree, depthLimit, true), [miniTree, depthLimit]);
 
   return (
     <section aria-labelledby="limitations-title" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
