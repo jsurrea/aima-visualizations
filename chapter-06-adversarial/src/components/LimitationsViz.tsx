@@ -52,7 +52,9 @@ function buildMiniTree(): MiniNode {
 // Evaluate minimax value at a given cutoff depth (heuristic = node's x position % 10)
 function evalMini(node: MiniNode, cutoff: number, isMax: boolean): number {
   if (node.depth >= cutoff || node.children.length === 0) {
-    return node.value ?? (node.x % 10); // placeholder heuristic for demo: x-position mod 10
+    // Heuristic: x-position mod 10 gives a visually varied spread of values
+    // that simulates a real heuristic evaluation function for demo purposes.
+    return node.value ?? (node.x % 10);
   }
   const childVals = node.children.map(c => evalMini(c, cutoff, !isMax));
   return isMax ? Math.max(...childVals) : Math.min(...childVals);

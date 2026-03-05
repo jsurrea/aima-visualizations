@@ -365,6 +365,7 @@ export type StochasticNodeType = 'max' | 'min' | 'chance';
 export interface StochasticNode {
   readonly id: string;
   readonly type: StochasticNodeType;
+  /** Probability-weighted children. When `prob` is omitted, uniform distribution (1/n) is used. */
   readonly children: ReadonlyArray<{ readonly node: StochasticNode; readonly prob?: number }>;
   readonly value?: number; // only for terminal nodes
 }

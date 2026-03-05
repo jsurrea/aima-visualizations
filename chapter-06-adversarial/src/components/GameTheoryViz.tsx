@@ -107,6 +107,8 @@ export function GameTheoryViz() {
   function getUtility(n: TreeNodeData) {
     if (zeroSum) return { max: n.utilityMax, min: -n.utilityMax };
     // Non-zero-sum: both can be positive
+    // Demo shift: add 0.5 to both players' utilities to create a non-zero-sum
+    // scenario where cooperation can benefit both sides (values for illustration only).
     return { max: n.utilityMax + 0.5, min: Math.max(0, n.utilityMin + 0.5) };
   }
 

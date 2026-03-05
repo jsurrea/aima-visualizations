@@ -215,7 +215,15 @@ export function StochasticGameViz() {
   const [speed, setSpeed] = useState(1);
   const rafRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number>(0);
-  const prefersReducedMotion = useMemo(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches, []);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(
+    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   const steps = useMemo(() => expectiminimax(buildTree(prob)), [prob]);
   const { nodes, edges } = useMemo(() => buildLayout(prob), [prob]);

@@ -231,7 +231,8 @@ export function PartiallyObservableViz() {
             Expected value of Fold = <span style={{ color: '#9CA3AF', fontWeight: 700 }}>−1.00</span>.
           </p>
           <p style={{ color: '#6B7280', fontSize: '12px', marginTop: '6px' }}>
-            Adjust P(Ace) above. When P(Ace) {'>'} 0.33, folding becomes optimal since betting yields EV {'<'} −1.
+            {/* Breakeven: EV(Bet) = EV(Fold) ⟹ (1-p)·3 + p·(−3) = −1 ⟹ 3−6p = −1 ⟹ p = 4/6 ≈ 0.67, so fold wins when p(Ace) > 0.67; the 0.33 displayed is p(Jack) at that same threshold */}
+            Adjust P(Ace) above. When P(Ace) {'>'} 0.67, folding becomes optimal since betting yields EV {'<'} −1.
           </p>
         </div>
       )}
