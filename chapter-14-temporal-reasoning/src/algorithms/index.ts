@@ -237,7 +237,7 @@ export function normalize(v: ReadonlyArray<number>): number[] {
   const sum = v.reduce((a, b) => a + b, 0);
   if (sum === 0) {
     const n = v.length;
-    return Array(n).fill(n > 0 ? 1 / n : 0) as number[];
+    return n === 0 ? [] : Array(n).fill(1 / n) as number[];
   }
   return v.map(x => x / sum);
 }

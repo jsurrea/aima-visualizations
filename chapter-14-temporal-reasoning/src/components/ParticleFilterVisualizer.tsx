@@ -77,7 +77,7 @@ function runSIS(params: HMMParams, evidence: number[], nParticles: number, seed:
 type PhaseView = 'propagate' | 'weight' | 'resample';
 
 // Small deterministic jitter per particle index for visual spread.
-// Uses Knuth's multiplicative hash constant (2654435761 ≈ 2³²/φ) to produce
+// Uses a multiplicative hash constant (2654435761 = floor(2³²/φ)) to produce
 // well-distributed values in [-1, 1] without a stateful RNG.
 function jitter(idx: number): number {
   return ((idx * 2654435761) >>> 0) / 4294967296 * 2 - 1;
