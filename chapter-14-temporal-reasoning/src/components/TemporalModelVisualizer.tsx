@@ -119,7 +119,7 @@ export default function TemporalModelVisualizer(): React.ReactElement {
   const futurePreds = useMemo(() => {
     const posterior = currentFilter?.belief ?? [0.5, 0.5];
     return predictFuture(posterior, hmm.transitionMatrix, futureK);
-  }, [currentFilter, hmm.transitionMatrix]);
+  }, [currentFilter, hmm.transitionMatrix, futureK]);
 
   const svgW = 200, svgH = 80;
   const futurePoints = futurePreds.map((p, i) => {

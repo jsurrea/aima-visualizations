@@ -29,8 +29,11 @@ const OBS_2D: [number, number][] = TRUE_TRAJ.map((p, i) => [
 function buildParams2D(sigmaZRatio: number): KalmanParams2D {
   const dt = 0.5;
   const sigmaObs = sigmaZRatio;
+  // Initial velocity estimated from first two trajectory points
+  const vx0 = TRUE_TRAJ[1] ? (TRUE_TRAJ[1].x - TRUE_TRAJ[0]!.x) / dt : 0;
+  const vy0 = TRUE_TRAJ[1] ? (TRUE_TRAJ[1].y - TRUE_TRAJ[0]!.y) / dt : 0;
   return {
-    mu0: [TRUE_TRAJ[0]!.x, TRUE_TRAJ[0]!.y, 0, 0] as ReadonlyArray<number>,
+    mu0: [TRUE_TRAJ[0]!.x, TRUE_TRAJ[0]!.y, vx0, vy0] as ReadonlyArray<number>,
     sigma0: [
       [1, 0, 0, 0],
       [0, 1, 0, 0],
