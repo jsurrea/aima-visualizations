@@ -8,8 +8,13 @@ import { renderInlineMath, renderDisplayMath } from '../utils/mathUtils';
 const CHAPTER_COLOR = '#EC4899';
 const AGENT2_COLOR = '#6B21A8';
 const AGENT2_LIGHT = '#A855F7';
-/** Minimum share percentage (%) before hiding the label inside the split bar to keep it readable. */
-const MIN_LABEL_WIDTH_PERCENT = 12;
+/** Minimum share percentage (0–100) required to render a label inside the split bar. Below this threshold the label is omitted to avoid overflow. */
+const MIN_LABEL_WIDTH_THRESHOLD_PERCENT = 12;
+
+/** Returns the label to render inside a split-bar segment, or an empty string if the segment is too narrow. */
+function splitBarLabel(agentName: string, pct: number): string {
+  return pct > MIN_LABEL_WIDTH_THRESHOLD_PERCENT ? `${agentName}: ${pct.toFixed(1)}%` : '';
+}
 
 const btnStyle = (active = false): React.CSSProperties => ({
   padding: '6px 14px',
@@ -165,7 +170,7 @@ export default function BargainingViz() {
               color: 'white',
               minWidth: pctA > 10 ? '0' : undefined,
             }}>
-              {pctA > MIN_LABEL_WIDTH_PERCENT ? `A: ${pctA.toFixed(1)}%` : ''}
+              {splitBarLabel('A', pctA)}
             </div>
             <div style={{
               width: `${pctB}%`,
@@ -177,7 +182,7 @@ export default function BargainingViz() {
               fontWeight: 600,
               color: 'white',
             }}>
-              {pctB > MIN_LABEL_WIDTH_PERCENT ? `B: ${pctB.toFixed(1)}%` : ''}
+              {splitBarLabel('B', pctB)}
             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginTop: '4px' }}>
