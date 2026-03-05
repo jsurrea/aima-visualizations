@@ -2,16 +2,20 @@
   "chapter": 7,
   "title": "Logical Agents",
   "shortTitle": "Logic",
-  "description": "Wumpus World, propositional logic, DPLL, and WALKSAT with step-by-step inference.",
+  "description": "Wumpus World, propositional logic, DPLL, WalkSAT, and resolution-based inference with step-by-step interactive visualizations.",
   "part": 3,
   "partName": "Knowledge, Reasoning, and Planning",
   "icon": "💡",
   "color": "#8B5CF6",
   "basePath": "/chapter-07",
   "sections": [
-    { "id": "wumpus-world", "title": "Wumpus World", "status": "complete" },
-    { "id": "truth-table", "title": "Truth Table Builder", "status": "complete" },
-    { "id": "dpll", "title": "DPLL Step-by-Step", "status": "complete" }
+    { "id": "kb-agent", "title": "KB-Agent (§7.1)", "status": "complete" },
+    { "id": "wumpus-world", "title": "Wumpus World (§7.2)", "status": "complete" },
+    { "id": "logic", "title": "Logic & Entailment (§7.3–7.4)", "status": "complete" },
+    { "id": "truth-table", "title": "Truth Table (§7.4)", "status": "complete" },
+    { "id": "resolution", "title": "PL-Resolution (§7.5)", "status": "complete" },
+    { "id": "dpll", "title": "DPLL (§7.6)", "status": "complete" },
+    { "id": "walksat", "title": "WalkSAT (§7.6–7.7)", "status": "complete" }
   ],
   "status": "complete",
   "techStack": ["React", "TypeScript", "KaTeX"]
