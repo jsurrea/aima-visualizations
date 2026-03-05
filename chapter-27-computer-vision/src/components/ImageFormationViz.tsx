@@ -58,7 +58,7 @@ export default function ImageFormationViz() {
     ctx.putImageData(imgData, 0, 0);
   }, [lightAngle, albedo]);
 
-  const v0 = projectedVerts[0];
+  const vertex0 = projectedVerts[0];
   const frontNormalIntensity = lambertShading(
     0, 0, -1,
     Math.cos(lightAngle * Math.PI / 180),
@@ -161,7 +161,7 @@ export default function ImageFormationViz() {
         <div><span style={{ color: '#9CA3AF' }}>Light Angle: </span>{lightAngle}°</div>
         <div><span style={{ color: '#9CA3AF' }}>Albedo: </span>{albedo.toFixed(2)}</div>
         <div><span style={{ color: '#9CA3AF' }}>Vertex 0 proj: </span>
-          {v0 ? `(${v0.x.toFixed(1)}, ${v0.y.toFixed(1)})` : 'behind camera'}
+          {vertex0 ? `(${vertex0.x.toFixed(1)}, ${vertex0.y.toFixed(1)})` : 'behind camera'}
         </div>
         <div><span style={{ color: '#9CA3AF' }}>Front-face I: </span>{frontNormalIntensity.toFixed(3)}</div>
       </div>

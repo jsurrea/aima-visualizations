@@ -12,8 +12,8 @@ function makeFrame(cx: number, cy: number): ReadonlyArray<number> {
   });
 }
 
-/** Total pixels in each 16×16 frame (index of last pixel). */
-const TOTAL_PIXELS = 16 * 16 - 1;
+/** Total pixel count in each 16×16 frame. */
+const TOTAL_PIXELS = 16 * 16;
 
 export default function OpticalFlowViz() {
   const [playing, setPlaying] = useState(false);
@@ -40,9 +40,9 @@ export default function OpticalFlowViz() {
     if (!playing || reducedMotion) return;
     const step = () => {
       setCurrentPixelIdx(idx => {
-        if (idx >= TOTAL_PIXELS) {
+        if (idx >= TOTAL_PIXELS - 1) {
           setPlaying(false);
-          return TOTAL_PIXELS;
+          return TOTAL_PIXELS - 1;
         }
         return idx + 1;
       });
