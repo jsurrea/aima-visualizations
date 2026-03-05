@@ -9,6 +9,12 @@ import {
   formulaToLatex,
   unify,
   analyzeQuantifierScope,
+  getRepresentationLevels,
+  getKinshipKB,
+  getKnowledgeEngineeringSteps,
+  RepresentationLevel,
+  KBSentence,
+  KnowledgeEngineeringStep,
 } from '../algorithms/index';
 import { renderInlineMath, renderDisplayMath } from '../utils/mathUtils';
 
@@ -662,18 +668,277 @@ function QuantifierScopeTab() {
 }
 
 // ---------------------------------------------------------------------------
+// Representation Tab (§8.1)
+// ---------------------------------------------------------------------------
+function RepresentationTab() {
+  const levels: ReadonlyArray<RepresentationLevel> = getRepresentationLevels();
+  const badgeColor = (v: 'low' | 'medium' | 'high') =>
+    v === 'high' ? '#10B981' : v === 'medium' ? '#F59E0B' : '#6B7280';
+
+  return (
+    <div>
+      <p style={{ color: '#9CA3AF', fontSize: '14px', marginBottom: '20px', lineHeight: 1.6 }}>
+        §8.1 compares representation languages by expressiveness and complexity. First-order logic
+        sits between propositional and higher-order logic — powerful enough for most AI domains.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {levels.map((level, i) => (
+          <div
+            key={level.name}
+            style={{
+              padding: '20px',
+              background: 'var(--surface-2)',
+              borderRadius: '12px',
+              border: '1px solid rgba(255,255,255,0.07)',
+            }}
+            aria-label={`${level.name} — ${level.expressiveness} expressiveness`}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px', flexWrap: 'wrap' }}>
+              <span
+                style={{
+                  width: 28, height: 28, borderRadius: '50%',
+                  background: 'var(--part-3)', color: 'white',
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '13px', fontWeight: 700, flexShrink: 0,
+                }}
+              >
+                {i + 1}
+              </span>
+              <span style={{ fontSize: '16px', fontWeight: 700, color: '#E5E7EB' }}>{level.name}</span>
+              <span
+                style={{
+                  marginLeft: 'auto', padding: '2px 10px', borderRadius: '20px', fontSize: '12px',
+                  fontWeight: 600, background: `${badgeColor(level.expressiveness)}20`,
+                  color: badgeColor(level.expressiveness),
+                  border: `1px solid ${badgeColor(level.expressiveness)}40`,
+                }}
+              >
+                Expressiveness: {level.expressiveness}
+              </span>
+              <span
+                style={{
+                  padding: '2px 10px', borderRadius: '20px', fontSize: '12px',
+                  fontWeight: 600, background: `${badgeColor(level.complexity)}20`,
+                  color: badgeColor(level.complexity),
+                  border: `1px solid ${badgeColor(level.complexity)}40`,
+                }}
+              >
+                Complexity: {level.complexity}
+              </span>
+            </div>
+            <p style={{ fontSize: '14px', color: '#9CA3AF', marginBottom: '12px', lineHeight: 1.6 }}>
+              {level.description}
+            </p>
+            <div
+              style={{ padding: '10px 16px', background: 'var(--surface-1)', borderRadius: '8px' }}
+              aria-label={`Example for ${level.name}`}
+              dangerouslySetInnerHTML={{ __html: renderDisplayMath(level.example) }}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Kinship KB Tab (§8.3)
+// ---------------------------------------------------------------------------
+function KinshipKBTab() {
+  const [selected, setSelected] = useState<string | null>(null);
+  const kb: ReadonlyArray<KBSentence> = getKinshipKB();
+
+  return (
+    <div>
+      <p style={{ color: '#9CA3AF', fontSize: '14px', marginBottom: '20px', lineHeight: 1.6 }}>
+        §8.3 shows how the kinship domain is encoded in FOL. Click any sentence to inspect its
+        structure and natural-language description.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {kb.map(sentence => {
+          const isOpen = selected === sentence.id;
+          return (
+            <div
+              key={sentence.id}
+              style={{
+                borderRadius: '10px',
+                border: `1px solid ${isOpen ? 'var(--part-3)' : 'rgba(255,255,255,0.07)'}`,
+                background: isOpen ? 'rgba(139,92,246,0.07)' : 'var(--surface-2)',
+                overflow: 'hidden',
+                transition: 'border-color 0.15s, background 0.15s',
+              }}
+            >
+              <button
+                onClick={() => setSelected(isOpen ? null : sentence.id)}
+                aria-expanded={isOpen}
+                style={{
+                  width: '100%', padding: '14px 18px', display: 'flex',
+                  alignItems: 'center', gap: '12px', background: 'transparent',
+                  border: 'none', cursor: 'pointer', textAlign: 'left',
+                }}
+              >
+                <span
+                  style={{
+                    width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
+                    background: isOpen ? 'var(--part-3)' : '#4B5563',
+                    transition: 'background 0.15s',
+                  }}
+                />
+                <span
+                  style={{ flex: 1, color: '#E5E7EB', fontSize: '14px' }}
+                  dangerouslySetInnerHTML={{ __html: renderInlineMath(sentence.latex) }}
+                />
+                <span style={{ color: '#6B7280', fontSize: '14px', flexShrink: 0 }}>
+                  {isOpen ? '▲' : '▼'}
+                </span>
+              </button>
+              {isOpen && (
+                <div style={{ padding: '0 18px 16px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                  <p style={{ fontSize: '13px', color: '#9CA3AF', marginTop: '12px', marginBottom: '10px', lineHeight: 1.6 }}>
+                    {sentence.description}
+                  </p>
+                  <div
+                    style={{ padding: '10px 16px', background: 'var(--surface-1)', borderRadius: '8px' }}
+                    aria-label="Formula display"
+                    dangerouslySetInnerHTML={{ __html: renderDisplayMath(sentence.latex) }}
+                  />
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Knowledge Engineering Tab (§8.4)
+// ---------------------------------------------------------------------------
+function KnowledgeEngineeringTab() {
+  const [activeStep, setActiveStep] = useState(0);
+  const steps: ReadonlyArray<KnowledgeEngineeringStep> = getKnowledgeEngineeringSteps();
+  const step = steps[activeStep] ?? steps[0]!;
+  const stepColors = ['#6366F1', '#3B82F6', '#8B5CF6', '#EC4899', '#10B981', '#F59E0B'];
+
+  return (
+    <div>
+      <p style={{ color: '#9CA3AF', fontSize: '14px', marginBottom: '20px', lineHeight: 1.6 }}>
+        §8.4 describes a systematic six-step process for building a domain knowledge base in FOL.
+        Click a step to explore its purpose and deliverables.
+      </p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(140px, 220px) 1fr', gap: '16px' }}>
+        {/* Step list */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          {steps.map((s, i) => {
+            const color = stepColors[i] ?? '#9CA3AF';
+            const isActive = activeStep === i;
+            return (
+              <button
+                key={s.id}
+                onClick={() => setActiveStep(i)}
+                aria-pressed={isActive}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '10px',
+                  padding: '10px 12px', borderRadius: '8px', border: 'none',
+                  background: isActive ? `${color}20` : 'var(--surface-2)',
+                  cursor: 'pointer', textAlign: 'left',
+                  borderLeft: `3px solid ${isActive ? color : 'transparent'}`,
+                  transition: 'background 0.15s, border-color 0.15s',
+                }}
+              >
+                <span
+                  style={{
+                    width: 24, height: 24, borderRadius: '50%', flexShrink: 0,
+                    background: isActive ? color : '#374151', color: 'white',
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '12px', fontWeight: 700,
+                  }}
+                >
+                  {s.id}
+                </span>
+                <span style={{ fontSize: '13px', color: isActive ? '#E5E7EB' : '#9CA3AF', fontWeight: isActive ? 600 : 400, lineHeight: 1.3 }}>
+                  {s.title}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Step detail */}
+        <div
+          style={{ padding: '20px', background: 'var(--surface-2)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.07)' }}
+          role="region"
+          aria-label={`Step ${step.id}: ${step.title}`}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+            <span
+              style={{
+                width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+                background: stepColors[activeStep] ?? '#9CA3AF', color: 'white',
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '14px', fontWeight: 700,
+              }}
+            >
+              {step.id}
+            </span>
+            <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#E5E7EB' }}>{step.title}</h3>
+          </div>
+          <p style={{ fontSize: '14px', color: '#9CA3AF', lineHeight: 1.7, marginBottom: '16px' }}>
+            {step.description}
+          </p>
+          <div style={{ marginBottom: '16px' }}>
+            <div style={{ fontSize: '12px', color: '#6B7280', marginBottom: '6px' }}>Example:</div>
+            <div
+              style={{ padding: '10px 14px', background: 'var(--surface-1)', borderRadius: '8px', fontSize: '13px', color: '#D1D5DB', lineHeight: 1.6 }}
+            >
+              {step.example.includes('\\') ? (
+                <span dangerouslySetInnerHTML={{ __html: renderInlineMath(step.example) }} />
+              ) : (
+                step.example
+              )}
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: '12px', color: '#6B7280', marginBottom: '8px' }}>Artifacts produced:</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {step.artifacts.map(artifact => (
+                <span
+                  key={artifact}
+                  style={{
+                    padding: '4px 12px', borderRadius: '20px', fontSize: '12px',
+                    background: `${stepColors[activeStep] ?? '#9CA3AF'}18`,
+                    color: stepColors[activeStep] ?? '#9CA3AF',
+                    border: `1px solid ${stepColors[activeStep] ?? '#9CA3AF'}40`,
+                  }}
+                >
+                  {artifact}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main component
 // ---------------------------------------------------------------------------
-type TabId = 'syntax-tree' | 'unification' | 'quantifier-scope';
+type TabId = 'representation' | 'syntax-tree' | 'unification' | 'quantifier-scope' | 'kinship-kb' | 'knowledge-engineering';
 
 const TABS: { id: TabId; label: string }[] = [
-  { id: 'syntax-tree', label: 'Syntax Tree' },
-  { id: 'unification', label: 'Unification' },
-  { id: 'quantifier-scope', label: 'Quantifier Scope' },
+  { id: 'representation', label: '§8.1 Representation' },
+  { id: 'syntax-tree', label: '§8.2 Syntax Tree' },
+  { id: 'unification', label: '§8.2 Unification' },
+  { id: 'quantifier-scope', label: '§8.2 Quantifiers' },
+  { id: 'kinship-kb', label: '§8.3 Kinship KB' },
+  { id: 'knowledge-engineering', label: '§8.4 Knowledge Eng.' },
 ];
 
 export default function FirstOrderLogicVisualizer() {
-  const [tab, setTab] = useState<TabId>('syntax-tree');
+  const [tab, setTab] = useState<TabId>('representation');
 
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', color: 'white' }}>
@@ -727,9 +992,12 @@ export default function FirstOrderLogicVisualizer() {
           hidden={tab !== t.id}
           style={{ display: tab === t.id ? 'block' : 'none' }}
         >
+          {t.id === 'representation' && <RepresentationTab />}
           {t.id === 'syntax-tree' && <SyntaxTreeTab />}
           {t.id === 'unification' && <UnificationTab />}
           {t.id === 'quantifier-scope' && <QuantifierScopeTab />}
+          {t.id === 'kinship-kb' && <KinshipKBTab />}
+          {t.id === 'knowledge-engineering' && <KnowledgeEngineeringTab />}
         </div>
       ))}
     </div>

@@ -59,134 +59,136 @@ export function buildSyntaxTree(formula: FOLFormula | FOLTerm): SyntaxTreeNode {
   // Reset counter so IDs are deterministic in tests (per call sequence)
   const f = formula as FOLTerm | FOLFormula;
 
-  if ('kind' in f) {
-    switch (f.kind) {
-      // Terms
-      case 'var':
-        return { id: freshId(), label: f.name, latex: f.name, kind: 'var', children: [] };
-      case 'const':
-        return { id: freshId(), label: f.name, latex: f.name, kind: 'const', children: [] };
-      case 'fn': {
-        const children = (f as { kind: 'fn'; name: string; args: ReadonlyArray<FOLTerm> }).args.map(
-          a => buildSyntaxTree(a),
-        );
-        return {
-          id: freshId(),
-          label: `${f.name}(...)`,
-          latex: `${f.name}(${children.map(c => c.latex).join(', ')})`,
-          kind: 'fn',
-          children,
-        };
-      }
-      // Formulas
-      case 'atom': {
-        const ff = f as { kind: 'atom'; predicate: string; args: ReadonlyArray<FOLTerm> };
-        const children = ff.args.map(a => buildSyntaxTree(a));
-        return {
-          id: freshId(),
-          label: `${ff.predicate}(...)`,
-          latex: `${ff.predicate}(${children.map(c => c.latex).join(', ')})`,
-          kind: 'atom',
-          children,
-        };
-      }
-      case 'eq': {
-        const ff = f as { kind: 'eq'; left: FOLTerm; right: FOLTerm };
-        const left = buildSyntaxTree(ff.left);
-        const right = buildSyntaxTree(ff.right);
-        return {
-          id: freshId(),
-          label: '=',
-          latex: `${left.latex} = ${right.latex}`,
-          kind: 'eq',
-          children: [left, right],
-        };
-      }
-      case 'neg': {
-        const ff = f as { kind: 'neg'; arg: FOLFormula };
-        const child = buildSyntaxTree(ff.arg);
-        return {
-          id: freshId(),
-          label: '¬',
-          latex: `\\lnot ${child.latex}`,
-          kind: 'neg',
-          children: [child],
-        };
-      }
-      case 'and': {
-        const ff = f as { kind: 'and'; left: FOLFormula; right: FOLFormula };
-        const left = buildSyntaxTree(ff.left);
-        const right = buildSyntaxTree(ff.right);
-        return {
-          id: freshId(),
-          label: '∧',
-          latex: `(${left.latex} \\land ${right.latex})`,
-          kind: 'and',
-          children: [left, right],
-        };
-      }
-      case 'or': {
-        const ff = f as { kind: 'or'; left: FOLFormula; right: FOLFormula };
-        const left = buildSyntaxTree(ff.left);
-        const right = buildSyntaxTree(ff.right);
-        return {
-          id: freshId(),
-          label: '∨',
-          latex: `(${left.latex} \\lor ${right.latex})`,
-          kind: 'or',
-          children: [left, right],
-        };
-      }
-      case 'implies': {
-        const ff = f as { kind: 'implies'; left: FOLFormula; right: FOLFormula };
-        const left = buildSyntaxTree(ff.left);
-        const right = buildSyntaxTree(ff.right);
-        return {
-          id: freshId(),
-          label: '⇒',
-          latex: `(${left.latex} \\Rightarrow ${right.latex})`,
-          kind: 'implies',
-          children: [left, right],
-        };
-      }
-      case 'iff': {
-        const ff = f as { kind: 'iff'; left: FOLFormula; right: FOLFormula };
-        const left = buildSyntaxTree(ff.left);
-        const right = buildSyntaxTree(ff.right);
-        return {
-          id: freshId(),
-          label: '⟺',
-          latex: `(${left.latex} \\Leftrightarrow ${right.latex})`,
-          kind: 'iff',
-          children: [left, right],
-        };
-      }
-      case 'forall': {
-        const ff = f as { kind: 'forall'; variable: string; body: FOLFormula };
-        const body = buildSyntaxTree(ff.body);
-        return {
-          id: freshId(),
-          label: `∀${ff.variable}`,
-          latex: `\\forall ${ff.variable}\\; ${body.latex}`,
-          kind: 'forall',
-          children: [body],
-        };
-      }
-      case 'exists': {
-        const ff = f as { kind: 'exists'; variable: string; body: FOLFormula };
-        const body = buildSyntaxTree(ff.body);
-        return {
-          id: freshId(),
-          label: `∃${ff.variable}`,
-          latex: `\\exists ${ff.variable}\\; ${body.latex}`,
-          kind: 'exists',
-          children: [body],
-        };
-      }
+  switch (f.kind) {
+    // Terms
+    case 'var':
+      return { id: freshId(), label: f.name, latex: f.name, kind: 'var', children: [] };
+    case 'const':
+      return { id: freshId(), label: f.name, latex: f.name, kind: 'const', children: [] };
+    case 'fn': {
+      const children = (f as { kind: 'fn'; name: string; args: ReadonlyArray<FOLTerm> }).args.map(
+        a => buildSyntaxTree(a),
+      );
+      return {
+        id: freshId(),
+        label: `${f.name}(...)`,
+        latex: `${f.name}(${children.map(c => c.latex).join(', ')})`,
+        kind: 'fn',
+        children,
+      };
     }
+    // Formulas
+    case 'atom': {
+      const ff = f as { kind: 'atom'; predicate: string; args: ReadonlyArray<FOLTerm> };
+      const children = ff.args.map(a => buildSyntaxTree(a));
+      return {
+        id: freshId(),
+        label: `${ff.predicate}(...)`,
+        latex: `${ff.predicate}(${children.map(c => c.latex).join(', ')})`,
+        kind: 'atom',
+        children,
+      };
+    }
+    case 'eq': {
+      const ff = f as { kind: 'eq'; left: FOLTerm; right: FOLTerm };
+      const left = buildSyntaxTree(ff.left);
+      const right = buildSyntaxTree(ff.right);
+      return {
+        id: freshId(),
+        label: '=',
+        latex: `${left.latex} = ${right.latex}`,
+        kind: 'eq',
+        children: [left, right],
+      };
+    }
+    case 'neg': {
+      const ff = f as { kind: 'neg'; arg: FOLFormula };
+      const child = buildSyntaxTree(ff.arg);
+      return {
+        id: freshId(),
+        label: '¬',
+        latex: `\\lnot ${child.latex}`,
+        kind: 'neg',
+        children: [child],
+      };
+    }
+    case 'and': {
+      const ff = f as { kind: 'and'; left: FOLFormula; right: FOLFormula };
+      const left = buildSyntaxTree(ff.left);
+      const right = buildSyntaxTree(ff.right);
+      return {
+        id: freshId(),
+        label: '∧',
+        latex: `(${left.latex} \\land ${right.latex})`,
+        kind: 'and',
+        children: [left, right],
+      };
+    }
+    case 'or': {
+      const ff = f as { kind: 'or'; left: FOLFormula; right: FOLFormula };
+      const left = buildSyntaxTree(ff.left);
+      const right = buildSyntaxTree(ff.right);
+      return {
+        id: freshId(),
+        label: '∨',
+        latex: `(${left.latex} \\lor ${right.latex})`,
+        kind: 'or',
+        children: [left, right],
+      };
+    }
+    case 'implies': {
+      const ff = f as { kind: 'implies'; left: FOLFormula; right: FOLFormula };
+      const left = buildSyntaxTree(ff.left);
+      const right = buildSyntaxTree(ff.right);
+      return {
+        id: freshId(),
+        label: '⇒',
+        latex: `(${left.latex} \\Rightarrow ${right.latex})`,
+        kind: 'implies',
+        children: [left, right],
+      };
+    }
+    case 'iff': {
+      const ff = f as { kind: 'iff'; left: FOLFormula; right: FOLFormula };
+      const left = buildSyntaxTree(ff.left);
+      const right = buildSyntaxTree(ff.right);
+      return {
+        id: freshId(),
+        label: '⟺',
+        latex: `(${left.latex} \\Leftrightarrow ${right.latex})`,
+        kind: 'iff',
+        children: [left, right],
+      };
+    }
+    case 'forall': {
+      const ff = f as { kind: 'forall'; variable: string; body: FOLFormula };
+      const body = buildSyntaxTree(ff.body);
+      return {
+        id: freshId(),
+        label: `∀${ff.variable}`,
+        latex: `\\forall ${ff.variable}\\; ${body.latex}`,
+        kind: 'forall',
+        children: [body],
+      };
+    }
+    case 'exists': {
+      const ff = f as { kind: 'exists'; variable: string; body: FOLFormula };
+      const body = buildSyntaxTree(ff.body);
+      return {
+        id: freshId(),
+        label: `∃${ff.variable}`,
+        latex: `\\exists ${ff.variable}\\; ${body.latex}`,
+        kind: 'exists',
+        children: [body],
+      };
+    }
+    /* v8 ignore start */
+    default: {
+      // Should never reach here with well-typed input
+      return { id: freshId(), label: '?', latex: '?', kind: 'unknown', children: [] };
+    }
+    /* v8 ignore stop */
   }
-  // Should never reach here with well-typed input
-  return { id: freshId(), label: '?', latex: '?', kind: 'unknown', children: [] };
 }
 
 /**
@@ -457,14 +459,14 @@ function termsEqual(a: FOLTerm, b: FOLTerm): boolean {
   if (a.kind !== b.kind) return false;
   if (a.kind === 'var' && b.kind === 'var') return a.name === b.name;
   if (a.kind === 'const' && b.kind === 'const') return a.name === b.name;
-  if (a.kind === 'fn' && b.kind === 'fn') {
-    if (a.name !== b.name || a.args.length !== b.args.length) return false;
-    return a.args.every((arg, i) => {
-      const bArg = b.args[i];
-      return bArg !== undefined && termsEqual(arg, bArg);
-    });
-  }
-  return false;
+  // Both are 'fn' at this point (only remaining kind after 'var' and 'const')
+  const af = a as { kind: 'fn'; name: string; args: ReadonlyArray<FOLTerm> };
+  const bf = b as { kind: 'fn'; name: string; args: ReadonlyArray<FOLTerm> };
+  if (af.name !== bf.name || af.args.length !== bf.args.length) return false;
+  return af.args.every((arg, i) => {
+    const bArg = bf.args[i];
+    return bArg !== undefined && termsEqual(arg, bArg);
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -656,4 +658,225 @@ function collectQuantifiers(
       break;
     }
   }
+}
+
+// ---------------------------------------------------------------------------
+// §8.1 Representation comparison
+// ---------------------------------------------------------------------------
+
+/** A single representation level comparison entry. */
+export interface RepresentationLevel {
+  name: string;
+  description: string;
+  example: string;
+  expressiveness: 'low' | 'medium' | 'high';
+  complexity: 'low' | 'medium' | 'high';
+}
+
+/**
+ * Returns comparison data for propositional logic vs FOL vs higher-order logic.
+ * Illustrates §8.1 (Representation Revisited).
+ */
+export function getRepresentationLevels(): ReadonlyArray<RepresentationLevel> {
+  return [
+    {
+      name: 'Propositional Logic',
+      description: 'Facts as atomic propositions. Cannot express relationships between objects.',
+      example: 'RichardAlive \\land JohnBrother',
+      expressiveness: 'low',
+      complexity: 'low',
+    },
+    {
+      name: 'First-Order Logic',
+      description: 'Objects, relations, and functions. Can quantify over objects.',
+      example: '\\forall x\\; (King(x) \\land Greedy(x) \\Rightarrow Evil(x))',
+      expressiveness: 'high',
+      complexity: 'medium',
+    },
+    {
+      name: 'Higher-Order Logic',
+      description: 'Can quantify over relations and functions themselves.',
+      example: '\\forall P\\; \\forall Q\\; (P \\subseteq Q \\Rightarrow \\forall x\\; P(x) \\Rightarrow Q(x))',
+      expressiveness: 'high',
+      complexity: 'high',
+    },
+  ];
+}
+
+// ---------------------------------------------------------------------------
+// §8.3 Domain knowledge examples (Kinship / Electronic circuits)
+// ---------------------------------------------------------------------------
+
+/** A FOL sentence in a domain knowledge base. */
+export interface KBSentence {
+  id: string;
+  section: string;
+  description: string;
+  formula: FOLFormula;
+  latex: string;
+}
+
+/**
+ * Returns a kinship domain knowledge base (§8.3 example from AIMA).
+ * Sentences express family relationships in FOL.
+ */
+export function getKinshipKB(): ReadonlyArray<KBSentence> {
+  const sentences: KBSentence[] = [];
+
+  // Helper terms
+  const x: FOLTerm = { kind: 'var', name: 'x' };
+  const y: FOLTerm = { kind: 'var', name: 'y' };
+  const z: FOLTerm = { kind: 'var', name: 'z' };
+
+  // ∀x ¬Parent(x, x)  — no one is their own parent
+  sentences.push({
+    id: 'no-self-parent',
+    section: 'Kinship',
+    description: 'No one is their own parent',
+    formula: {
+      kind: 'forall', variable: 'x',
+      body: { kind: 'neg', arg: { kind: 'atom', predicate: 'Parent', args: [x, x] } },
+    },
+    latex: '\\forall x\\; \\lnot Parent(x, x)',
+  });
+
+  // ∀x ∀y Parent(x,y) ⇒ Child(y,x)
+  sentences.push({
+    id: 'parent-child',
+    section: 'Kinship',
+    description: 'If x is a parent of y, then y is a child of x',
+    formula: {
+      kind: 'forall', variable: 'x',
+      body: {
+        kind: 'forall', variable: 'y',
+        body: {
+          kind: 'implies',
+          left: { kind: 'atom', predicate: 'Parent', args: [x, y] },
+          right: { kind: 'atom', predicate: 'Child', args: [y, x] },
+        },
+      },
+    },
+    latex: '\\forall x\\; \\forall y\\; Parent(x, y) \\Rightarrow Child(y, x)',
+  });
+
+  // ∀x ∀y Sibling(x,y) ⇔ x≠y ∧ ∃z (Parent(z,x) ∧ Parent(z,y))
+  sentences.push({
+    id: 'sibling',
+    section: 'Kinship',
+    description: 'Siblings share a common parent and are distinct',
+    formula: {
+      kind: 'forall', variable: 'x',
+      body: {
+        kind: 'forall', variable: 'y',
+        body: {
+          kind: 'iff',
+          left: { kind: 'atom', predicate: 'Sibling', args: [x, y] },
+          right: {
+            kind: 'and',
+            left: { kind: 'neg', arg: { kind: 'eq', left: x, right: y } },
+            right: {
+              kind: 'exists', variable: 'z',
+              body: {
+                kind: 'and',
+                left: { kind: 'atom', predicate: 'Parent', args: [z, x] },
+                right: { kind: 'atom', predicate: 'Parent', args: [z, y] },
+              },
+            },
+          },
+        },
+      },
+    },
+    latex: '\\forall x\\; \\forall y\\; Sibling(x,y) \\Leftrightarrow (x \\neq y \\land \\exists z\\;(Parent(z,x) \\land Parent(z,y)))',
+  });
+
+  // ∀x ∀y ∀z (Parent(x,y) ∧ Parent(y,z)) ⇒ Grandparent(x,z)
+  sentences.push({
+    id: 'grandparent',
+    section: 'Kinship',
+    description: 'Grandparent is parent of parent',
+    formula: {
+      kind: 'forall', variable: 'x',
+      body: {
+        kind: 'forall', variable: 'y',
+        body: {
+          kind: 'forall', variable: 'z',
+          body: {
+            kind: 'implies',
+            left: {
+              kind: 'and',
+              left: { kind: 'atom', predicate: 'Parent', args: [x, y] },
+              right: { kind: 'atom', predicate: 'Parent', args: [y, z] },
+            },
+            right: { kind: 'atom', predicate: 'Grandparent', args: [x, z] },
+          },
+        },
+      },
+    },
+    latex: '\\forall x\\;\\forall y\\;\\forall z\\; (Parent(x,y) \\land Parent(y,z)) \\Rightarrow Grandparent(x,z)',
+  });
+
+  return sentences;
+}
+
+// ---------------------------------------------------------------------------
+// §8.4 Knowledge Engineering steps
+// ---------------------------------------------------------------------------
+
+/** One step in the knowledge engineering process. */
+export interface KnowledgeEngineeringStep {
+  id: number;
+  title: string;
+  description: string;
+  example: string;
+  artifacts: ReadonlyArray<string>;
+}
+
+/**
+ * Returns the knowledge engineering steps described in §8.4.
+ */
+export function getKnowledgeEngineeringSteps(): ReadonlyArray<KnowledgeEngineeringStep> {
+  return [
+    {
+      id: 1,
+      title: 'Identify the task',
+      description: 'Determine what questions the KB must answer and what competencies it needs.',
+      example: 'Can we determine which circuits are broken? Can we answer kinship queries?',
+      artifacts: ['Task specification', 'Competency questions'],
+    },
+    {
+      id: 2,
+      title: 'Assemble relevant knowledge',
+      description: 'Gather domain knowledge through interviewing experts or reading documents.',
+      example: 'Collect rules about family relationships: parent, sibling, ancestor.',
+      artifacts: ['Domain descriptions', 'Expert interview notes'],
+    },
+    {
+      id: 3,
+      title: 'Decide on vocabulary',
+      description: 'Choose predicates, functions, and constants. Define ontological commitments.',
+      example: 'Predicates: Parent/2, Sibling/2. Constants: John, Mary. Functions: FatherOf/1.',
+      artifacts: ['Vocabulary list', 'Ontology'],
+    },
+    {
+      id: 4,
+      title: 'Encode general knowledge',
+      description: 'Write FOL axioms and rules that define the vocabulary terms.',
+      example: '\\forall x\\; \\forall y\\; Sibling(x,y) \\Leftrightarrow \\exists z\\; Parent(z,x) \\land Parent(z,y) \\land x \\neq y',
+      artifacts: ['General axioms', 'Definitional sentences'],
+    },
+    {
+      id: 5,
+      title: 'Encode specific instance knowledge',
+      description: 'Add ground facts about the specific problem instance.',
+      example: 'Parent(John, Mary). Parent(John, Bob). Male(John). Female(Mary).',
+      artifacts: ['Ground facts', 'Instance assertions'],
+    },
+    {
+      id: 6,
+      title: 'Pose queries and debug',
+      description: 'Test the KB by posing queries. Debug by inspecting proofs and adding missing axioms.',
+      example: 'Sibling(Mary, Bob)? → Yes (via the sibling axiom + Parent facts)',
+      artifacts: ['Query results', 'Proof traces', 'Corrected axioms'],
+    },
+  ];
 }
