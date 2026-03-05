@@ -11,6 +11,9 @@ import {
   boundVariables,
   analyzeQuantifierScope,
   Substitution,
+  getRepresentationLevels,
+  getKinshipKB,
+  getKnowledgeEngineeringSteps,
 } from '../src/algorithms/index';
 
 // ---------------------------------------------------------------------------
@@ -631,3 +634,95 @@ describe('analyzeQuantifierScope', () => {
   });
 });
 
+
+// ---------------------------------------------------------------------------
+// getRepresentationLevels
+// ---------------------------------------------------------------------------
+describe('getRepresentationLevels', () => {
+  it('returns 3 levels', () => {
+    expect(getRepresentationLevels().length).toBe(3);
+  });
+
+  it('first level is propositional logic', () => {
+    expect(getRepresentationLevels()[0]!.name).toContain('Propositional');
+  });
+
+  it('second level is FOL', () => {
+    expect(getRepresentationLevels()[1]!.name).toContain('First-Order');
+  });
+
+  it('FOL has high expressiveness', () => {
+    expect(getRepresentationLevels()[1]!.expressiveness).toBe('high');
+  });
+
+  it('propositional logic has low expressiveness', () => {
+    expect(getRepresentationLevels()[0]!.expressiveness).toBe('low');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// getKinshipKB
+// ---------------------------------------------------------------------------
+describe('getKinshipKB', () => {
+  it('returns at least 4 sentences', () => {
+    expect(getKinshipKB().length).toBeGreaterThanOrEqual(4);
+  });
+
+  it('first sentence has id and formula', () => {
+    const kb = getKinshipKB();
+    expect(kb[0]!.id).toBeDefined();
+    expect(kb[0]!.formula).toBeDefined();
+  });
+
+  it('all sentences have latex strings', () => {
+    const kb = getKinshipKB();
+    for (const s of kb) {
+      expect(s.latex.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('contains a sibling definition', () => {
+    const kb = getKinshipKB();
+    const sibling = kb.find(s => s.id === 'sibling');
+    expect(sibling).toBeDefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// getKnowledgeEngineeringSteps
+// ---------------------------------------------------------------------------
+describe('getKnowledgeEngineeringSteps', () => {
+  it('returns 6 steps', () => {
+    expect(getKnowledgeEngineeringSteps().length).toBe(6);
+  });
+
+  it('steps are numbered 1 through 6', () => {
+    const steps = getKnowledgeEngineeringSteps();
+    steps.forEach((s, i) => expect(s.id).toBe(i + 1));
+  });
+
+  it('each step has title and description', () => {
+    for (const step of getKnowledgeEngineeringSteps()) {
+      expect(step.title.length).toBeGreaterThan(0);
+      expect(step.description.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('each step has artifacts array', () => {
+    for (const step of getKnowledgeEngineeringSteps()) {
+      expect(step.artifacts.length).toBeGreaterThan(0);
+    }
+  });
+});
+
+// Test for y-variable occurs-check failure (the sy.kind==='var' && occursIn branch in unifyPairs)
+describe('unify - y variable occurs check', () => {
+  it('fails when second arg is a variable that occurs in the first arg structure', () => {
+    // unify(g(y), y): the second term is a var 'y', occursIn('y', g(y))=true → failure
+    const y: FOLTerm = { kind: 'var', name: 'y' };
+    const gy: FOLTerm = { kind: 'fn', name: 'g', args: [y] };
+    const steps = unify(gy, y);
+    const last = steps[steps.length - 1]!;
+    expect(last.result).toBe('failure');
+  });
+});
