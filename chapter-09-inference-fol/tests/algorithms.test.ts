@@ -5,6 +5,8 @@ import {
   termToLatex,
   unify,
   forwardChain,
+  backwardChain,
+  universalInstantiation,
   literalToString,
   clauseToLatex,
   resolve,
@@ -529,5 +531,253 @@ describe('propositionalResolution', () => {
     const steps = propositionalResolution(kb, goal);
     const resolvingSteps = steps.filter((s) => s.clause1Id !== '');
     expect(resolvingSteps.length).toBeGreaterThan(0);
+  });
+});
+
+// ─── backwardChain ───────────────────────────────────────────────────────────
+
+const BC_CRIME_CLAUSES: HornClause[] = [
+  // Missile(x) ∧ Owns(Nono,x) → Sells(West,x,Nono)
+  {
+    head: 'Sells',
+    headArgs: ['West', 'x', 'Nono'],
+    body: [
+      { predicate: 'Missile', args: ['x'] },
+      { predicate: 'Owns', args: ['Nono', 'x'] },
+    ],
+  },
+  // Missile(x) → Weapon(x)
+  {
+    head: 'Weapon',
+    headArgs: ['x'],
+    body: [{ predicate: 'Missile', args: ['x'] }],
+  },
+  // Enemy(x,America) → Hostile(x)
+  {
+    head: 'Hostile',
+    headArgs: ['x'],
+    body: [{ predicate: 'Enemy', args: ['x', 'America'] }],
+  },
+  // American(x) ∧ Weapon(y) ∧ Sells(x,y,z) ∧ Hostile(z) → Criminal(x)
+  {
+    head: 'Criminal',
+    headArgs: ['x'],
+    body: [
+      { predicate: 'American', args: ['x'] },
+      { predicate: 'Weapon', args: ['y'] },
+      { predicate: 'Sells', args: ['x', 'y', 'z'] },
+      { predicate: 'Hostile', args: ['z'] },
+    ],
+  },
+];
+
+const BC_CRIME_FACTS = [
+  'American(West)',
+  'Enemy(Nono,America)',
+  'Owns(Nono,M1)',
+  'Missile(M1)',
+];
+
+describe('backwardChain', () => {
+  it('proves Criminal(West) from crime KB', () => {
+    const steps = backwardChain(BC_CRIME_CLAUSES, BC_CRIME_FACTS, 'Criminal(West)');
+    const last = steps[steps.length - 1]!;
+    expect(last.succeeded).toBe(true);
+    expect(last.failed).toBe(false);
+  });
+
+  it('first step is initialization', () => {
+    const steps = backwardChain(BC_CRIME_CLAUSES, BC_CRIME_FACTS, 'Criminal(West)');
+    expect(steps[0]!.action).toContain('Start backward chaining');
+    expect(steps[0]!.currentGoal).toBe('Criminal(West)');
+  });
+
+  it('proves a direct fact in one match step', () => {
+    const steps = backwardChain([], ['Foo(bar)'], 'Foo(bar)');
+    expect(steps.some((s) => s.action.includes('matched fact'))).toBe(true);
+    const last = steps[steps.length - 1]!;
+    expect(last.succeeded).toBe(true);
+  });
+
+  it('returns failure for unprovable query', () => {
+    const steps = backwardChain([], ['Foo(a)'], 'Bar(x)');
+    const last = steps[steps.length - 1]!;
+    expect(last.failed).toBe(true);
+    expect(last.succeeded).toBe(false);
+  });
+
+  it('uses rules to derive new facts', () => {
+    const rules: HornClause[] = [
+      {
+        head: 'Ancestor',
+        headArgs: ['x', 'y'],
+        body: [{ predicate: 'Parent', args: ['x', 'y'] }],
+      },
+    ];
+    const facts = ['Parent(Tom,Bob)'];
+    const steps = backwardChain(rules, facts, 'Ancestor(Tom,Bob)');
+    const last = steps[steps.length - 1]!;
+    expect(last.succeeded).toBe(true);
+  });
+
+  it('each step has required fields', () => {
+    const steps = backwardChain(BC_CRIME_CLAUSES, BC_CRIME_FACTS, 'Criminal(West)');
+    for (const step of steps) {
+      expect(typeof step.action).toBe('string');
+      expect(typeof step.currentGoal).toBe('string');
+      expect(step.node).toBeDefined();
+      expect(Array.isArray(step.proofNodes)).toBe(true);
+      expect(step.bindings).toBeDefined();
+    }
+  });
+
+  it('proof nodes have status field', () => {
+    const steps = backwardChain(BC_CRIME_CLAUSES, BC_CRIME_FACTS, 'Criminal(West)');
+    const lastStep = steps[steps.length - 1]!;
+    for (const node of lastStep.proofNodes) {
+      expect(['success', 'failure', 'pending']).toContain(node.status);
+    }
+  });
+
+  it('handles depth limit — returns failure when maxDepth=0 and no fact match', () => {
+    const rules: HornClause[] = [
+      {
+        head: 'A',
+        headArgs: ['x'],
+        body: [{ predicate: 'B', args: ['x'] }],
+      },
+    ];
+    const steps = backwardChain(rules, [], 'A(foo)', 0);
+    const last = steps[steps.length - 1]!;
+    expect(last.failed).toBe(true);
+  });
+
+  it('proves query that is already in facts (no rules needed)', () => {
+    const steps = backwardChain([], ['Criminal(West)'], 'Criminal(West)');
+    const last = steps[steps.length - 1]!;
+    expect(last.succeeded).toBe(true);
+  });
+
+  it('handles fact with no arguments', () => {
+    const steps = backwardChain([], ['Raining'], 'Raining');
+    const last = steps[steps.length - 1]!;
+    expect(last.succeeded).toBe(true);
+  });
+
+  it('handles rule with no body (unconditional fact as rule)', () => {
+    const rules: HornClause[] = [
+      { head: 'Happy', headArgs: [], body: [] },
+    ];
+    const steps = backwardChain(rules, [], 'Happy');
+    const last = steps[steps.length - 1]!;
+    expect(last.succeeded).toBe(true);
+  });
+
+  it('backtracks when first rule fails', () => {
+    const rules: HornClause[] = [
+      // Rule that can't fire (no facts for P)
+      { head: 'Q', headArgs: [], body: [{ predicate: 'P', args: [] }] },
+      // Rule that can fire (no body)
+      { head: 'Q', headArgs: [], body: [] },
+    ];
+    const steps = backwardChain(rules, [], 'Q');
+    const last = steps[steps.length - 1]!;
+    expect(last.succeeded).toBe(true);
+    // Should have a backtracking step
+    expect(steps.some((s) => s.action.includes('backtracking'))).toBe(true);
+  });
+
+  it('produces proof nodes at different depths', () => {
+    const steps = backwardChain(BC_CRIME_CLAUSES, BC_CRIME_FACTS, 'Criminal(West)');
+    const lastStep = steps[steps.length - 1]!;
+    const depths = lastStep.proofNodes.map((n) => n.depth);
+    expect(Math.max(...depths)).toBeGreaterThan(0);
+  });
+
+  it('fails when goal constant args do not match fact constant args', () => {
+    // Foo(Alpha) vs Foo(Beta) — both uppercase constants, constant clash
+    const steps = backwardChain([], ['Foo(Alpha)'], 'Foo(Beta)');
+    const last = steps[steps.length - 1]!;
+    expect(last.failed).toBe(true);
+  });
+
+  it('fails when query has repeated variable that conflicts across fact positions', () => {
+    // Query Pair(x,x): x must bind to Alpha AND Beta → conflict (exercises line 622 in index.ts)
+    const steps = backwardChain([], ['Pair(Alpha,Beta)'], 'Pair(x,x)');
+    const last = steps[steps.length - 1]!;
+    expect(last.failed).toBe(true);
+  });
+
+  it('fails when rule head has repeated variable but goal has different constants there', () => {
+    // Rule: Result(x,x) ← Foo(x); goal Result(Alpha,Beta): x_1 can't be both Alpha and Beta
+    const rules: HornClause[] = [
+      { head: 'Result', headArgs: ['x', 'x'], body: [{ predicate: 'Foo', args: ['x'] }] },
+    ];
+    const steps = backwardChain(rules, ['Foo(Alpha)'], 'Result(Alpha,Beta)');
+    const last = steps[steps.length - 1]!;
+    expect(last.failed).toBe(true);
+  });
+
+  it('ignores malformed facts with empty predicate', () => {
+    // '(Alpha)' has empty predicate → parseFact returns null → skipped gracefully
+    const steps = backwardChain([], ['(Alpha)', 'Foo(Alpha)'], 'Foo(Alpha)');
+    const last = steps[steps.length - 1]!;
+    expect(last.succeeded).toBe(true);
+  });
+
+  it('fails gracefully when query goal has malformed format', () => {
+    // '(x)' has empty predicate — parseFact returns null inside solveGoal
+    const steps = backwardChain([], ['Foo(Alpha)'], '(x)');
+    const last = steps[steps.length - 1]!;
+    expect(last.failed).toBe(true);
+  });
+
+  it('does not match facts with same predicate but different arity', () => {
+    // Foo(Alpha,Beta) ≠ Foo(Alpha) — arity mismatch
+    const steps = backwardChain([], ['Foo(Alpha,Beta)'], 'Foo(Alpha)');
+    const last = steps[steps.length - 1]!;
+    expect(last.failed).toBe(true);
+  });
+});
+
+// ─── universalInstantiation ──────────────────────────────────────────────────
+
+describe('universalInstantiation', () => {
+  it('substitutes single ground term', () => {
+    const steps = universalInstantiation('King(x) ∧ Greedy(x) ⇒ Evil(x)', 'x', ['John']);
+    expect(steps.length).toBe(1);
+    expect(steps[0]!.instantiated).toBe('King(John) ∧ Greedy(John) ⇒ Evil(John)');
+    expect(steps[0]!.groundTerm).toBe('John');
+    expect(steps[0]!.variable).toBe('x');
+  });
+
+  it('substitutes multiple ground terms', () => {
+    const steps = universalInstantiation('King(x) ∧ Greedy(x) ⇒ Evil(x)', 'x', ['John', 'Richard']);
+    expect(steps.length).toBe(2);
+    expect(steps[0]!.instantiated).toBe('King(John) ∧ Greedy(John) ⇒ Evil(John)');
+    expect(steps[1]!.instantiated).toBe('King(Richard) ∧ Greedy(Richard) ⇒ Evil(Richard)');
+  });
+
+  it('returns empty array for no ground terms', () => {
+    const steps = universalInstantiation('King(x)', 'x', []);
+    expect(steps.length).toBe(0);
+  });
+
+  it('description includes variable and ground term', () => {
+    const steps = universalInstantiation('P(x)', 'x', ['a']);
+    expect(steps[0]!.description).toContain('x');
+    expect(steps[0]!.description).toContain('a');
+  });
+
+  it('does not substitute partial matches', () => {
+    // 'xx' should not be substituted when variable is 'x'
+    const steps = universalInstantiation('Foo(xx)', 'x', ['a']);
+    expect(steps[0]!.instantiated).toBe('Foo(xx)');
+  });
+
+  it('preserves original formula', () => {
+    const formula = 'Animal(x) ⇒ Alive(x)';
+    const steps = universalInstantiation(formula, 'x', ['Cat']);
+    expect(steps[0]!.original).toBe(formula);
   });
 });

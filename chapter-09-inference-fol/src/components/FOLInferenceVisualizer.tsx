@@ -1,8 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import katex from 'katex';
 import {
   unify,
   forwardChain,
+  backwardChain,
+  universalInstantiation,
   propositionalResolution,
   termToLatex,
   clauseToLatex,
@@ -12,6 +14,7 @@ import {
   type Literal,
   type UnificationStep,
   type ForwardChainStep,
+  type BackwardChainStep,
   type ResolutionStep,
 } from '../algorithms/index.js';
 
@@ -568,12 +571,468 @@ function getClauseSourceLabel(cl: CNFClause): string {
   return `from ${cl.parents?.join(',') ?? '?'}`;
 }
 
+// ─── Backward Chaining data ───────────────────────────────────────────────────
 
+const BC_CRIME_CLAUSES: HornClause[] = [
+  {
+    head: 'Sells',
+    headArgs: ['West', 'x', 'Nono'],
+    body: [
+      { predicate: 'Missile', args: ['x'] },
+      { predicate: 'Owns', args: ['Nono', 'x'] },
+    ],
+  },
+  {
+    head: 'Weapon',
+    headArgs: ['x'],
+    body: [{ predicate: 'Missile', args: ['x'] }],
+  },
+  {
+    head: 'Hostile',
+    headArgs: ['x'],
+    body: [{ predicate: 'Enemy', args: ['x', 'America'] }],
+  },
+  {
+    head: 'Criminal',
+    headArgs: ['x'],
+    body: [
+      { predicate: 'American', args: ['x'] },
+      { predicate: 'Weapon', args: ['y'] },
+      { predicate: 'Sells', args: ['x', 'y', 'z'] },
+      { predicate: 'Hostile', args: ['z'] },
+    ],
+  },
+];
+const BC_CRIME_FACTS = ['American(West)', 'Enemy(Nono,America)', 'Owns(Nono,M1)', 'Missile(M1)'];
+const BC_CRIME_QUERY = 'Criminal(West)';
 
-type Tab = 'unification' | 'forward-chaining' | 'resolution';
+// Original example: Family relationships
+const BC_FAMILY_CLAUSES: HornClause[] = [
+  {
+    head: 'GrandParent',
+    headArgs: ['x', 'z'],
+    body: [
+      { predicate: 'Parent', args: ['x', 'y'] },
+      { predicate: 'Parent', args: ['y', 'z'] },
+    ],
+  },
+  {
+    head: 'Ancestor',
+    headArgs: ['x', 'y'],
+    body: [{ predicate: 'Parent', args: ['x', 'y'] }],
+  },
+  {
+    head: 'Ancestor',
+    headArgs: ['x', 'z'],
+    body: [
+      { predicate: 'Ancestor', args: ['x', 'y'] },
+      { predicate: 'Parent', args: ['y', 'z'] },
+    ],
+  },
+];
+const BC_FAMILY_FACTS = ['Parent(Alice,Bob)', 'Parent(Bob,Carol)', 'Parent(Carol,Dave)'];
+const BC_FAMILY_QUERY = 'GrandParent(Alice,Carol)';
+
+// ─── Backward Chaining panel ──────────────────────────────────────────────────
+
+const BC_EXAMPLES = [
+  {
+    label: 'Crime KB: Criminal(West)',
+    clauses: BC_CRIME_CLAUSES,
+    facts: BC_CRIME_FACTS,
+    query: BC_CRIME_QUERY,
+  },
+  {
+    label: 'Family KB: GrandParent(Alice,Carol)',
+    clauses: BC_FAMILY_CLAUSES,
+    facts: BC_FAMILY_FACTS,
+    query: BC_FAMILY_QUERY,
+  },
+];
+
+function BackwardChainingPanel({ reducedMotion }: { reducedMotion: boolean }) {
+  const [exampleIdx, setExampleIdx] = useState(0);
+  const ex = BC_EXAMPLES[exampleIdx] ?? BC_EXAMPLES[0]!;
+  const steps = backwardChain(ex.clauses, ex.facts, ex.query);
+  const [stepIndex, setStepIndex] = useState(reducedMotion ? steps.length - 1 : 0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [speed, setSpeed] = useState(1);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    const s = backwardChain(ex.clauses, ex.facts, ex.query);
+    setStepIndex(reducedMotion ? s.length - 1 : 0);
+    setIsPlaying(false);
+  }, [exampleIdx, reducedMotion, ex.clauses, ex.facts, ex.query]);
+
+  useEffect(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (!isPlaying) return;
+    intervalRef.current = setInterval(() => {
+      setStepIndex((i) => {
+        if (i >= steps.length - 1) { setIsPlaying(false); return i; }
+        return i + 1;
+      });
+    }, 1000 / speed);
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, [isPlaying, speed, steps.length]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isInteractive = target.tagName === 'BUTTON' || target.tagName === 'INPUT' ||
+        target.tagName === 'SELECT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+      if (e.key === 'ArrowRight') setStepIndex((i) => Math.min(i + 1, steps.length - 1));
+      if (e.key === 'ArrowLeft') setStepIndex((i) => Math.max(i - 1, 0));
+      if (e.key === ' ' && !isInteractive) { e.preventDefault(); setIsPlaying((p) => !p); }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [steps.length]);
+
+  const currentStep: BackwardChainStep = steps[stepIndex] ?? steps[0]!;
+  const statusColor = currentStep.succeeded ? '#10B981' : currentStep.failed ? '#EF4444' : '#9CA3AF';
+
+  const btnStyle: React.CSSProperties = {
+    background: 'var(--surface-3)', border: '1px solid var(--surface-border)',
+    borderRadius: '8px', color: 'white', cursor: 'pointer', fontSize: '14px', padding: '8px 14px',
+  };
+
+  return (
+    <div>
+      <p style={{ color: '#9CA3AF', marginBottom: '16px', fontSize: '14px' }}>
+        FOL-BC-ASK works backward from the goal, selecting rules whose conclusion matches,
+        then recursively proving each premise. It chains backward until reaching known facts.
+      </p>
+
+      <div style={{ marginBottom: '16px', display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <label style={{ color: '#9CA3AF', fontSize: '13px' }}>Example:</label>
+        <select
+          value={exampleIdx}
+          onChange={(e) => setExampleIdx(Number(e.target.value))}
+          style={{ background: 'var(--surface-3)', border: '1px solid var(--surface-border)', borderRadius: '6px', color: 'white', fontSize: '14px', padding: '6px 12px' }}
+          aria-label="Select backward chaining example"
+        >
+          {BC_EXAMPLES.map((e, i) => <option key={i} value={i}>{e.label}</option>)}
+        </select>
+      </div>
+
+      {/* KB summary */}
+      <div style={{ background: 'var(--surface-2)', borderRadius: '12px', padding: '16px', marginBottom: '12px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '12px' }}>
+          <div>
+            <span style={{ color: '#9CA3AF', fontSize: '12px', display: 'block', marginBottom: '6px' }}>Rules</span>
+            {ex.clauses.map((cl, i) => (
+              <div key={i} style={{ fontSize: '12px', color: '#A78BFA', marginBottom: '3px', fontFamily: 'monospace' }}>
+                {cl.body.length > 0
+                  ? `${cl.body.map(b => `${b.predicate}(${b.args.join(',')})`).join(' ∧ ')} → ${cl.head}(${cl.headArgs.join(',')})`
+                  : `→ ${cl.head}(${cl.headArgs.join(',')})`}
+              </div>
+            ))}
+          </div>
+          <div>
+            <span style={{ color: '#9CA3AF', fontSize: '12px', display: 'block', marginBottom: '6px' }}>Facts</span>
+            {ex.facts.map((f) => (
+              <div key={f} style={{ fontSize: '12px', color: '#10B981', marginBottom: '3px', fontFamily: 'monospace' }}>{f}</div>
+            ))}
+            <div style={{ marginTop: '8px' }}>
+              <span style={{ color: '#9CA3AF', fontSize: '12px' }}>Query: </span>
+              <code style={{ fontSize: '12px', color: '#F59E0B' }}>{ex.query}</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Step display */}
+      <div style={{ background: 'var(--surface-2)', borderRadius: '12px', padding: '20px', marginBottom: '16px' }}>
+        {/* Action */}
+        <div style={{
+          background: currentStep.succeeded ? 'rgba(16,185,129,0.1)' : currentStep.failed ? 'rgba(239,68,68,0.1)' : 'var(--surface-3)',
+          border: `1px solid ${currentStep.succeeded ? 'rgba(16,185,129,0.4)' : currentStep.failed ? 'rgba(239,68,68,0.4)' : 'transparent'}`,
+          borderRadius: '8px', padding: '12px', marginBottom: '16px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <span style={{
+              background: `${statusColor}20`, color: statusColor,
+              borderRadius: '4px', padding: '2px 8px', fontSize: '11px', fontWeight: 600,
+            }}>
+              {currentStep.succeeded ? 'PROVED' : currentStep.failed ? 'FAILED' : 'SEARCHING'}
+            </span>
+            <span style={{ color: '#9CA3AF', fontSize: '12px' }}>Current: <code style={{ color: '#F59E0B' }}>{currentStep.currentGoal}</code></span>
+          </div>
+          <span style={{ color: '#E5E7EB', fontSize: '14px' }}>{currentStep.action}</span>
+        </div>
+
+        {/* Proof nodes */}
+        <div>
+          <span style={{ color: '#9CA3AF', fontSize: '12px', display: 'block', marginBottom: '8px' }}>
+            Proof Search Tree ({currentStep.proofNodes.length} node{currentStep.proofNodes.length !== 1 ? 's' : ''})
+          </span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', maxHeight: '240px', overflowY: 'auto' }}>
+            {currentStep.proofNodes.map((node, i) => {
+              const nc = node.status === 'success' ? '#10B981' : node.status === 'failure' ? '#EF4444' : '#F59E0B';
+              return (
+                <div
+                  key={i}
+                  style={{
+                    background: node.status === 'pending' ? 'rgba(245,158,11,0.08)' : node.status === 'success' ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.05)',
+                    border: `1px solid ${nc}40`,
+                    borderRadius: '6px',
+                    padding: '6px 10px',
+                    marginLeft: `${node.depth * 16}px`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    fontSize: '12px',
+                  }}
+                >
+                  <span style={{ color: nc, minWidth: '16px' }}>
+                    {node.status === 'success' ? '✓' : node.status === 'failure' ? '✗' : '?'}
+                  </span>
+                  <code style={{ color: '#E5E7EB', flex: 1 }}>{node.goal}</code>
+                  {node.rule && (
+                    <span style={{ color: '#A78BFA', fontSize: '11px' }}>
+                      via {node.rule.head}
+                    </span>
+                  )}
+                  {!node.rule && node.status === 'success' && (
+                    <span style={{ color: '#10B981', fontSize: '11px' }}>fact</span>
+                  )}
+                </div>
+              );
+            })}
+            {currentStep.proofNodes.length === 0 && (
+              <span style={{ color: '#6B7280', fontSize: '13px' }}>—</span>
+            )}
+          </div>
+        </div>
+
+        {/* Bindings */}
+        {Object.keys(currentStep.bindings).length > 0 && (
+          <div style={{ marginTop: '12px' }}>
+            <span style={{ color: '#9CA3AF', fontSize: '12px', display: 'block', marginBottom: '6px' }}>Active Bindings</span>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {Object.entries(currentStep.bindings).map(([k, val]) => (
+                <span key={k} style={{
+                  background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.3)',
+                  borderRadius: '6px', padding: '2px 8px', fontSize: '12px', color: '#A78BFA',
+                }}>
+                  {k} = {val}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <Controls
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        onStepForward={() => setStepIndex((i) => Math.min(i + 1, steps.length - 1))}
+        onStepBackward={() => setStepIndex((i) => Math.max(i - 1, 0))}
+        onReset={() => { setStepIndex(0); setIsPlaying(false); }}
+        isPlaying={isPlaying}
+        speed={speed}
+        onSpeedChange={setSpeed}
+        stepIndex={stepIndex}
+        totalSteps={steps.length}
+      />
+    </div>
+  );
+}
+
+// ─── §9.1 Propositional vs FOL Inference panel ───────────────────────────────
+
+const UI_EXAMPLES = [
+  {
+    label: 'Evil kings',
+    formula: '\\forall x\\; King(x) \\land Greedy(x) \\Rightarrow Evil(x)',
+    formulaText: 'King(x) ∧ Greedy(x) ⇒ Evil(x)',
+    variable: 'x',
+    groundTerms: ['John', 'Richard', 'Father(John)'],
+    results: [
+      'King(John) ∧ Greedy(John) ⇒ Evil(John)',
+      'King(Richard) ∧ Greedy(Richard) ⇒ Evil(Richard)',
+      'King(Father(John)) ∧ Greedy(Father(John)) ⇒ Evil(Father(John))',
+    ],
+    explanation: 'Universal Instantiation replaces the universally quantified variable x with each ground term.',
+  },
+  {
+    label: 'Mortal philosophers',
+    formula: '\\forall x\\; Human(x) \\Rightarrow Mortal(x)',
+    formulaText: 'Human(x) ⇒ Mortal(x)',
+    variable: 'x',
+    groundTerms: ['Socrates', 'Plato', 'Aristotle'],
+    results: [
+      'Human(Socrates) ⇒ Mortal(Socrates)',
+      'Human(Plato) ⇒ Mortal(Plato)',
+      'Human(Aristotle) ⇒ Mortal(Aristotle)',
+    ],
+    explanation: 'Each philosopher is instantiated separately, creating propositional sentences.',
+  },
+  {
+    label: 'Animals and food',
+    formula: '\\forall x\\; Animal(x) \\Rightarrow NeedsFood(x)',
+    formulaText: 'Animal(x) ⇒ NeedsFood(x)',
+    variable: 'x',
+    groundTerms: ['Cat', 'Dog', 'Bird'],
+    results: [
+      'Animal(Cat) ⇒ NeedsFood(Cat)',
+      'Animal(Dog) ⇒ NeedsFood(Dog)',
+      'Animal(Bird) ⇒ NeedsFood(Bird)',
+    ],
+    explanation: 'Propositionalization creates one ground sentence per substitution.',
+  },
+];
+
+function PropositionalVsFOLPanel() {
+  const [exampleIdx, setExampleIdx] = useState(0);
+  const [selectedStep, setSelectedStep] = useState(0);
+  const ex = UI_EXAMPLES[exampleIdx] ?? UI_EXAMPLES[0]!;
+  const steps = universalInstantiation(ex.formulaText, ex.variable, ex.groundTerms);
+
+  useEffect(() => {
+    setSelectedStep(0);
+  }, [exampleIdx]);
+
+  const currentStep = steps[selectedStep] ?? steps[0];
+
+  return (
+    <div>
+      <p style={{ color: '#9CA3AF', marginBottom: '16px', fontSize: '14px' }}>
+        The key insight of §9.1: FOL sentences can be reduced to propositional logic via{' '}
+        <strong style={{ color: '#E5E7EB' }}>Universal Instantiation (UI)</strong> — substituting ground terms
+        for universally quantified variables. However, this creates infinitely many sentences when
+        function symbols are present (e.g., Father(Father(John))…).
+      </p>
+
+      {/* Concept overview */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px', marginBottom: '20px' }}>
+        <div style={{ background: 'var(--surface-2)', borderRadius: '10px', padding: '16px', border: '1px solid rgba(139,92,246,0.3)' }}>
+          <div style={{ color: '#A78BFA', fontWeight: 600, fontSize: '13px', marginBottom: '8px' }}>
+            Universal Instantiation (UI)
+          </div>
+          <div style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '8px' }}>
+            For any variable <em>v</em> and ground term <em>g</em>:
+          </div>
+          <div style={{ background: 'var(--surface-3)', borderRadius: '6px', padding: '10px', textAlign: 'center' }}>
+            <KatexSpan latex="\frac{\forall v \;\alpha}{\text{SUBST}(\{v/g\}, \alpha)}" displayMode />
+          </div>
+        </div>
+        <div style={{ background: 'var(--surface-2)', borderRadius: '10px', padding: '16px', border: '1px solid rgba(16,185,129,0.3)' }}>
+          <div style={{ color: '#10B981', fontWeight: 600, fontSize: '13px', marginBottom: '8px' }}>
+            Existential Instantiation (EI)
+          </div>
+          <div style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '8px' }}>
+            Replace <em>∃v α</em> with a new Skolem constant <em>k</em>:
+          </div>
+          <div style={{ background: 'var(--surface-3)', borderRadius: '6px', padding: '10px', textAlign: 'center' }}>
+            <KatexSpan latex="\frac{\exists v \;\alpha}{\text{SUBST}(\{v/k\}, \alpha)}" displayMode />
+          </div>
+        </div>
+        <div style={{ background: 'var(--surface-2)', borderRadius: '10px', padding: '16px', border: '1px solid rgba(239,68,68,0.3)' }}>
+          <div style={{ color: '#EF4444', fontWeight: 600, fontSize: '13px', marginBottom: '8px' }}>
+            Semidecidability
+          </div>
+          <div style={{ color: '#9CA3AF', fontSize: '12px' }}>
+            FOL entailment is semidecidable: algorithms can say <em>yes</em> to every entailed sentence,
+            but no algorithm exists that also says <em>no</em> to every non-entailed sentence.
+          </div>
+        </div>
+      </div>
+
+      {/* Interactive UI demo */}
+      <div style={{ background: 'var(--surface-2)', borderRadius: '12px', padding: '20px' }}>
+        <div style={{ marginBottom: '16px', display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <label style={{ color: '#9CA3AF', fontSize: '13px' }}>Example:</label>
+          <select
+            value={exampleIdx}
+            onChange={(e) => setExampleIdx(Number(e.target.value))}
+            style={{ background: 'var(--surface-3)', border: '1px solid var(--surface-border)', borderRadius: '6px', color: 'white', fontSize: '14px', padding: '6px 12px' }}
+            aria-label="Select UI example"
+          >
+            {UI_EXAMPLES.map((e, i) => <option key={i} value={i}>{e.label}</option>)}
+          </select>
+        </div>
+
+        {/* Original sentence */}
+        <div style={{ marginBottom: '16px' }}>
+          <div style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '6px' }}>Original FOL sentence (universally quantified):</div>
+          <div style={{ background: 'var(--surface-3)', borderRadius: '8px', padding: '12px', textAlign: 'center' }}>
+            <KatexSpan latex={ex.formula} displayMode />
+          </div>
+        </div>
+
+        {/* Ground term substitutions */}
+        <div style={{ marginBottom: '16px' }}>
+          <div style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '8px' }}>
+            Click a substitution to see the instantiated sentence:
+          </div>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {steps.map((step, i) => (
+              <button
+                key={i}
+                onClick={() => setSelectedStep(i)}
+                style={{
+                  background: selectedStep === i ? 'rgba(139,92,246,0.2)' : 'var(--surface-3)',
+                  border: `1px solid ${selectedStep === i ? 'rgba(139,92,246,0.6)' : 'var(--surface-border)'}`,
+                  borderRadius: '8px', color: selectedStep === i ? '#A78BFA' : '#9CA3AF',
+                  cursor: 'pointer', fontSize: '13px', padding: '8px 16px',
+                  fontWeight: selectedStep === i ? 600 : 400,
+                }}
+                aria-label={`Substitution ${step.description}`}
+                aria-pressed={selectedStep === i}
+              >
+                <KatexSpan latex={`\\{${ex.variable}/${step.groundTerm}\\}`} />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Instantiated result */}
+        {currentStep && (
+          <div style={{
+            background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.3)',
+            borderRadius: '10px', padding: '16px',
+          }}>
+            <div style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '8px' }}>
+              After applying <KatexSpan latex={`\\text{SUBST}(\\{${ex.variable}/${currentStep.groundTerm}\\})`} />:
+            </div>
+            <div style={{ color: '#E5E7EB', fontSize: '14px', fontFamily: 'monospace', marginBottom: '8px' }}>
+              {currentStep.instantiated}
+            </div>
+            <div style={{ color: '#9CA3AF', fontSize: '12px' }}>
+              This is now a <strong style={{ color: '#A78BFA' }}>propositional sentence</strong> — no variables, can be evaluated directly.
+            </div>
+          </div>
+        )}
+
+        <div style={{ marginTop: '12px', color: '#6B7280', fontSize: '12px', fontStyle: 'italic' }}>
+          {ex.explanation}
+        </div>
+
+        {/* What-if control */}
+        <div style={{ marginTop: '16px', background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: '8px', padding: '12px' }}>
+          <div style={{ color: '#F59E0B', fontSize: '12px', fontWeight: 600, marginBottom: '4px' }}>
+            💡 What if we include function symbols?
+          </div>
+          <div style={{ color: '#9CA3AF', fontSize: '12px' }}>
+            If the KB contains <code style={{ color: '#E5E7EB' }}>Father(John)</code>, then UI also generates
+            instantiations for <code style={{ color: '#E5E7EB' }}>Father(Richard)</code>,{' '}
+            <code style={{ color: '#E5E7EB' }}>Father(Father(John))</code>, etc.
+            This creates an <strong style={{ color: '#EF4444' }}>infinite set</strong> of propositional sentences,
+            making complete propositionalization infeasible for general FOL.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+type Tab = 'propositional-vs-fol' | 'unification' | 'forward-chaining' | 'backward-chaining' | 'resolution';
 
 export default function FOLInferenceVisualizer() {
-  const [activeTab, setActiveTab] = useState<Tab>('unification');
+  const [activeTab, setActiveTab] = useState<Tab>('propositional-vs-fol');
   const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
@@ -585,9 +1044,11 @@ export default function FOLInferenceVisualizer() {
   }, []);
 
   const tabs: Array<{ id: Tab; label: string }> = [
-    { id: 'unification', label: 'Unification' },
-    { id: 'forward-chaining', label: 'Forward Chaining' },
-    { id: 'resolution', label: 'Resolution' },
+    { id: 'propositional-vs-fol', label: '§9.1 Prop. vs FOL' },
+    { id: 'unification', label: '§9.2 Unification' },
+    { id: 'forward-chaining', label: '§9.3 Forward Chain' },
+    { id: 'backward-chaining', label: '§9.4 Backward Chain' },
+    { id: 'resolution', label: '§9.5 Resolution' },
   ];
 
   return (
@@ -609,6 +1070,7 @@ export default function FOLInferenceVisualizer() {
           display: 'flex',
           borderBottom: '1px solid var(--surface-border)',
           background: 'var(--surface-2)',
+          overflowX: 'auto',
         }}
       >
         {tabs.map((tab) => (
@@ -625,10 +1087,11 @@ export default function FOLInferenceVisualizer() {
               borderBottom: activeTab === tab.id ? '2px solid var(--chapter-color)' : '2px solid transparent',
               color: activeTab === tab.id ? 'white' : '#9CA3AF',
               cursor: 'pointer',
-              fontSize: '14px',
+              fontSize: '13px',
               fontWeight: activeTab === tab.id ? 600 : 400,
-              padding: '14px 20px',
+              padding: '14px 16px',
               transition: 'color 0.15s',
+              whiteSpace: 'nowrap',
             }}
           >
             {tab.label}
@@ -638,38 +1101,42 @@ export default function FOLInferenceVisualizer() {
 
       {/* Tab content */}
       <div style={{ padding: '24px' }}>
-        {activeTab === 'unification' && (
-          <div
-            role="tabpanel"
-            id="panel-unification"
-            aria-labelledby="tab-unification"
-          >
+        {activeTab === 'propositional-vs-fol' && (
+          <div role="tabpanel" id="panel-propositional-vs-fol" aria-labelledby="tab-propositional-vs-fol">
             <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px', color: '#E5E7EB' }}>
-              Unification Step-by-Step
+              §9.1 Propositional vs. First-Order Inference
+            </h3>
+            <PropositionalVsFOLPanel />
+          </div>
+        )}
+        {activeTab === 'unification' && (
+          <div role="tabpanel" id="panel-unification" aria-labelledby="tab-unification">
+            <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px', color: '#E5E7EB' }}>
+              §9.2 Unification Step-by-Step
             </h3>
             <UnificationPanel reducedMotion={reducedMotion} />
           </div>
         )}
         {activeTab === 'forward-chaining' && (
-          <div
-            role="tabpanel"
-            id="panel-forward-chaining"
-            aria-labelledby="tab-forward-chaining"
-          >
+          <div role="tabpanel" id="panel-forward-chaining" aria-labelledby="tab-forward-chaining">
             <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px', color: '#E5E7EB' }}>
-              Forward Chaining
+              §9.3 Forward Chaining
             </h3>
             <ForwardChainingPanel reducedMotion={reducedMotion} />
           </div>
         )}
-        {activeTab === 'resolution' && (
-          <div
-            role="tabpanel"
-            id="panel-resolution"
-            aria-labelledby="tab-resolution"
-          >
+        {activeTab === 'backward-chaining' && (
+          <div role="tabpanel" id="panel-backward-chaining" aria-labelledby="tab-backward-chaining">
             <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px', color: '#E5E7EB' }}>
-              Resolution Refutation
+              §9.4 Backward Chaining
+            </h3>
+            <BackwardChainingPanel reducedMotion={reducedMotion} />
+          </div>
+        )}
+        {activeTab === 'resolution' && (
+          <div role="tabpanel" id="panel-resolution" aria-labelledby="tab-resolution">
+            <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px', color: '#E5E7EB' }}>
+              §9.5 Resolution Refutation
             </h3>
             <ResolutionPanel reducedMotion={reducedMotion} />
           </div>

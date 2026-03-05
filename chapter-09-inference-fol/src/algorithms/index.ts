@@ -546,3 +546,374 @@ function clauseSignature(clause: CNFClause): string {
     .sort()
     .join('|');
 }
+
+// ─── Backward Chaining ───────────────────────────────────────────────────────
+
+/** A node in the backward-chaining proof tree for visualization. */
+export interface BCProofNode {
+  /** The goal literal being proved (e.g. "Criminal(West)"). */
+  readonly goal: string;
+  /** The rule that was selected (null for ground facts). */
+  readonly rule: HornClause | null;
+  /** Variable bindings accumulated so far. */
+  readonly bindings: Readonly<Record<string, string>>;
+  /** Sub-goals produced by this step. */
+  readonly subgoals: ReadonlyArray<string>;
+  /** Whether this node succeeded, failed, or is pending. */
+  readonly status: 'success' | 'failure' | 'pending';
+  /** Depth in the proof tree (0 = top-level query). */
+  readonly depth: number;
+}
+
+/** A single step in the backward chaining trace. */
+export interface BackwardChainStep {
+  readonly action: string;
+  readonly currentGoal: string;
+  readonly node: BCProofNode;
+  /** All nodes seen so far (for the proof tree view). */
+  readonly proofNodes: ReadonlyArray<BCProofNode>;
+  readonly bindings: Readonly<Record<string, string>>;
+  readonly succeeded: boolean;
+  readonly failed: boolean;
+}
+
+/**
+ * Applies a flat string binding map to a predicate argument list.
+ * Variables (lowercase first letter) are replaced by their bound values.
+ */
+function applyStringBindings(args: ReadonlyArray<string>, bindings: Readonly<Record<string, string>>): string[] {
+  return args.map((a) => {
+    if (!isVariable(a)) return a;
+    let val = a;
+    const seen = new Set<string>();
+    while (isVariable(val) && bindings[val] !== undefined && !seen.has(val)) {
+      seen.add(val);
+      val = bindings[val]!;
+    }
+    return val;
+  });
+}
+
+/**
+ * Tries to unify a goal string "Pred(a,b,...)" against a fact string.
+ * Handles both directions: goal args or fact args may be variables.
+ * Returns extended bindings on success, null on failure.
+ */
+function unifyGoalWithFact(
+  goal: string,
+  fact: string,
+  bindings: Readonly<Record<string, string>>,
+): Readonly<Record<string, string>> | null {
+  const gParsed = parseFact(goal);
+  const fParsed = parseFact(fact);
+  if (!gParsed || !fParsed) return null;
+  if (gParsed.predicate !== fParsed.predicate) return null;
+  if (gParsed.args.length !== fParsed.args.length) return null;
+
+  const resolvedGoalArgs = applyStringBindings(gParsed.args, bindings);
+  const resolvedFactArgs = applyStringBindings(fParsed.args, bindings);
+  let extended: Record<string, string> = { ...bindings };
+  for (let i = 0; i < resolvedGoalArgs.length; i++) {
+    const ga = resolvedGoalArgs[i]!;
+    const fa = resolvedFactArgs[i]!;
+    if (ga === fa) {
+      // identical — nothing to bind
+    } else if (isVariable(ga)) {
+      if (extended[ga] !== undefined && extended[ga] !== fa) return null;
+      extended = { ...extended, [ga]: fa };
+    } else if (isVariable(fa)) {
+      if (extended[fa] !== undefined && extended[fa] !== ga) return null;
+      extended = { ...extended, [fa]: ga };
+    } else {
+      return null;
+    }
+  }
+  return extended;
+}
+
+/**
+ * Tries to unify a goal string against a rule head (rhs).
+ * Returns extended bindings on success, null on failure.
+ * Standardizes rule variables by appending a suffix to avoid name clashes.
+ */
+function unifyGoalWithRuleHead(
+  goal: string,
+  rule: HornClause,
+  bindings: Readonly<Record<string, string>>,
+  suffix: string,
+): { bindings: Readonly<Record<string, string>>; standardizedRule: HornClause } | null {
+  // Standardize apart: rename all variables in the rule
+  const renamed: Record<string, string> = {};
+  const renameVar = (v: string): string => {
+    if (!renamed[v]) renamed[v] = `${v}${suffix}`;
+    return renamed[v]!;
+  };
+  const renameArgs = (args: ReadonlyArray<string>): string[] =>
+    args.map((a) => (isVariable(a) ? renameVar(a) : a));
+
+  const stdRule: HornClause = {
+    head: rule.head,
+    headArgs: renameArgs(rule.headArgs),
+    body: rule.body.map((b) => ({ predicate: b.predicate, args: renameArgs(b.args) })),
+  };
+
+  // Build goal fact string from head
+  const headFact =
+    stdRule.headArgs.length === 0
+      ? stdRule.head
+      : `${stdRule.head}(${stdRule.headArgs.join(',')})`;
+
+  const extended = unifyGoalWithFact(goal, headFact, bindings);
+  if (extended === null) return null;
+  return { bindings: extended, standardizedRule: stdRule };
+}
+
+/**
+ * FOL-BC-ASK (simplified Horn clause backward chaining).
+ * Returns all steps for playback as a flat trace.
+ *
+ * Uses iterative deepening with a depth limit to avoid infinite loops.
+ * @complexity O(b^d) where b is branching factor, d is proof depth
+ */
+export function backwardChain(
+  clauses: ReadonlyArray<HornClause>,
+  facts: ReadonlyArray<string>,
+  query: string,
+  maxDepth = 6,
+): ReadonlyArray<BackwardChainStep> {
+  const steps: BackwardChainStep[] = [];
+  const proofNodes: BCProofNode[] = [];
+  let varCounter = 0;
+
+  function nextSuffix(): string {
+    return `_${++varCounter}`;
+  }
+
+  function solveGoal(
+    goal: string,
+    bindings: Readonly<Record<string, string>>,
+    depth: number,
+  ): Readonly<Record<string, string>> | null {
+    if (depth > maxDepth) return null;
+
+    // Apply bindings to goal to get concrete goal
+    const gParsed = parseFact(goal);
+    if (!gParsed) return null;
+    const concreteArgs = applyStringBindings(gParsed.args, bindings);
+    const concreteGoal =
+      concreteArgs.length === 0
+        ? gParsed.predicate
+        : `${gParsed.predicate}(${concreteArgs.join(',')})`;
+
+    // Try matching against known facts first
+    for (const fact of facts) {
+      const newBindings = unifyGoalWithFact(concreteGoal, fact, bindings);
+      if (newBindings !== null) {
+        const node: BCProofNode = {
+          goal: concreteGoal,
+          rule: null,
+          bindings: newBindings,
+          subgoals: [],
+          status: 'success',
+          depth,
+        };
+        proofNodes.push(node);
+        steps.push({
+          action: `Goal "${concreteGoal}" matched fact "${fact}"`,
+          currentGoal: concreteGoal,
+          node,
+          proofNodes: [...proofNodes],
+          bindings: newBindings,
+          succeeded: false,
+          failed: false,
+        });
+        return newBindings;
+      }
+    }
+
+    // Try each rule whose head matches the goal
+    for (const rule of clauses) {
+      if (rule.head !== gParsed.predicate) continue;
+      const suffix = nextSuffix();
+      const match = unifyGoalWithRuleHead(concreteGoal, rule, bindings, suffix);
+      if (match === null) continue;
+
+      const subgoals = match.standardizedRule.body.map((b) =>
+        b.args.length === 0 ? b.predicate : `${b.predicate}(${b.args.join(',')})`,
+      );
+
+      const pendingNode: BCProofNode = {
+        goal: concreteGoal,
+        rule,
+        bindings: match.bindings,
+        subgoals,
+        status: 'pending',
+        depth,
+      };
+      proofNodes.push(pendingNode);
+      const nodeIdx = proofNodes.length - 1;
+
+      steps.push({
+        action: `Trying rule: ${rule.body.map((b) => `${b.predicate}(${b.args.join(',')})`).join(' ∧ ')} → ${rule.head}(${rule.headArgs.join(',')}) for goal "${concreteGoal}"`,
+        currentGoal: concreteGoal,
+        node: pendingNode,
+        proofNodes: [...proofNodes],
+        bindings: match.bindings,
+        succeeded: false,
+        failed: false,
+      });
+
+      // Try to satisfy all subgoals
+      let currentBindings = match.bindings;
+      let allSatisfied = true;
+      for (const subgoal of subgoals) {
+        const result = solveGoal(subgoal, currentBindings, depth + 1);
+        if (result === null) {
+          allSatisfied = false;
+          break;
+        }
+        currentBindings = result;
+      }
+
+      if (allSatisfied) {
+        const successNode: BCProofNode = {
+          ...pendingNode,
+          bindings: currentBindings,
+          status: 'success',
+        };
+        proofNodes[nodeIdx] = successNode;
+        steps.push({
+          action: `Rule succeeded → "${concreteGoal}" proved`,
+          currentGoal: concreteGoal,
+          node: successNode,
+          proofNodes: [...proofNodes],
+          bindings: currentBindings,
+          succeeded: false,
+          failed: false,
+        });
+        return currentBindings;
+      } else {
+        const failNode: BCProofNode = { ...pendingNode, status: 'failure' };
+        proofNodes[nodeIdx] = failNode;
+        steps.push({
+          action: `Rule failed for "${concreteGoal}", backtracking`,
+          currentGoal: concreteGoal,
+          node: failNode,
+          proofNodes: [...proofNodes],
+          bindings,
+          succeeded: false,
+          failed: false,
+        });
+      }
+    }
+
+    // All options exhausted
+    const failNode: BCProofNode = {
+      goal: concreteGoal,
+      rule: null,
+      bindings,
+      subgoals: [],
+      status: 'failure',
+      depth,
+    };
+    proofNodes.push(failNode);
+    steps.push({
+      action: `No proof found for "${concreteGoal}"`,
+      currentGoal: concreteGoal,
+      node: failNode,
+      proofNodes: [...proofNodes],
+      bindings,
+      succeeded: false,
+      failed: false,
+    });
+    return null;
+  }
+
+  steps.push({
+    action: `Start backward chaining for query "${query}"`,
+    currentGoal: query,
+    node: { goal: query, rule: null, bindings: {}, subgoals: [], status: 'pending', depth: 0 },
+    proofNodes: [...proofNodes],
+    bindings: {},
+    succeeded: false,
+    failed: false,
+  });
+
+  const result = solveGoal(query, {}, 0);
+
+  if (result !== null) {
+    steps.push({
+      action: `Query "${query}" proved successfully!`,
+      currentGoal: query,
+      node: {
+        goal: query,
+        rule: null,
+        bindings: result,
+        subgoals: [],
+        status: 'success',
+        depth: 0,
+      },
+      proofNodes: [...proofNodes],
+      bindings: result,
+      succeeded: true,
+      failed: false,
+    });
+  } else {
+    steps.push({
+      action: `Query "${query}" could not be proved`,
+      currentGoal: query,
+      node: {
+        goal: query,
+        rule: null,
+        bindings: {},
+        subgoals: [],
+        status: 'failure',
+        depth: 0,
+      },
+      proofNodes: [...proofNodes],
+      bindings: {},
+      succeeded: false,
+      failed: true,
+    });
+  }
+
+  return steps;
+}
+
+// ─── Universal Instantiation ─────────────────────────────────────────────────
+
+/** A step in the Universal Instantiation trace. */
+export interface UIStep {
+  readonly variable: string;
+  readonly groundTerm: string;
+  readonly original: string;
+  readonly instantiated: string;
+  readonly description: string;
+}
+
+/**
+ * Demonstrates Universal Instantiation by substituting ground terms
+ * for a universally quantified variable in a formula string.
+ *
+ * @param formula - e.g. "King(x) ∧ Greedy(x) ⇒ Evil(x)"
+ * @param variable - the universally quantified variable (e.g. "x")
+ * @param groundTerms - list of ground terms to substitute (e.g. ["John","Richard"])
+ */
+export function universalInstantiation(
+  formula: string,
+  variable: string,
+  groundTerms: ReadonlyArray<string>,
+): ReadonlyArray<UIStep> {
+  return groundTerms.map((g) => {
+    // Simple string replacement for visualization purposes
+    const regex = new RegExp(`\\b${variable}\\b`, 'g');
+    const instantiated = formula.replace(regex, g);
+    return {
+      variable,
+      groundTerm: g,
+      original: formula,
+      instantiated,
+      description: `Substitute {${variable}/${g}}`,
+    };
+  });
+}
