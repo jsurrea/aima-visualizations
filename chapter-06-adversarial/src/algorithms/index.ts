@@ -313,21 +313,17 @@ export function mcts(
     // Phase 2 — Expansion (only when selected node has unvisited children)
     let rolloutNode = selected;
     if (selected.children.length > 0) {
+      // selectLeaf guarantees unvisited.length > 0 here (it stops at nodes with unvisited children)
       const unvisited = selected.children.filter(c => c.visits === 0);
-      if (unvisited.length > 0) {
-        const idx = Math.floor(rng() * unvisited.length);
-        const picked = unvisited[idx];
-        if (picked !== undefined) {
-          rolloutNode = picked;
-          steps.push({
-            phase: 'expansion',
-            nodeId: rolloutNode.id,
-            result: 0,
-            action: `Expand to child "${rolloutNode.id}"`,
-            tree: freezeNode(workingTree),
-          });
-        }
-      }
+      const idx = Math.floor(rng() * unvisited.length);
+      rolloutNode = unvisited[idx]!;
+      steps.push({
+        phase: 'expansion',
+        nodeId: rolloutNode.id,
+        result: 0,
+        action: `Expand to child "${rolloutNode.id}"`,
+        tree: freezeNode(workingTree),
+      });
     }
 
     // Phase 3 — Simulation (random rollout)
@@ -357,5 +353,103 @@ export function mcts(
     });
   }
 
+  return steps;
+}
+
+// ─── Expectiminimax ──────────────────────────────────────────────────────────
+
+/** Node types for stochastic game trees. */
+export type StochasticNodeType = 'max' | 'min' | 'chance';
+
+/** A node in an expectiminimax game tree. Chance nodes list probability-weighted children. */
+export interface StochasticNode {
+  readonly id: string;
+  readonly type: StochasticNodeType;
+  readonly children: ReadonlyArray<{ readonly node: StochasticNode; readonly prob?: number }>;
+  readonly value?: number; // only for terminal nodes
+}
+
+/** One step emitted by the Expectiminimax algorithm. */
+export interface ExpectiminimaxStep {
+  readonly nodeId: string;
+  readonly nodeType: StochasticNodeType;
+  readonly depth: number;
+  readonly value: number;
+  readonly action: string;
+  readonly activeNodeIds: ReadonlyArray<string>;
+}
+
+/**
+ * Expectiminimax — Minimax extended for stochastic (chance) nodes.
+ * MAX nodes take the maximum, MIN nodes take the minimum,
+ * CHANCE nodes compute the probability-weighted average of child values.
+ *
+ * @param root - Root of the stochastic game tree.
+ * @returns Immutable array of evaluation steps in post-order.
+ */
+export function expectiminimax(root: StochasticNode): ReadonlyArray<ExpectiminimaxStep> {
+  const steps: ExpectiminimaxStep[] = [];
+  const activePath: string[] = [];
+
+  function rec(node: StochasticNode, depth: number): number {
+    activePath.push(node.id);
+
+    if (node.children.length === 0) {
+      const val = node.value ?? 0;
+      steps.push({
+        nodeId: node.id,
+        nodeType: node.type,
+        depth,
+        value: val,
+        action: `Leaf "${node.id}" → ${val.toFixed(2)}`,
+        activeNodeIds: [...activePath],
+      });
+      activePath.pop();
+      return val;
+    }
+
+    let best: number;
+    if (node.type === 'max') {
+      best = -Infinity;
+      for (const { node: child } of node.children) {
+        const v = rec(child, depth + 1);
+        best = Math.max(best, v);
+      }
+    } else if (node.type === 'min') {
+      best = Infinity;
+      for (const { node: child } of node.children) {
+        const v = rec(child, depth + 1);
+        best = Math.min(best, v);
+      }
+    } else {
+      // chance node
+      best = 0;
+      for (const { node: child, prob } of node.children) {
+        const p = prob ?? 1 / node.children.length;
+        const v = rec(child, depth + 1);
+        best += p * v;
+      }
+    }
+
+    const label =
+      node.type === 'max'
+        ? 'MAX'
+        : node.type === 'min'
+          ? 'MIN'
+          : 'CHANCE';
+
+    steps.push({
+      nodeId: node.id,
+      nodeType: node.type,
+      depth,
+      value: best,
+      action: `${label} "${node.id}" → ${best.toFixed(2)}`,
+      activeNodeIds: [...activePath],
+    });
+    activePath.pop();
+    return best;
+  }
+
+  rec(root, 0);
   return steps;
 }

@@ -2,16 +2,20 @@
   "chapter": 6,
   "title": "Adversarial Search and Games",
   "shortTitle": "Game Search",
-  "description": "Minimax, alpha-beta pruning, MCTS, and stochastic game trees with interactive game playing.",
+  "description": "Minimax, alpha-beta pruning, MCTS, stochastic games, and partially observable games with interactive visualizations.",
   "part": 2,
   "partName": "Problem Solving",
   "icon": "♟️",
   "color": "#3B82F6",
   "basePath": "/chapter-06",
   "sections": [
-    { "id": "minimax", "title": "Minimax Game Tree", "status": "complete" },
+    { "id": "game-theory", "title": "Game Theory", "status": "complete" },
+    { "id": "minimax", "title": "Minimax Search", "status": "complete" },
     { "id": "alpha-beta", "title": "Alpha-Beta Pruning", "status": "complete" },
-    { "id": "mcts", "title": "Monte Carlo Tree Search", "status": "complete" }
+    { "id": "mcts", "title": "Monte Carlo Tree Search", "status": "complete" },
+    { "id": "stochastic", "title": "Stochastic Games", "status": "complete" },
+    { "id": "partial-obs", "title": "Partially Observable Games", "status": "complete" },
+    { "id": "limitations", "title": "Limitations", "status": "complete" }
   ],
   "status": "complete",
   "techStack": ["React", "TypeScript", "KaTeX"]

@@ -3,8 +3,10 @@ import {
   minimax,
   alphaBeta,
   mcts,
+  expectiminimax,
   type GameNode,
   type MCTSNode,
+  type StochasticNode,
 } from '../src/algorithms/index';
 
 // ─── Minimax ──────────────────────────────────────────────────────────────────
@@ -427,5 +429,168 @@ describe('mcts', () => {
     expect(phases.has('expansion')).toBe(true);
     expect(phases.has('simulation')).toBe(true);
     expect(phases.has('backpropagation')).toBe(true);
+  });
+});
+
+// ─── Expectiminimax ──────────────────────────────────────────────────────────
+describe('expectiminimax', () => {
+  it('returns the value of a terminal MAX leaf', () => {
+    const tree: StochasticNode = { id: 'root', type: 'max', children: [], value: 5 };
+    const steps = expectiminimax(tree);
+    expect(steps).toHaveLength(1);
+    expect(steps[0]?.value).toBe(5);
+    expect(steps[0]?.nodeType).toBe('max');
+  });
+
+  it('returns 0 for a terminal node with undefined value', () => {
+    const tree: StochasticNode = { id: 'leaf', type: 'min', children: [] };
+    const steps = expectiminimax(tree);
+    expect(steps[0]?.value).toBe(0);
+    expect(steps[0]?.nodeType).toBe('min');
+  });
+
+  it('MAX node picks the highest child value', () => {
+    const tree: StochasticNode = {
+      id: 'root', type: 'max',
+      children: [
+        { node: { id: 'a', type: 'max', children: [], value: 3 } },
+        { node: { id: 'b', type: 'max', children: [], value: 7 } },
+      ],
+    };
+    const steps = expectiminimax(tree);
+    const root = steps.find(s => s.nodeId === 'root');
+    expect(root?.value).toBe(7);
+  });
+
+  it('MIN node picks the lowest child value', () => {
+    const tree: StochasticNode = {
+      id: 'root', type: 'min',
+      children: [
+        { node: { id: 'a', type: 'min', children: [], value: 3 } },
+        { node: { id: 'b', type: 'min', children: [], value: 7 } },
+      ],
+    };
+    const steps = expectiminimax(tree);
+    const root = steps.find(s => s.nodeId === 'root');
+    expect(root?.value).toBe(3);
+  });
+
+  it('CHANCE node computes probability-weighted average with explicit probs', () => {
+    const tree: StochasticNode = {
+      id: 'root', type: 'chance',
+      children: [
+        { node: { id: 'a', type: 'max', children: [], value: 4 }, prob: 0.25 },
+        { node: { id: 'b', type: 'max', children: [], value: 8 }, prob: 0.75 },
+      ],
+    };
+    const steps = expectiminimax(tree);
+    const root = steps.find(s => s.nodeId === 'root');
+    // 0.25*4 + 0.75*8 = 1 + 6 = 7
+    expect(root?.value).toBeCloseTo(7);
+  });
+
+  it('CHANCE node uses uniform probability when prob is undefined', () => {
+    const tree: StochasticNode = {
+      id: 'root', type: 'chance',
+      children: [
+        { node: { id: 'a', type: 'max', children: [], value: 2 } },
+        { node: { id: 'b', type: 'max', children: [], value: 6 } },
+      ],
+    };
+    const steps = expectiminimax(tree);
+    const root = steps.find(s => s.nodeId === 'root');
+    // 0.5*2 + 0.5*6 = 4
+    expect(root?.value).toBeCloseTo(4);
+  });
+
+  it('3-level tree: MAX→CHANCE→leaves computes correct result', () => {
+    const tree: StochasticNode = {
+      id: 'root', type: 'max',
+      children: [
+        {
+          node: {
+            id: 'chanceA', type: 'chance',
+            children: [
+              { node: { id: 'l1', type: 'max', children: [], value: 10 }, prob: 0.5 },
+              { node: { id: 'l2', type: 'max', children: [], value: 2 }, prob: 0.5 },
+            ],
+          },
+        },
+        {
+          node: {
+            id: 'chanceB', type: 'chance',
+            children: [
+              { node: { id: 'l3', type: 'max', children: [], value: 1 }, prob: 0.5 },
+              { node: { id: 'l4', type: 'max', children: [], value: 5 }, prob: 0.5 },
+            ],
+          },
+        },
+      ],
+    };
+    const steps = expectiminimax(tree);
+    expect(steps.find(s => s.nodeId === 'root')?.value).toBeCloseTo(6);
+    expect(steps.find(s => s.nodeId === 'chanceA')?.value).toBeCloseTo(6);
+    expect(steps.find(s => s.nodeId === 'chanceB')?.value).toBeCloseTo(3);
+  });
+
+  it('activeNodeIds shows correct recursion path', () => {
+    const tree: StochasticNode = {
+      id: 'root', type: 'max',
+      children: [
+        { node: { id: 'child', type: 'min', children: [], value: 5 } },
+      ],
+    };
+    const steps = expectiminimax(tree);
+    const leaf = steps.find(s => s.nodeId === 'child');
+    expect(leaf?.activeNodeIds).toEqual(['root', 'child']);
+    const root = steps.find(s => s.nodeId === 'root');
+    expect(root?.activeNodeIds).toEqual(['root']);
+  });
+
+  it('produces steps in post-order', () => {
+    const tree: StochasticNode = {
+      id: 'root', type: 'chance',
+      children: [
+        { node: { id: 'left', type: 'max', children: [], value: 1 } },
+        { node: { id: 'right', type: 'max', children: [], value: 3 } },
+      ],
+    };
+    const steps = expectiminimax(tree);
+    const ids = steps.map(s => s.nodeId);
+    expect(ids.indexOf('left')).toBeLessThan(ids.indexOf('root'));
+    expect(ids.indexOf('right')).toBeLessThan(ids.indexOf('root'));
+  });
+
+  it('action string says "MAX" for max nodes', () => {
+    const tree: StochasticNode = {
+      id: 'root', type: 'max',
+      children: [
+        { node: { id: 'a', type: 'max', children: [], value: 5 } },
+      ],
+    };
+    const steps = expectiminimax(tree);
+    expect(steps.find(s => s.nodeId === 'root')?.action).toContain('MAX');
+  });
+
+  it('action string says "MIN" for min nodes', () => {
+    const tree: StochasticNode = {
+      id: 'root', type: 'min',
+      children: [
+        { node: { id: 'a', type: 'min', children: [], value: 5 } },
+      ],
+    };
+    const steps = expectiminimax(tree);
+    expect(steps.find(s => s.nodeId === 'root')?.action).toContain('MIN');
+  });
+
+  it('action string says "CHANCE" for chance nodes', () => {
+    const tree: StochasticNode = {
+      id: 'root', type: 'chance',
+      children: [
+        { node: { id: 'a', type: 'max', children: [], value: 5 }, prob: 1 },
+      ],
+    };
+    const steps = expectiminimax(tree);
+    expect(steps.find(s => s.nodeId === 'root')?.action).toContain('CHANCE');
   });
 });
