@@ -36,6 +36,9 @@ aima-visualizations/
 ├── Chapter 03 - Solving Problems by Searching/
 │   └── ...                   # Each chapter is an independent TypeScript project
 │
+├── appendix-a-math/          # Appendix A — Mathematical Background
+├── appendix-b-languages/     # Appendix B — Notes on Languages and Algorithms
+│
 ├── .github/
 │   ├── workflows/
 │   │   ├── deploy-landing.yml
@@ -537,12 +540,16 @@ See [`.github/copilot-instructions.md`](.github/copilot-instructions.md). Key ru
 
 ### Appendix A — Mathematical Background
 
+**Directory:** `appendix-a-math/` → **URL:** `/appendix-a/`
+
 **Core visualizations:**
 - Big-O complexity chart: input-size slider comparing O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ) on log-log scale
 - Linear algebra: matrix multiplication animation, eigenvalue decomposition, PCA on 2D data
 - Probability distributions gallery: parameter sliders for Normal, Bernoulli, Binomial, Poisson, Beta, Dirichlet, Gamma, Exponential with PDF/CDF toggle
 
-### Appendix B — Languages and Algorithms
+### Appendix B — Notes on Languages and Algorithms
+
+**Directory:** `appendix-b-languages/` → **URL:** `/appendix-b/`
 
 **Core visualizations:**
 - BNF grammar derivation tree explorer: animated leftmost derivation for a sample expression language

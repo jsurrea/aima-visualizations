@@ -1,0 +1,20 @@
+{
+  "id": "appendix-a",
+  "label": "Appendix A",
+  "chapter": 30,
+  "title": "Mathematical Background",
+  "shortTitle": "Math Background",
+  "description": "Interactive reference for complexity analysis, linear algebra, and probability — the mathematical toolkit used throughout the book.",
+  "part": 8,
+  "partName": "Appendices",
+  "icon": "∑",
+  "color": "#64748B",
+  "basePath": "/appendix-a",
+  "sections": [
+    { "id": "complexity", "title": "Complexity Analysis and O() Notation", "status": "complete" },
+    { "id": "linear-algebra", "title": "Vectors, Matrices, and Linear Algebra", "status": "complete" },
+    { "id": "probability", "title": "Probability Distributions", "status": "complete" }
+  ],
+  "status": "complete",
+  "techStack": ["React", "TypeScript", "KaTeX"]
+}

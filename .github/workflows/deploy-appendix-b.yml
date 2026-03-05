@@ -1,0 +1,21 @@
+name: Deploy Appendix B — Notes on Languages and Algorithms
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'appendix-b-languages/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: appendix-b-languages
+      chapter-path: appendix-b
+    secrets: inherit
