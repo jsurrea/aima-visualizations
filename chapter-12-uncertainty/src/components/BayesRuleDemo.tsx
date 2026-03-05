@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { bayesRule } from '../algorithms/index';
+// No algorithm imports needed — conditional independence values computed directly from joint distribution
 import { renderInlineMath, renderDisplayMath } from '../utils/mathUtils';
 
 const CHAPTER_COLOR = '#EC4899';
@@ -83,14 +83,11 @@ export default function BayesRuleDemo() {
   const handleBack = () => { clearTimer(); setPlaying(false); setCurrentStep(prev => Math.max(prev - 1, 0)); };
   const handleReset = () => { clearTimer(); setPlaying(false); setCurrentStep(0); };
 
-  // Conditional independence verification using bayesRule
-  // bayesRule(likelihood, prior, evidence) = P(H|E) = P(E|H)*P(H)/P(E)
-  // P(toothache∧catch|cavity) via Bayes: P(cavity|toothache∧catch)*P(toothache∧catch)/P(cavity)
-  // Here we use it to verify: P(T∧C|cavity) = P(cavity|T∧C)*P(T∧C)/P(cavity)
-  // joint row (cavity,toothache,catch) = 0.108; P(toothache∧catch) = 0.108+0.016=0.124; P(cavity|T∧C) = 0.108/0.124
-  const pToothacheAndCatchGivenCavity = bayesRule(0.108 / 0.124, 0.124, 0.2);
-  const pToothacheGivenCavity = 0.6; // (0.108 + 0.012) / 0.2
-  const pCatchGivenCavity = 0.9; // (0.108 + 0.072) / 0.2
+  // Conditional independence verification using joint distribution values
+  // P(T∧C|cavity) = P(cavity,T,C)/P(cavity) = 0.108/0.2
+  const pToothacheAndCatchGivenCavity = 0.108 / 0.2; // = 0.54
+  const pToothacheGivenCavity = (0.108 + 0.012) / 0.2; // = 0.60
+  const pCatchGivenCavity = (0.108 + 0.072) / 0.2;     // = 0.90
 
   const cardStyle: React.CSSProperties = {
     background: 'var(--surface-2)',

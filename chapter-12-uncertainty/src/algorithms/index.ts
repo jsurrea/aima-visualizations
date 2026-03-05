@@ -209,7 +209,7 @@ export function bayesNormalized(
   priors: ReadonlyArray<number>,
 ): number[] {
   if (likelihoods.length === 0 || likelihoods.length !== priors.length) return [];
-  const raw = likelihoods.map((l, i) => l * priors[i]!);
+  const raw = likelihoods.map((l, i) => l * (priors[i] as number));
   const total = raw.reduce((s, v) => s + v, 0);
   if (total === 0) return raw.map(() => 1 / raw.length);
   return raw.map(v => v / total);

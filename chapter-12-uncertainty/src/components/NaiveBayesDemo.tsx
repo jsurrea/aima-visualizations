@@ -92,7 +92,11 @@ export default function NaiveBayesDemo() {
     };
     rafRef.current = requestAnimationFrame(animate);
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
-  }, [selectedWords]); // eslint-disable-line react-hooks/exhaustive-deps
+  // selectedWords is the only real trigger; targetWidths and startWidths are
+  // captured via closure at effect invocation time, avoiding a dependency loop
+  // on animatedWidths (which updates on every animation frame).
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedWords]);
 
   const toggleWord = (word: string) => {
     setSelectedWords(prev => {
