@@ -47,6 +47,8 @@ import ch26 from '../../../chapter-26-robotics/manifest.json';
 import ch27 from '../../../chapter-27-computer-vision/manifest.json';
 import ch28 from '../../../chapter-28-ethics-safety/manifest.json';
 import ch29 from '../../../chapter-29-future-ai/manifest.json';
+import appA from '../../../appendix-a-math/manifest.json';
+import appB from '../../../appendix-b-languages/manifest.json';
 
 // ─── CHAPTERS array ───────────────────────────────────────────────────────────
 
@@ -54,6 +56,7 @@ const rawManifests: ManifestData[] = [
   ch01, ch02, ch03, ch04, ch05, ch06, ch07, ch08, ch09, ch10,
   ch11, ch12, ch13, ch14, ch15, ch16, ch17, ch18, ch19, ch20,
   ch21, ch22, ch23, ch24, ch25, ch26, ch27, ch28, ch29,
+  appA, appB,
 ] as ManifestData[];
 
 export const CHAPTERS: ChapterData[] = rawManifests.map(manifestToChapterData);

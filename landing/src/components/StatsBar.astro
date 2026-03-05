@@ -1,13 +1,15 @@
 ---
 import { CHAPTERS } from '../data/chapters';
 
+const chapters = CHAPTERS.filter(ch => !ch.isAppendix);
+const appendices = CHAPTERS.filter(ch => ch.isAppendix);
 const totalVisualizations = CHAPTERS.reduce((sum, ch) => sum + ch.visualizationCount, 0);
 ---
 <section class="py-12 bg-[#111118] border-y border-white/5">
   <div class="max-w-5xl mx-auto px-6">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
       {[
-        { value: '29', label: 'Chapters', suffix: '' },
+        { value: `${String(chapters.length)} Chapters + ${String(appendices.length)} Appendices`, label: 'Coverage', suffix: '' },
         { value: String(totalVisualizations), label: 'Visualizations', suffix: '' },
         { value: '7', label: 'Parts', suffix: '' },
         { value: 'Open', label: 'Source', suffix: '' },

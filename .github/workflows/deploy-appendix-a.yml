@@ -1,0 +1,21 @@
+name: Deploy Appendix A — Mathematical Background
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'appendix-a-math/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy-chapter-template.yml
+    with:
+      chapter-dir: appendix-a-math
+      chapter-path: appendix-a
+    secrets: inherit

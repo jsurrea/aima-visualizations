@@ -78,10 +78,10 @@ The full textbook PDF is available at `Book.pdf` in the repository root. **Befor
 
 ### Appendices (supplementary reading)
 
-| | Title | PDF Pages |
-|--|-------|-----------|
-| **A** | Mathematical Background | **1074 – 1080** — Complexity & O() notation · Vectors, Matrices & Linear Algebra · Probability Distributions |
-| **B** | Notes on Languages and Algorithms | **1081 – 1083** — BNF · Pseudocode conventions |
+| | Title | PDF Pages | Sections |
+|--|-------|-----------|----------|
+| **A** | Mathematical Background | **1074 – 1080** (7 pp.) | A.1 Complexity Analysis and O() Notation (p.1074) · A.2 Vectors, Matrices, and Linear Algebra (p.1076) · A.3 Probability Distributions (p.1078) |
+| **B** | Notes on Languages and Algorithms | **1081 – 1083** (3 pp.) | B.1 Defining Languages with BNF (p.1081) · B.2 Describing Algorithms with Pseudocode (p.1082) · B.3 Online Supplemental Material (p.1083) |
 
 > **How to read the PDF efficiently:** Use a PDF reader that supports page-number jump. Jump directly to the start page listed above for the chapter you are implementing. Read the full chapter — including all pseudocode boxes, figures, and sidebars — before writing any code.
 
@@ -238,6 +238,8 @@ chapter-XX-name/
 | `chapter-27-computer-vision` | `/chapter-27` |
 | `chapter-28-ethics-safety` | `/chapter-28` |
 | `chapter-29-future-ai` | `/chapter-29` |
+| `appendix-a-math` | `/appendix-a` |
+| `appendix-b-languages` | `/appendix-b` |
 
 ---
 

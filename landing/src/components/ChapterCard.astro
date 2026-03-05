@@ -19,11 +19,16 @@ const statusLabels: Record<string, string> = {
 };
 
 const isAvailable = chapter.status !== 'planned';
+const isAppendix = chapter.isAppendix === true;
 const baseUrl = '/aima-visualizations';
+
+const borderStyle = isAppendix
+  ? `--chapter-color: ${chapter.color}; border-style: dashed; border-color: ${chapter.color}40;`
+  : `--chapter-color: ${chapter.color}; border-color: color-mix(in srgb, ${chapter.color} 0%, rgba(255,255,255,0.05));`;
 ---
 <article
-  class="group relative flex flex-col rounded-xl bg-[#111118] border border-white/5 hover:border-opacity-30 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl overflow-hidden"
-  style={`--chapter-color: ${chapter.color}; border-color: color-mix(in srgb, ${chapter.color} 0%, rgba(255,255,255,0.05));`}
+  class="group relative flex flex-col rounded-xl bg-[#111118] border hover:border-opacity-30 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl overflow-hidden"
+  style={borderStyle}
   data-chapter-part={String(chapter.part)}
   data-chapter-title={chapter.title.toLowerCase()}
   data-chapter-desc={chapter.description.toLowerCase()}
@@ -32,17 +37,26 @@ const baseUrl = '/aima-visualizations';
   <div class="h-1 w-full" style={`background: ${chapter.color};`}></div>
 
   <div class="flex flex-col flex-1 p-6">
-    <!-- Header: number badge + status -->
+    <!-- Header: number badge + status + optional REF badge -->
     <div class="flex items-start justify-between mb-4">
       <div class="flex items-center gap-3">
         <div
           class="flex items-center justify-center w-10 h-10 rounded-lg text-white text-sm font-bold"
           style={`background: ${chapter.color}20; color: ${chapter.color};`}
-          aria-label={`Chapter ${chapter.id}`}
+          aria-label={isAppendix ? chapter.label : `Chapter ${chapter.id}`}
         >
-          {String(chapter.id).padStart(2, '0')}
+          {isAppendix ? chapter.label : String(chapter.id).padStart(2, '0')}
         </div>
         <span class="text-2xl" aria-hidden="true">{chapter.icon}</span>
+        {isAppendix && (
+          <span
+            class="px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider"
+            style={`color: ${chapter.color}; background: ${chapter.color}15; border: 1px solid ${chapter.color}40;`}
+            title="Reference appendix"
+          >
+            REF
+          </span>
+        )}
       </div>
       <span class={`px-2.5 py-1 rounded-full text-xs font-medium border ${statusColors[chapter.status]}`}>
         {statusLabels[chapter.status]}
@@ -70,7 +84,7 @@ const baseUrl = '/aima-visualizations';
           href={`${baseUrl}${chapter.urlPath}/`}
           class="inline-flex items-center gap-1 px-4 py-1.5 rounded-lg text-sm font-medium text-white transition-all duration-200 hover:gap-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#111118]"
           style={`background: ${chapter.color}20; color: ${chapter.color};`}
-          aria-label={`Explore Chapter ${chapter.id}: ${chapter.title}`}
+          aria-label={isAppendix ? `Explore ${chapter.label}: ${chapter.title}` : `Explore Chapter ${chapter.id}: ${chapter.title}`}
         >
           Explore →
         </a>
@@ -79,7 +93,7 @@ const baseUrl = '/aima-visualizations';
           class="inline-flex items-center gap-1 px-4 py-1.5 rounded-lg text-sm font-medium text-gray-500 bg-white/5 cursor-not-allowed"
           disabled
           title="Coming soon"
-          aria-label={`Chapter ${chapter.id} is planned — coming soon`}
+          aria-label={isAppendix ? `${chapter.label} is planned — coming soon` : `Chapter ${chapter.id} is planned — coming soon`}
           aria-disabled="true"
         >
           Coming Soon
