@@ -1,14 +1,19 @@
 import manifest from '../manifest.json';
-import Placeholder from './components/Placeholder';
+import ProbabilityAxiomExplorer from './components/ProbabilityAxiomExplorer';
+import JointDistributionViz from './components/JointDistributionViz';
+import IndependenceExplorer from './components/IndependenceExplorer';
+import BayesRuleDemo from './components/BayesRuleDemo';
+import NaiveBayesDemo from './components/NaiveBayesDemo';
+import WumpusWorldViz from './components/WumpusWorldViz';
 
 export default function App() {
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--surface-base)', color: 'white', fontFamily: 'system-ui, sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--surface-base)', color: 'white', fontFamily: 'var(--font-sans, system-ui, sans-serif)' }}>
       {/* Header */}
-      <header style={{ background: 'var(--surface-1)', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '16px 24px' }}>
+      <header style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--surface-border)', padding: '16px 24px' }}>
         <a
           href="/aima-visualizations/"
-          style={{ color: 'var(--chapter-color)', textDecoration: 'none', fontSize: '14px', fontWeight: 500 }}
+          style={{ color: manifest.color, textDecoration: 'none', fontSize: '14px', fontWeight: 500 }}
           aria-label="Back to all chapters"
         >
           ← Back to All Chapters
@@ -16,7 +21,7 @@ export default function App() {
       </header>
 
       {/* Chapter hero */}
-      <section style={{ padding: '48px 24px 32px', maxWidth: '900px', margin: '0 auto' }}>
+      <section aria-label="Chapter overview" style={{ padding: '48px 24px 32px', maxWidth: '900px', margin: '0 auto' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
           <span style={{
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
@@ -35,23 +40,32 @@ export default function App() {
         </p>
       </section>
 
-      {/* Sections list */}
-      <section style={{ padding: '0 24px 48px', maxWidth: '900px', margin: '0 auto' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '16px', color: '#E5E7EB' }}>
-          Planned Visualizations
-        </h2>
-        <div style={{ display: 'grid', gap: '12px' }}>
-          {manifest.sections.map((section) => (
-            <Placeholder
-              key={section.id}
-              id={section.id}
-              title={section.title}
-              status={section.status}
-              chapterColor={manifest.color}
-            />
-          ))}
-        </div>
-      </section>
+      {/* Visualizations */}
+      <main style={{ padding: '0 24px 64px', maxWidth: '900px', margin: '0 auto' }}>
+        <section id="probability-axioms" role="region" aria-label="§12.1–12.2 Probability Axiom Explorer" style={{ marginBottom: '48px' }}>
+          <ProbabilityAxiomExplorer />
+        </section>
+
+        <section id="joint-distribution" role="region" aria-label="§12.3 Full Joint Distribution" style={{ marginBottom: '48px' }}>
+          <JointDistributionViz />
+        </section>
+
+        <section id="independence" role="region" aria-label="§12.4 Independence Explorer" style={{ marginBottom: '48px' }}>
+          <IndependenceExplorer />
+        </section>
+
+        <section id="bayes-rule" role="region" aria-label="§12.5 Bayes' Rule Demo" style={{ marginBottom: '48px' }}>
+          <BayesRuleDemo />
+        </section>
+
+        <section id="naive-bayes" role="region" aria-label="§12.6 Naive Bayes Classifier" style={{ marginBottom: '48px' }}>
+          <NaiveBayesDemo />
+        </section>
+
+        <section id="wumpus-world" role="region" aria-label="§12.7 Wumpus World Uncertainty" style={{ marginBottom: '48px' }}>
+          <WumpusWorldViz />
+        </section>
+      </main>
     </div>
   );
 }
