@@ -774,6 +774,19 @@ export function minConflicts(
       totalConflicts,
       action: `Move queen in column ${conflictedCol} to row ${newRow}`,
     });
+
+    // Check for solution immediately after the move
+    if (totalConflicts === 0) {
+      steps.push({
+        assignment: [...assignment],
+        conflictedVar: null,
+        newValue: null,
+        conflictCounts: [...conflictCounts],
+        totalConflicts: 0,
+        action: 'Solution found — no conflicts remain!',
+      });
+      return steps;
+    }
   }
 
   // Exceeded max steps
